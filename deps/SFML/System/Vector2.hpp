@@ -71,7 +71,7 @@ public:
 		
 		////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////
-		/// Next section is made by bezar (@botatodev)
+		/// Next section is made by bezar
 		////////////////////////////////////////////////////////////
 
 		inline float length() const
@@ -79,7 +79,7 @@ public:
 			return std::sqrt((x * x) + (y * y));
 		}
 
-		inline float length_squared() const
+		inline float lengthSquared() const
 		{
 			return (x * x) + (y * y);
 		}
@@ -91,7 +91,7 @@ public:
 			return std::sqrt((a * a) + (b * b));
 		}
 
-		inline float distance_squared(const Vector2<T>& other) const
+		inline float distanceSquared(const Vector2<T>& other) const
 		{
 			T a = x - other.x;
 			T b = y - other.y;
@@ -111,7 +111,7 @@ public:
 			return Vector2<T>(-y, x);
 		}
 
-		inline Vector2<T> normalized_tangent() const
+		inline Vector2<T> normalTangent() const
 		{
 			float l = length();
 			if (l < 1.0e-5f)
@@ -129,44 +129,83 @@ public:
 			return (x * other.x) - (y * other.y);
 		}
 
-		inline Vector2<T> linear_interpolate(Vector2<T> other, float dt) const
+		inline Vector2<T> linearInterpolate(Vector2<T> other, float dt) const
 		{
-			return linear_interpolate(*this, other, dt);
+			return linearInterpolate(*this, other, dt);
 		}
 
-		inline Vector2<T> quadratic_interpolate(Vector2<T> other, float dt) const
+		inline Vector2<T> quadraticInterpolate(Vector2<T> other, float dt) const
 		{
-			return quadratic_interpolate(*this, other, dt);
+			return quadraticInterpolate(*this, other, dt);
 		}
 
-		inline Vector2<T> cubic_interpolate(Vector2<T> other, float dt) const
+		inline Vector2<T> cubicInterpolate(Vector2<T> other, float dt) const
 		{
-			return quadratic_interpolate(*this, other, dt);
+			return quadraticInterpolate(*this, other, dt);
+		}
+
+		// in radians
+		inline float angle() const
+		{
+			return std::atan2(y, x);
+		}
+
+		// in radians
+		inline float angleTo(const Vector2<T>& other) const
+		{
+			return std::atan2(y - other.y, x - other.x);
+		}
+
+
+		inline Vector2<T> rotated(float angle_radians) const
+		{
+			float ang = angle() + angle_radians;
+			float len = length();
+			return Vector2<T>(std::cos(ang) * len, std::sin(ang) * len);
 		}
 
 		template <class E>
-		inline static Vector2<E> linear_interpolate(const Vector2<E>& a, const Vector2<E>& b, float dt)
+		inline static Vector2<E> linearInterpolate(const Vector2<E>& a, const Vector2<E>& b, float dt)
 		{
 			
 			return a + ((b - a) * dt);
 		}
 
 		template <class E>
-		inline static Vector2<E> quadratic_interpolate(const Vector2<E>& a, const Vector2<E>& b, float dt)
+		inline static Vector2<E> quadraticInterpolate(const Vector2<E>& a, const Vector2<E>& b, float dt)
 		{
 			dt *= dt;
 			return a + ((b - a) * dt);
 		}
 
 		template <class E>
-		inline static Vector2<E> cubic_interpolate(const Vector2<E>& a, const Vector2<E>& b, float dt)
+		inline static Vector2<E> cubicInterpolate(const Vector2<E>& a, const Vector2<E>& b, float dt)
 		{
 			dt *= dt * dt;
 			return a + ((b - a) * dt);
 		}
+
+		// angle '0' is a vector pointing to the left with angle 90 pointing to up
+		inline static Vector2<T> polar2coord(float angle_rad, float len)
+		{
+			return Vector2<T>(std::cos(angle_rad) * len, std::sin(angle_rad) * len);
+		}
+
+		// first is the *angle* and second is the length
+		inline std::pair<float, float> coord2polar()
+		{
+			return { angle(), length() };
+		}
 	
+
+		template <typename T, typename E>
+		inline sf::Vector2<T> operator *(const Vector2<E>& other)
+		{
+			return sf::Vector2<T>(x * other.x, y * other.y);
+		}
+
 		////////////////////////////////////////////////////////////
-		/// end of the section made by bezar (@botatodev)
+		/// end of the modified section
 		////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////
 
@@ -383,7 +422,7 @@ typedef Vector2<float>        Vector2f;
 ///
 /// The sf::Vector2 class has a small and simple interface, its x and y members
 /// can be accessed directly (there are no accessors like setX(), getX()) and it
-/// contains no mathematical function like dot product, cross product, length, etc.
+/// contains mathematical function like dot product, cross product, length, etc.
 ///
 /// Usage example:
 /// \code
