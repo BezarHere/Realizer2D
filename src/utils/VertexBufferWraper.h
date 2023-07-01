@@ -7,7 +7,7 @@ namespace R2D::utils
 	public:
 		// takes ownership of the buffer
 		VertexBufferWraper(sf::VertexBuffer* buffer);
-		VertexBufferWraper(sf::PrimitiveType type, sf::VertexBuffer::Usage usage, size_t size);
+		VertexBufferWraper(sf::PrimitiveType type, sf::VertexBuffer::Usage usage, size_t size = 0);
 		~VertexBufferWraper();
 
 		inline sf::VertexBuffer* getBuffer() const { return m_buffer.get(); }

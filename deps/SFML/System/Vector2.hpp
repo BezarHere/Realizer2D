@@ -156,12 +156,20 @@ public:
 			return std::atan2(y - other.y, x - other.x);
 		}
 
-
 		inline Vector2<T> rotated(float angle_radians) const
 		{
 			float ang = angle() + angle_radians;
 			float len = length();
 			return Vector2<T>(std::cos(ang) * len, std::sin(ang) * len);
+		}
+
+		// [modifier]
+		inline void rotate(float angle_radians)
+		{
+			float ang = angle() + angle_radians;
+			float len = length();
+			x = std::cos(ang) * len;
+			y = std::sin(ang) * len;
 		}
 
 		template <class E>

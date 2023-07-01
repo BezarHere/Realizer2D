@@ -53,6 +53,7 @@
     <None Include="deps\SFML\System\Vector3.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\global.h">
@@ -397,6 +398,9 @@
     <ClInclude Include="src\random.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\OS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\global.cpp">
@@ -424,6 +428,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\VisualServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectComponent2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -3,10 +3,11 @@
 #include <vector>
 #include <string>
 #include <array>
+#include <list>
 
-constexpr size_t obj_count = 100;
+constexpr size_t obj_count = 20;
 uint32_t counter = 0;
-r2d::Object2D objects[obj_count];
+r2d::Object2D* objects[obj_count];
 
 void process()
 {
@@ -30,16 +31,20 @@ void process()
 void start()
 {
 	//r2d::VisualServer::Singleton()->setViewCentered(false);
+		auto t = std::chrono::steady_clock::now();
 	for (int i = 0; i < obj_count; i++) {
-		objects[i] = r2d::Object2D();
-		objects[i].installComponent(new r2d::components::RectangleDrawer({ 4.0f, 4.0f }));
-		objects[i].setPosition(r2d::random::randf_range(0.0f, 500.0f), r2d::random::randf_range(0.0f, 500.0f));
+		objects[i] = new r2d::Object2D();
+		objects[i]->installComponent(new r2d::components::CircleDrawer(r2d::random::randf_range(16.0f, 32.0f), 80));
+		objects[i]->setPosition(r2d::random::randf_range(0.0f, 500.0f), r2d::random::randf_range(0.0f, 500.0f));
 	}
+		
 }
-
 
 int main(int argc, const char** argv)
 {
+
+	r2d::ObjectComponent2D* p = new r2d::components::RectangleDrawer();
+
 	r2d::Engine::SetOnInitAction(start);
 	r2d::Engine::SetProcessAction(process);
 	r2d::Engine::Fire();

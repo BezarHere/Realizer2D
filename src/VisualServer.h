@@ -2,14 +2,15 @@
 #include <stack>
 #include "global.h"
 #include "ApplicationConfig.h"
+#include "components/Drawers.h"
+
 _R2D_NAMESPACE_START_
-
-
 
 class VisualServer final
 {
 public:
-	
+
+
 	static inline VisualServer* Singleton() { return VisualServer::s_instance; }
 	static inline sf::RenderWindow* GetWindow() { return (sf::RenderWindow*)VisualServer::s_window; }
 	
@@ -71,6 +72,8 @@ private:
 	sf::Vector2f m_viewPosition = sf::Vector2f(0.0f, 0.0f);
 	// if false; the view will be anchored at the topleft
 	bool m_viewCentered = true;
+
+	// current way of handling z-index
 
 };
 

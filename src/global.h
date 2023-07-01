@@ -34,6 +34,14 @@ _R2D_NAMESPACE_START_
 #define lengthof(a) ((size_t)sizeof(a) / (size_t)sizeof(*a))
 #endif // !lengthof
 
+#ifdef HIGH_PRECI
+typedef double real_t;
+#else
+typedef float real_t;
+#endif // HIGH_PRECI
+
+typedef sf::Vector2<real_t> Vector2f_t;
+
 template <class T>
 inline void __doswap__(T& a, T& b)
 {
@@ -44,8 +52,10 @@ inline void __doswap__(T& a, T& b)
 
 
 // if cond is false, the msg will be printed and the program will halt
-#define assert_msg(cond, msg) if (!(cond)) { std::cerr << "ERROR: " << __FILE__ << ':' << __LINE__ << "\n  " << (msg) << std::endl; throw std::runtime_error(#cond); }
+#define assert_msg(cond, msg) if (!(cond)) { std::cerr << "R2D-ERROR: " << __FILE__ << ':' << __LINE__ << "\n  " << (msg) << std::endl; throw std::runtime_error(#cond); }
 
+template <class T>
+inline consteval const char* this_name(T* value) { return typeid(*value).raw_name(); }
 
 template <typename T> struct std::hash<sf::Vector2<T>> {
 	inline size_t operator()(const sf::Vector2<T>& obj) const {
@@ -88,14 +98,14 @@ enum : uint8_t {
 	CounterClockwise
 };
 
-constexpr float Pi = 3.141592653589793f;
-constexpr float Tau = Pi * 2.0f;
-constexpr float E = 2.718281828459045f;
-constexpr float Eular = E;
+constexpr real_t Pi = (real_t)3.141592653589793;
+constexpr real_t Tau = Pi * (real_t)2.0;
+constexpr real_t E = (real_t)2.718281828459045;
+constexpr real_t Eular = E;
 
 
 
-#define PEEK(p) std::cout << #p << ": " << p << '\n'
+#define PEEK(p) std::cout << #p << ": " << (p) << '\n'
 
 
 template <class T>

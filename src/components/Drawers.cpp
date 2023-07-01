@@ -8,7 +8,7 @@ namespace R2D::components
 	{
 	}
 
-	RectangleDrawer::RectangleDrawer(sf::Vector2f size)
+	RectangleDrawer::RectangleDrawer(Vector2f_t size)
 		: m_size(size)
 	{
 		update_buffer();
@@ -18,7 +18,7 @@ namespace R2D::components
 	{
 	}
 
-	void RectangleDrawer::setSize(sf::Vector2f size)
+	void RectangleDrawer::setSize(Vector2f_t size)
 	{
 		if (size == m_size)
 		{
@@ -38,14 +38,108 @@ namespace R2D::components
 	{
 		sf::Vertex vertcies[]
 		{
-			{ sf::Vector2f(-m_size.x / 2.0f, -m_size.y / 2.0f), color },
-			{ sf::Vector2f(m_size.x / 2.0f, -m_size.y / 2.0f), color },
-			{ sf::Vector2f(m_size.x / 2.0f, m_size.y / 2.0f), color },
-			{ sf::Vector2f(m_size.x / 2.0f, m_size.y / 2.0f), color },
-			{ sf::Vector2f(-m_size.x / 2.0f, m_size.y / 2.0f), color },
-			{ sf::Vector2f(-m_size.x / 2.0f, -m_size.y / 2.0f), color },
+			{ Vector2f_t(-m_size.x / 2.0f, -m_size.y / 2.0f), color },
+			{ Vector2f_t(m_size.x / 2.0f, -m_size.y / 2.0f), color },
+			{ Vector2f_t(m_size.x / 2.0f, m_size.y / 2.0f), color },
+			{ Vector2f_t(m_size.x / 2.0f, m_size.y / 2.0f), color },
+			{ Vector2f_t(-m_size.x / 2.0f, m_size.y / 2.0f), color },
+			{ Vector2f_t(-m_size.x / 2.0f, -m_size.y / 2.0f), color },
 		};
 		m_buffer.getBuffer()->update(vertcies);
 	}
 
+
+	CircleDrawer::CircleDrawer()
+		: CircleDrawer(8.0f, 16U)
+	{
+	}
+
+	CircleDrawer::CircleDrawer(real_t radius, uint16_t segments_count)
+		: m_radius(radius), m_segmentsCount(segments_count)
+	{
+		update_buffer();
+	}
+
+	CircleDrawer::~CircleDrawer()
+	{
+	}
+
+	void CircleDrawer::setRadius(real_t radius)
+	{
+		m_radius = radius;
+		update_buffer();
+	}
+
+	void components::CircleDrawer::setSegmentsCount(uint16_t segments_count)
+	{
+		m_segmentsCount = segments_count;
+		update_buffer();
+	}
+
+	void CircleDrawer::draw(sf::RenderTarget& target, sf::RenderStates state) const
+	{
+		state.transform.combine(getTransform());
+		target.draw(*(m_buffer.getBuffer()), state);
+	}
+
+	void CircleDrawer::update_buffer()
+	{
+		if (m_segmentsCount < 3)
+		{
+			m_buffer.getBuffer()->create(0);
+			return;
+		}
+
+		// way better the recalculating the entire polygon
+		// not using sin & cos (atleast not every time this is called) is better
+
+		const Points_t& base_poly = getVertciesFromCache(m_segmentsCount);
+		const size_t poly_size = base_poly.size();
+		sf::Vertex* vertcies = new sf::Vertex[poly_size];
+		const sf::Color clr = getColor();
+
+		for (uint16_t i{ 0U }; i < poly_size; i++)
+		{
+			vertcies[i].position = base_poly[i] * m_radius;
+			vertcies[i].color = clr;
+		}
+		
+		m_buffer.getBuffer()->create(m_segmentsCount);
+		m_buffer.getBuffer()->update(vertcies);
+	}
+
+	bool CircleDrawer::hasVertciesCacheSegCount(uint16_t seg_count)
+	{
+		return s_vertexCache.find(seg_count) != s_vertexCache.end();
+	}
+
+	void CircleDrawer::createVertciesCache(uint16_t seg_count)
+	{
+		const Vector2f_t pivot { 1.0f, 0.0f };
+		real_t rot_step = Tau * Pi / (real_t)seg_count;
+		Vector2f_t rotator = pivot.rotated(rot_step);
+		Points_t vertices;
+
+
+		for (uint16_t i{ 0U }; i < seg_count; i++)
+		{
+			vertices.push_back(pivot);
+			vertices.push_back(rotator);
+			rotator.rotate(rot_step);
+			vertices.push_back(rotator);
+		}
+		vertices.push_back(rotator);
+		s_vertexCache.insert_or_assign(seg_count, vertices);
+	}
+
+	const Points_t& CircleDrawer::getVertciesFromCache(uint16_t seg_count)
+	{
+		if (!hasVertciesCacheSegCount(seg_count))
+		{
+			createVertciesCache(seg_count);
+		}
+		return s_vertexCache.at(seg_count);
+	}
+
 }
+

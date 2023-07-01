@@ -25,6 +25,7 @@ namespace random
 		return (double)rand() / 32767.0;
 	}
 
+	// [0, 255]
 	inline int8_t rand_8u()
 	{
 		return (uint8_t)(rand() & 0xff);

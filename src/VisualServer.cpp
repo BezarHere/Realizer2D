@@ -24,10 +24,10 @@ void VisualServer::updateView()
 			pview.setSize(window_size / m_viewZoom);
 			break;
 		case ViewStretchMode::KeepHorizontal:
-			pview.setSize(sf::Vector2f(m_appliedConfig.windowSize.x, window_size.y) / m_viewZoom);
+			pview.setSize(sf::Vector2f((float)m_appliedConfig.windowSize.x, window_size.y) / m_viewZoom);
 			break;
 		case ViewStretchMode::KeepVertical:
-			pview.setSize(sf::Vector2f(window_size.x, m_appliedConfig.windowSize.y) / m_viewZoom);
+			pview.setSize(sf::Vector2f(window_size.x, (float)m_appliedConfig.windowSize.y) / m_viewZoom);
 			break;
 		case ViewStretchMode::Keep:
 			pview.setSize((sf::Vector2f)m_appliedConfig.windowSize / m_viewZoom);

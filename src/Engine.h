@@ -4,6 +4,7 @@
 #include "VisualServer.h"
 #include "PhysicsServer.h"
 #include "random.h"
+#include "SceneTree.h"
 
 
 
@@ -99,10 +100,13 @@ private:
 	void registerInput(const sf::Event::MouseWheelScrollEvent& scroll_event);
 	void registerInput(const sf::Event::KeyEvent& key_event, bool pressed);
 
+	const SceneTree& getTree() const { return m_sceneTree; }
+	SceneTree& getTree() { return m_sceneTree; }
+
 private:
 	static inline Engine* s_instance{nullptr};
-	static inline ObjectID m_objCounter = 0;
-	static inline std::unordered_map<ObjectID, Object2D*> m_objsRegistery{};
+	static inline ObjID_t m_objCounter = 0;
+	static inline std::unordered_map<ObjID_t, Object2D*> m_objsRegistery{};
 
 	static inline ProcessFunction_t m_processAction;
 	static inline PhysicsFunction_t m_physicsAction;
@@ -125,6 +129,8 @@ private:
 
 	std::chrono::steady_clock::time_point m_lastFrameTime = std::chrono::high_resolution_clock::now();
 	float m_physicsDeltaTime = 1.0f / 60.0f;
+
+	SceneTree m_sceneTree;
 
 };
 

@@ -11,11 +11,12 @@ Engine::Engine()
 		m_keyboardInput(),
 		m_mouseInput()
 {
-	random::randomize();
 	assert_msg(
 		!Engine::s_instance,
 		"r2d::Engine can't be created by the user, use r2d::Engine::GetSingleton()"
 	);
+	random::randomize();
+	
 
 
 	for (int i = 0; i < Keyboard_t::KeyCount; i++)
@@ -48,7 +49,7 @@ void Engine::Fire()
 void Engine::RegisterObject(Object2D* object)
 {
 	assert_msg(object->getObjectID() == 0, "can't register a registered object");
-	ObjectID current_id = m_objCounter++;
+	ObjID_t current_id = m_objCounter++;
 	object->setObjectID(current_id);
 	m_objsRegistery.insert_or_assign(current_id, object);
 }
