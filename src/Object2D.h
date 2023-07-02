@@ -56,6 +56,13 @@ public:
 	// -- to check if a component is owned by this; check the getObject() == this_obj
 	virtual bool hasComponent(ObjectComponent2D* component) const;
 	virtual const std::unordered_set<std::shared_ptr<ObjectComponent2D>>& getComponents() const;
+
+	Vector2f_t getGlobalPosition() const;
+	Vector2f_t getGlobalRotation() const;
+	Vector2f_t getGlobalScale() const;
+
+	inline Object2D* getParent() const { return m_parent; }
+
 protected:
 	// ---------------- signals ----------------
 

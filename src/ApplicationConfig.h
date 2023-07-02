@@ -13,10 +13,10 @@ enum ViewStretchMode : uint8_t
 
 struct ApplicationConfig
 {
-	std::string title = "Title";
+	std::string title { "Title" };
 	// the window size at program init
-	sf::Vector2u windowSize = {512u, 400u};
-	ViewStretchMode stretchMode;
+	sf::Vector2u windowSize {512u, 400u};
+	ViewStretchMode stretchMode { ViewStretchMode::Expand };
 };
 
 _R2D_NAMESPACE_END_

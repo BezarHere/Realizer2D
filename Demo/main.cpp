@@ -4,6 +4,7 @@
 #include <string>
 #include <array>
 #include <list>
+#include <fstream>
 
 constexpr size_t obj_count = 20;
 uint32_t counter = 0;
@@ -40,14 +41,21 @@ void start()
 		
 }
 
+const wchar_t* widen(const char* txt)
+{
+	size_t size = lengthof(txt);
+	wchar_t* p = new wchar_t[size];
+	for (size_t i{ 0 }; i < size; i++) p[i] = (wchar_t)txt[i];
+	return p;
+}
+
 int main(int argc, const char** argv)
 {
-
-	r2d::ObjectComponent2D* p = new r2d::components::RectangleDrawer();
 
 	r2d::Engine::SetOnInitAction(start);
 	r2d::Engine::SetProcessAction(process);
 	r2d::Engine::Fire();
+
 	return EXIT_SUCCESS;
 }
 

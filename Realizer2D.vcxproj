@@ -277,6 +277,7 @@
     <ClInclude Include="src\CollisionShape2D.h" />
     <ClInclude Include="src\components\Drawers.h" />
     <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\File.h" />
     <ClInclude Include="src\global.h" />
     <ClInclude Include="src\Object2D.h" />
     <ClInclude Include="src\ObjectComponent2D.h" />
@@ -298,6 +299,7 @@
     <ClCompile Include="src\CollisionShape2D.cpp" />
     <ClCompile Include="src\components\Drawers.cpp" />
     <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\File.cpp" />
     <ClCompile Include="src\global.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">global.h</PrecompiledHeaderFile>

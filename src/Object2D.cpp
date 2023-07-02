@@ -22,6 +22,10 @@ void Object2D::update()
 	{
 		comp->update();
 	}
+	for (const std::shared_ptr<Object2D>& comp : m_children)
+	{
+		comp->update();
+	}
 }
 
 void Object2D::draw(sf::RenderTarget& target, sf::RenderStates state) const
@@ -31,10 +35,20 @@ void Object2D::draw(sf::RenderTarget& target, sf::RenderStates state) const
 	{
 		comp->draw(target, state);
 	}
+	for (const std::shared_ptr<Object2D>& comp : m_children)
+	{
+		comp->draw(target, state);
+	}
 }
 
 void Object2D::addChild(const std::shared_ptr<Object2D>& child)
 {
+	assert_msg(child->m_parent == nullptr, "Can't add an object to children when it has a parent");
+	child->m_parent = this;
+	if (m_insideScene)
+	{
+		child->onAddedToScene();
+	}
 	m_children.insert(child);
 }
 
@@ -59,6 +73,12 @@ bool Object2D::hasChild(const ObjID_t objid) const
 
 bool Object2D::removeChild(const std::shared_ptr<Object2D>& child)
 {
+	assert_msg(child->m_parent == this, "Can't remove an object from children when it's not a child");
+	child->m_parent = nullptr;
+	if (m_insideScene)
+	{
+		child->onRemovedFromScene();
+	}
 	return (bool)m_children.erase(child);
 }
 
@@ -105,6 +125,28 @@ bool Object2D::hasComponent(ObjectComponent2D* component) const
 const std::unordered_set<std::shared_ptr<ObjectComponent2D>>& Object2D::getComponents() const
 {
 	return m_components;
+}
+
+Vector2f_t Object2D::getGlobalPosition() const
+{
+	Vector2f_t position = getPosition();
+	Object2D* parent = m_parent;
+	while (parent)
+	{
+		position += parent->getPosition();
+		parent = parent->getParent();
+	}
+	return position;
+}
+
+Vector2f_t Object2D::getGlobalRotation() const
+{
+	return Vector2f_t();
+}
+
+Vector2f_t Object2D::getGlobalScale() const
+{
+	return Vector2f_t();
 }
 
 void Object2D::onPreDelete()

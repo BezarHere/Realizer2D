@@ -31,7 +31,7 @@ _R2D_NAMESPACE_START_
 #endif // !swap_ab
 
 #ifndef lengthof
-#define lengthof(a) ((size_t)sizeof(a) / (size_t)sizeof(*a))
+#define lengthof(a) (((size_t)sizeof(a)) / (size_t)sizeof(*a))
 #endif // !lengthof
 
 #ifdef HIGH_PRECI
@@ -49,6 +49,12 @@ inline void __doswap__(T& a, T& b)
 	a = b;
 	b = temp;
 }
+
+extern void _pr_error(std::string l);
+
+
+extern void _pr_warning(std::string l);
+
 
 
 // if cond is false, the msg will be printed and the program will halt
