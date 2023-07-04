@@ -6,39 +6,135 @@
 #include <list>
 #include <fstream>
 
-constexpr size_t obj_count = 20;
-uint32_t counter = 0;
-r2d::Object2D* objects[obj_count];
+using r2d::real_t;
 
-void process()
+void start_spaceships();
+void start_circles();
+void physics_circles(real_t delta);
+
+enum class DemoType
 {
-	counter++;
-	sf::Vector2f velocity;
-	r2d::Engine* engine = r2d::Engine::Singleton();
-	if (engine->isKeyPressed(r2d::Keyboard_t::W))
-		velocity.y -= 1.0f;
-	if (engine->isKeyPressed(r2d::Keyboard_t::S))
-		velocity.y += 1.0f;
-	if (engine->isKeyPressed(r2d::Keyboard_t::A))
-		velocity.x -= 1.0f;
-	if (engine->isKeyPressed(r2d::Keyboard_t::D))
-		velocity.x += 1.0f;
-	if (velocity.x != 0.0f || velocity.y != 0.0f)
+	None,
+	Spaceship,
+	Circles
+};
+
+constexpr DemoType demotype = DemoType::Spaceship;
+
+struct DemoData
+{
+	r2d::Action_t init;
+	r2d::ProcessFunction_t process;
+	r2d::DrawerFunction_t drawer;
+	r2d::PhysicsFunction_t physics;
+};
+
+const std::unordered_map<DemoType, DemoData> demos
+{
+	{ DemoType::None,      { nullptr, nullptr, nullptr, nullptr } },
+	{ DemoType::Spaceship, { start_spaceships, nullptr, nullptr, nullptr } },
+	{ DemoType::Circles,	 { start_circles, nullptr, nullptr, physics_circles } },
+};
+
+
+class Bullet : public r2d::Object2D
+{
+public:
+	Bullet(r2d::Vector2f_t ddir)
+		: dir(ddir)
 	{
-		r2d::VisualServer::Singleton()->moveView(velocity);
+
 	}
+
+	void update(real_t delta) override
+	{
+		move(dir * speed * delta);
+		time += delta;
+		if (time >= lifetime)
+		{
+			kill();
+		}
+	}
+
+	const real_t speed{ 100.0 };
+	r2d::Vector2f_t dir;
+	real_t time{};
+	const real_t lifetime{ 0.4 };
+};
+
+class Player : public r2d::Object2D
+{
+public:
+	void shoot()
+	{
+		Bullet* p = new Bullet(velocity.normalized());
+		p->setPosition(getGlobalPosition());
+		p->installComponent(new r2d::components::CircleDrawer(4.0f));
+		r2d::SceneTree::AddObject(p);
+	}
+
+	void update(real_t delta) override
+	{
+		r2d::Engine* engine = r2d::Engine::Singleton();
+		r2d::Vector2f_t v;
+		if (engine->isKeyPressed(r2d::Keyboard_t::W))
+			v.y -= 1.0f;
+		if (engine->isKeyPressed(r2d::Keyboard_t::S))
+			v.y += 1.0f;
+		if (engine->isKeyPressed(r2d::Keyboard_t::A))
+			v.x -= 1.0f;
+		if (engine->isKeyPressed(r2d::Keyboard_t::D))
+			v.x += 1.0f;
+		if (engine->isKeyJustPressed(r2d::Keyboard_t::Space))
+		{
+			shoot();
+		}
+		if (v.x != 0.0f || v.y != 0.0f)
+		{
+			velocity += v;
+		}
+			velocity *= real_t(0.94f);
+		move(velocity);
+		setRotation(rad2deg(velocity.angle()) + 90.0f);
+	}
+
+private:
+	r2d::Vector2f_t velocity;
+
+};
+
+
+Player* player;
+
+void start_spaceships()
+{
+	player = new Player();
+	player->setName("player");
+	r2d::Object2D *left_hand = new r2d::Object2D("left"), * right_hand = new r2d::Object2D("right");
+	left_hand->setPosition({ -32.0f, 16.0f });
+	right_hand->setPosition({ 32.0f, 16.0f });
+	left_hand->installComponent(new r2d::components::CircleDrawer(8.0f));
+	right_hand->installComponent(new r2d::components::CircleDrawer(8.0f));
+	player->addChild(left_hand);
+	player->addChild(right_hand);
+	player->installComponent(new r2d::components::CircleDrawer(16.0f, 24));
+	r2d::SceneTree::AddObject(player);
 }
 
-void start()
+r2d::Object2D* circle;
+r2d::components::CircleDrawer* drawer_cir = new r2d::components::CircleDrawer(128.0f, 8);
+void start_circles()
 {
-	//r2d::VisualServer::Singleton()->setViewCentered(false);
-		auto t = std::chrono::steady_clock::now();
-	for (int i = 0; i < obj_count; i++) {
-		objects[i] = new r2d::Object2D();
-		objects[i]->installComponent(new r2d::components::CircleDrawer(r2d::random::randf_range(16.0f, 32.0f), 80));
-		objects[i]->setPosition(r2d::random::randf_range(0.0f, 500.0f), r2d::random::randf_range(0.0f, 500.0f));
-	}
-		
+	circle = new r2d::Object2D();
+	circle->installComponent(drawer_cir);
+	r2d::SceneTree::AddObject(circle);
+}
+
+float cir_time;
+void physics_circles(real_t delta)
+{
+	cir_time += delta;
+	drawer_cir->setSegmentsCount(uint16_t(abs(sin(cir_time / 2.5f) * 32.0f)) + 16U);
 }
 
 const wchar_t* widen(const char* txt)
@@ -51,9 +147,11 @@ const wchar_t* widen(const char* txt)
 
 int main(int argc, const char** argv)
 {
-
-	r2d::Engine::SetOnInitAction(start);
-	r2d::Engine::SetProcessAction(process);
+	
+	r2d::Engine::SetOnInitAction(demos.at(demotype).init);
+	r2d::Engine::SetProcessAction(demos.at(demotype).process);
+	r2d::Engine::SetPhysicsProcessAction(demos.at(demotype).physics);
+	r2d::Engine::SetDrawingAction(demos.at(demotype).drawer);
 	r2d::Engine::Fire();
 
 	return EXIT_SUCCESS;

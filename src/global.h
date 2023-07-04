@@ -51,28 +51,27 @@ inline void __doswap__(T& a, T& b)
 }
 
 extern void _pr_error(std::string l);
-
-
 extern void _pr_warning(std::string l);
 
+// use as a predicate in 'std::find'
+template <typename _T>
+struct _Find_Value_In_Map
+{
+	template <typename _TK>
+	inline bool operator()(const std::pair<_TK, _T>& pair) const
+	{	return pair.second == value; }
 
+	_T value;
+};
+
+#define deg2rad(deg) (deg * (r2d::Pi / r2d::real_t(180.0)))
+#define rad2deg(rad) (rad * (r2d::real_t(180.0) / r2d::Pi))
 
 // if cond is false, the msg will be printed and the program will halt
 #define assert_msg(cond, msg) if (!(cond)) { std::cerr << "R2D-ERROR: " << __FILE__ << ':' << __LINE__ << "\n  " << (msg) << std::endl; throw std::runtime_error(#cond); }
 
 template <class T>
 inline consteval const char* this_name(T* value) { return typeid(*value).raw_name(); }
-
-template <typename T> struct std::hash<sf::Vector2<T>> {
-	inline size_t operator()(const sf::Vector2<T>& obj) const {
-		return combine_hash(std::hash<T>()(obj.x), std::hash<T>()(obj.y));
-	}
-};
-
-template <typename T> inline std::ostream& operator<<(std::ostream & stream, const sf::Vector2<T>&p) {
-	stream << '(' << p.x << ", " << p.y << ')';
-	return stream;
-}
 
 template <typename T> inline  std::ostream& operator<<(std::ostream & stream, const sf::Rect<T>&p) {
 	stream << '(' << p.left << ", " << p.top << ", " << p.width << ", " << p.height << ')';

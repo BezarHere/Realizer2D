@@ -5,28 +5,32 @@
 _R2D_NAMESPACE_START_
 
 // TODO: Create a scene data class
-
+class Engine;
 class SceneTree final
 {
+	friend class Engine;
 public:
-	friend class Object2D;
-	SceneTree();
+	SceneTree() = delete;
 
-	const std::unordered_set<std::shared_ptr<Object2D>>& getRootObjects() const { return m_rootObjects; }
+	static inline const std::unordered_set<Object2D*>& GetRootObjects() { return s_rootObjects; }
 
-	void addObject(std::shared_ptr<Object2D> object);
-	void removeObject(std::shared_ptr<Object2D> object);
-	// !FREES THE OBJECT POINTER!
-	void deleteObject(std::shared_ptr<Object2D> object);
+	static void AddObject(Object2D* object);
+	static void RemoveObject(Object2D* object);
+	// Removes the object from the scene tree and frees it
+	static void DeleteObject(Object2D* object);
+
+	static bool isRootObject(Object2D* object);
+	static bool isQueuedForDeletion(Object2D* object);
 
 	// !WILL CALL deleteObject ON EVERY OBJECT!
-	void clearScene();
+	static void ClearScene();
+private:
+	
+	static void FlushDeletionQueue();
 
 private:
-	ObjID_t m_objCounter = 0;
-	std::unordered_map<ObjID_t, Object2D*> m_objsRegistery{};
-
-	std::unordered_set<std::shared_ptr<Object2D>> m_rootObjects;
+	static inline std::unordered_set<Object2D*> s_rootObjects;
+	static inline std::unordered_set<Object2D*> s_deleteQueue;
 };
 
 _R2D_NAMESPACE_END_

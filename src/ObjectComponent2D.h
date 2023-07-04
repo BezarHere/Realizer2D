@@ -16,6 +16,8 @@ public:
 	inline void setActive(bool active) { m_active = active; }
 	inline bool isActive() const { return m_active; }
 
+	inline virtual uint32_t getId() const = 0;
+
 protected:
 	ObjectComponent2D(const uint64_t uid);
 	const uint64_t unique_id;

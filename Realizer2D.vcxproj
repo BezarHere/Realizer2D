@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>E:\Assets\visual studio\Realizer2D\deps;E:\Assets\visual studio\Realizer2D\src;$(IncludePath)</IncludePath>
     <LibraryPath>E:\Assets\visual studio\Realizer2D\deps\SFML\lib;$(LibraryPath)</LibraryPath>
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>E:\Assets\visual studio\Realizer2D\deps;E:\Assets\visual studio\Realizer2D\src;$(IncludePath)</IncludePath>
@@ -276,6 +276,7 @@
     <ClInclude Include="src\CollisionObject.h" />
     <ClInclude Include="src\CollisionShape2D.h" />
     <ClInclude Include="src\components\Drawers.h" />
+    <ClInclude Include="src\core\Errors.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\File.h" />
     <ClInclude Include="src\global.h" />

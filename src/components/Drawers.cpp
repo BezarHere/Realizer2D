@@ -72,6 +72,8 @@ namespace R2D::components
 
 	void components::CircleDrawer::setSegmentsCount(uint16_t segments_count)
 	{
+		if (segments_count == m_segmentsCount)
+			return;
 		m_segmentsCount = segments_count;
 		update_buffer();
 	}
@@ -104,7 +106,7 @@ namespace R2D::components
 			vertcies[i].color = clr;
 		}
 		
-		m_buffer.getBuffer()->create(m_segmentsCount);
+		m_buffer.getBuffer()->create(poly_size);
 		m_buffer.getBuffer()->update(vertcies);
 	}
 
@@ -115,20 +117,20 @@ namespace R2D::components
 
 	void CircleDrawer::createVertciesCache(uint16_t seg_count)
 	{
+		assert_msg(seg_count >= 3, "can't create a cricle polygon with less then 3 verts")
 		const Vector2f_t pivot { 1.0f, 0.0f };
-		real_t rot_step = Tau * Pi / (real_t)seg_count;
+		real_t rot_step = Tau / (real_t)(seg_count);
 		Vector2f_t rotator = pivot.rotated(rot_step);
 		Points_t vertices;
 
 
-		for (uint16_t i{ 0U }; i < seg_count; i++)
+		for (uint16_t i{ 0U }; i < seg_count - 2; i++)
 		{
 			vertices.push_back(pivot);
 			vertices.push_back(rotator);
 			rotator.rotate(rot_step);
 			vertices.push_back(rotator);
 		}
-		vertices.push_back(rotator);
 		s_vertexCache.insert_or_assign(seg_count, vertices);
 	}
 

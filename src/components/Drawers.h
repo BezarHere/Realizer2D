@@ -5,6 +5,8 @@
 _R2D_NAMESPACE_START_
 
 namespace components {
+	constexpr uint32_t _RectangleDrawer_id		= 0xf421c19d;
+	constexpr uint32_t _CircleDrawer_id				= 0x15c1a50a;
 	class Drawer : public ObjectComponent2D, public sf::Transformable
 	{
 	public:
@@ -27,6 +29,9 @@ namespace components {
 		inline Vector2f_t getSize() const { return m_size; }
 		void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
 		inline void setColor(sf::Color clr) override { color = clr; update_buffer(); }
+
+		inline uint32_t getId() const { return _RectangleDrawer_id; }
+
 	private:
 		void update_buffer();
 	private:
@@ -47,6 +52,8 @@ namespace components {
 		uint16_t getSegmentsCount() const { return m_segmentsCount; }
 		void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
 		inline void setColor(sf::Color clr) override { color = clr; update_buffer(); }
+
+		inline uint32_t getId() const { return _CircleDrawer_id; }
 	private:
 		void update_buffer();
 		static bool hasVertciesCacheSegCount(uint16_t seg_count);

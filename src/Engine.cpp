@@ -16,7 +16,6 @@ Engine::Engine()
 		"r2d::Engine can't be created by the user, use r2d::Engine::GetSingleton()"
 	);
 	random::randomize();
-	
 
 
 	for (int i = 0; i < Keyboard_t::KeyCount; i++)
@@ -49,9 +48,15 @@ void Engine::Fire()
 void Engine::RegisterObject(Object2D* object)
 {
 	assert_msg(object->getObjectID() == 0, "can't register a registered object");
-	ObjID_t current_id = m_objCounter++;
+	ObjID_t current_id = ++m_objCounter;
 	object->setObjectID(current_id);
 	m_objsRegistery.insert_or_assign(current_id, object);
+}
+
+void Engine::PopObject(Object2D* object)
+{
+	assert_msg(object->getObjectID() != 0, "can't pop an orphan object");
+	m_objsRegistery.erase(object->getObjectID());
 }
 
 void Engine::start()
@@ -79,14 +84,14 @@ void Engine::SetOnInitAction(Action_t action)
 	Engine::m_onInitAction = action;
 }
 
-void Engine::PopObject(Object2D* object)
-{
-	assert_msg(object->getObjectID() != 0, "can't pop an orphan object");
-	m_objsRegistery.erase(object->getObjectID());
-}
-
 void Engine::update()
 {
+	auto& root_objs = SceneTree::GetRootObjects();
+	for (Object2D *p : root_objs)
+	{
+		p->update(m_physicsDeltaTime);
+	}
+
 	if (Engine::m_processAction)
 		Engine::m_processAction();
 }
@@ -94,8 +99,7 @@ void Engine::update()
 void Engine::physics()
 {
 	if (Engine::m_physicsAction)
-		Engine::m_physicsAction(1.0f / 60.0f);
-
+		Engine::m_physicsAction(m_physicsDeltaTime);
 }
 
 void Engine::draw()
@@ -104,9 +108,10 @@ void Engine::draw()
 	m_worldRenderStates.transform = sf::Transform();
 	sf::RenderWindow& window = *VisualServer::GetWindow();
 
-	for (const auto& p : Engine::m_objsRegistery)
+	auto& pd = SceneTree::GetRootObjects();
+	for (auto* p : pd)
 	{
-		p.second->draw(window, m_worldRenderStates);
+		p->draw(window, m_worldRenderStates);
 	}
 
 	if (Engine::m_drawAction)
@@ -124,6 +129,7 @@ void Engine::finalize_program()
 		engine->m_mainLoopLocked,
 		"You should call 'start' on the main R2D engine signleton to start the program or the program will close immedialty"
 	);
+
 }
 
 void Engine::main_loop()
@@ -175,11 +181,13 @@ void Engine::main_loop()
 					break;
 			}
 		}
+		
 		update();
 		physics();
 		draw();
 
 		MainWindow->display();
+		SceneTree::FlushDeletionQueue();
 	}
 }
 

@@ -225,6 +225,17 @@ public:
 		T y; ///< Y coordinate of the vector
 };
 
+template <typename T> struct std::hash<sf::Vector2<T>> {
+inline size_t operator()(const sf::Vector2<T>& obj) const {
+		return combine_hash(std::hash<T>()(obj.x), std::hash<T>()(obj.y));
+	}
+};
+
+template <typename T> inline std::ostream& operator<<(std::ostream& stream, const sf::Vector2<T>& p) {
+	stream << '(' << p.x << ", " << p.y << ')';
+	return stream;
+}
+
 ////////////////////////////////////////////////////////////
 /// \relates Vector2
 /// \brief Overload of unary operator -

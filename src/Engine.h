@@ -43,6 +43,7 @@ public:
 public:
 	friend class VisualServer;
 	friend class PhysicsServer;
+	friend class Object2D;
 	Engine();
 
 	__forceinline static Engine* Singleton() { return Engine::s_instance; }
@@ -59,10 +60,6 @@ public:
 	static inline PhysicsFunction_t GetPhysicsProcessAction() { return m_physicsAction; }
 	static inline DrawerFunction_t GetDrawingAction() { return m_drawAction; }
 	static inline Action_t GetOnInitAction() { return m_onInitAction; }
-
-	void update();
-	void physics();
-	void draw();
 
 	void RegisterObject(Object2D* object);
 	void PopObject(Object2D* object);
@@ -82,7 +79,6 @@ public:
 	bool isKeyJustPressed(Keyboard_t::Key key) const;
 	bool isKeyJustReleased(Keyboard_t::Key key) const;
 
-
 private:
 	struct InputEvent
 	{
@@ -96,12 +92,13 @@ private:
 	void main_loop();
 	static void finalize_program();
 
+	void update();
+	void physics();
+	void draw();
+
 	void registerInput(const sf::Event::MouseButtonEvent& button_event, bool pressed);
 	void registerInput(const sf::Event::MouseWheelScrollEvent& scroll_event);
 	void registerInput(const sf::Event::KeyEvent& key_event, bool pressed);
-
-	const SceneTree& getTree() const { return m_sceneTree; }
-	SceneTree& getTree() { return m_sceneTree; }
 
 private:
 	static inline Engine* s_instance{nullptr};
@@ -128,9 +125,7 @@ private:
 	MouseWheelDelta_t m_mouseWheelH;
 
 	std::chrono::steady_clock::time_point m_lastFrameTime = std::chrono::high_resolution_clock::now();
-	float m_physicsDeltaTime = 1.0f / 60.0f;
-
-	SceneTree m_sceneTree;
+	real_t m_physicsDeltaTime = 1.0f / 60.0f;
 
 };
 
