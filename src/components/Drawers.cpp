@@ -143,5 +143,90 @@ namespace R2D::components
 		return s_vertexCache.at(seg_count);
 	}
 
+	SpriteDrawer::SpriteDrawer()
+	{
+		updateVertcies();
+	}
+
+	SpriteDrawer::SpriteDrawer(sf::Texture* texture)
+		: m_texture(texture)
+	{
+		updateVertcies();
+	}
+
+	void SpriteDrawer::setTexture(sf::Texture* texture)
+	{
+		m_texture = texture;
+		updateVertcies();
+	}
+
+	void SpriteDrawer::setFlipV(bool flipv)
+	{
+		if (flipv == m_flipV)
+			return;
+		m_flipV = flipv;
+		updateVertcies();
+	}
+
+	void SpriteDrawer::setFlipH(bool fliph)
+	{
+		if (fliph == m_flipH)
+			return;
+		m_flipH = fliph;
+		updateVertcies();
+	}
+
+	void SpriteDrawer::setStretchMode(SpriteStretchMode mode)
+	{
+		m_stretchMode = mode;
+		updateVertcies();
+	}
+
+	void SpriteDrawer::setSize(sf::Vector2f size)
+	{
+		if (size == m_size)
+			return;
+		m_size = size;
+		updateVertcies();
+	}
+
+	void SpriteDrawer::draw(sf::RenderTarget& target, sf::RenderStates state) const
+	{
+		if (m_flipH || m_flipV)
+		{
+			state.transform.scale(sf::Vector2f(m_flipH ? -1.0f : 1.0f, m_flipV ? -1.0f : 1.0f));
+		}
+		state.transform.combine(getTransform());
+		state.texture = m_texture;
+		target.draw(*(m_buffer.getBuffer()), state);
+	}
+
+	void SpriteDrawer::updateVertcies()
+	{
+		if (!m_texture)
+			return;
+
+		sf::Vector2f draw_size
+		{
+			m_stretchMode == SpriteStretchMode::Expand ? (sf::Vector2f)m_texture->getSize() : m_size
+		};
+
+		sf::Vector2f half_draw_size{ draw_size / 2.0f };
+
+		sf::Vertex vertcies[6]
+		{
+
+			sf::Vertex(-half_draw_size, color, {0.0f, 0.0f}),
+			sf::Vertex({half_draw_size.x, -half_draw_size.y}, color, {draw_size.x, 0.0f}),
+			sf::Vertex(half_draw_size, color, draw_size),
+
+			sf::Vertex(half_draw_size, color, draw_size),
+			sf::Vertex({-half_draw_size.x, half_draw_size.y}, color, {0.0f, draw_size.y}),
+			sf::Vertex(-half_draw_size, color, {0.0f, 0.0f}),
+
+		};
+		m_buffer.getBuffer()->update(vertcies);
+	}
+
 }
 

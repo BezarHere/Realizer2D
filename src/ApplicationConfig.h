@@ -1,15 +1,8 @@
 #pragma once
 #include "global.h"
+#include "core/StretchMode.h"
 
 _R2D_NAMESPACE_START_
-
-enum ViewStretchMode : uint8_t
-{
-	Expand,
-	KeepHorizontal,
-	KeepVertical,
-	Keep
-};
 
 struct ApplicationConfig
 {

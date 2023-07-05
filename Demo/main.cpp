@@ -108,17 +108,29 @@ Player* player;
 
 void start_spaceships()
 {
+	const std::string apps_img = "E:\\Assets\\visual studio\\Realizer2D\\apps.png";
 	player = new Player();
 	player->setName("player");
 	r2d::Object2D *left_hand = new r2d::Object2D("left"), * right_hand = new r2d::Object2D("right");
+	r2d::Object2D* apps_o = new r2d::Object2D("apps");
+
 	left_hand->setPosition({ -32.0f, 16.0f });
 	right_hand->setPosition({ 32.0f, 16.0f });
 	left_hand->installComponent(new r2d::components::CircleDrawer(8.0f));
 	right_hand->installComponent(new r2d::components::CircleDrawer(8.0f));
+
+	sf::Texture* p = new sf::Texture();
+	p->loadFromFile(apps_img);
+	apps_o->installComponent(new r2d::components::SpriteDrawer(p));
+
 	player->addChild(left_hand);
 	player->addChild(right_hand);
+	//player->addChild(apps_o);
+
 	player->installComponent(new r2d::components::CircleDrawer(16.0f, 24));
-	r2d::SceneTree::AddObject(player);
+
+	player->addToSceneTree();
+	apps_o->addToSceneTree();
 }
 
 r2d::Object2D* circle;

@@ -85,6 +85,8 @@ public:
 	Vector2f_t getGlobalRotation() const;
 	Vector2f_t getGlobalScale() const;
 
+	Error addToSceneTree();
+
 	inline Object2D* getParent() const { return m_parent; }
 
 	virtual void update(real_t delta);

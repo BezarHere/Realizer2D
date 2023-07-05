@@ -6,7 +6,6 @@ _R2D_NAMESPACE_START_
 
 void SceneTree::AddObject(Object2D* object)
 {
-	PEEK(object->m_parent);
 	object->_onAddedToScene();
 	s_rootObjects.insert(object);
 }

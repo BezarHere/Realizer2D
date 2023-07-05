@@ -62,7 +62,7 @@ void Object2D::update(real_t delta)
 {
 	for (ObjectComponent2D* comp : m_components)
 	{
-		comp->update();
+		comp->update(delta);
 	}
 	for (const auto& kv : m_children)
 	{
@@ -203,6 +203,17 @@ Vector2f_t Object2D::getGlobalRotation() const
 Vector2f_t Object2D::getGlobalScale() const
 {
 	return Vector2f_t();
+}
+
+Error Object2D::addToSceneTree()
+{
+	if (getParent())
+	{
+		_pr_error("can't add a low object (with a parent) to be a root object");
+		return Error::FAILED;
+	}
+	SceneTree::AddObject(this);
+	return Error::OK;
 }
 
 void Object2D::_onRemovedFromScene()
