@@ -1,7 +1,9 @@
 #pragma once
 #include <stack>
+#include <set>
 #include "global.h"
 #include "ApplicationConfig.h"
+#include "SceneTree.h"
 #include "components/Drawers.h"
 
 _R2D_NAMESPACE_START_
@@ -9,10 +11,11 @@ _R2D_NAMESPACE_START_
 class VisualServer final
 {
 public:
-
-
 	static inline VisualServer* Singleton() { return VisualServer::s_instance; }
 	static inline sf::RenderWindow* GetWindow() { return (sf::RenderWindow*)VisualServer::s_window; }
+
+	static void SetDrawingAction(DrawerFunction_t action);
+	static inline DrawerFunction_t GetDrawingAction() { return s_drawAction; }
 	
 	static void start();
 	
@@ -42,8 +45,6 @@ public:
 	}
 
 public:
-
-private:
 	class VSRenderWindow : public sf::RenderWindow
 	{
 	public:
@@ -57,8 +58,31 @@ private:
 		inline void onResize() override { VisualServer::Singleton()->screenResized(); }
 	};
 
-	VisualServer();
+	struct _ZHeightElement
+	{
 
+
+		inline bool operator==(const _ZHeightElement& other) const
+		{
+			return object == other.object;
+		}
+
+		inline bool operator<(const _ZHeightElement& other) const
+		{
+			return object->getZIndex() < other.object->getZIndex();
+		}
+
+		inline bool operator>(const _ZHeightElement& other) const
+		{
+			return object->getZIndex() > other.object->getZIndex();
+		}
+
+		Object2D* object;
+	};
+
+	
+
+	VisualServer();
 
 	void screenResized();
 
@@ -66,15 +90,26 @@ private:
 	static inline VisualServer* s_instance;
 	static inline VSRenderWindow* s_window;
 	static inline ApplicationConfig s_config;
+	static inline DrawerFunction_t s_drawAction;
 	const ApplicationConfig m_appliedConfig;
 	const ViewStretchMode m_viewStretchMode = ViewStretchMode::Expand;
 	sf::Vector2f m_viewZoom = sf::Vector2f(1.0f, 1.0f);
 	sf::Vector2f m_viewPosition = sf::Vector2f(0.0f, 0.0f);
 	// if false; the view will be anchored at the topleft
 	bool m_viewCentered = true;
+	sf::RenderStates m_worldRenderStates;
+	sf::RenderStates m_screenRenderStates;
 
 	// current way of handling z-index
 
 };
 
+
+
 _R2D_NAMESPACE_END_
+
+template <> struct std::hash<r2d::VisualServer::_ZHeightElement> {
+	inline size_t operator()(const r2d::VisualServer::_ZHeightElement& obj) const {
+		return (size_t)obj.object;
+	}
+};

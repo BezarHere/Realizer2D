@@ -103,38 +103,44 @@ private:
 
 };
 
-
+constexpr int ply_count = 10;
 Player* player;
 
 void start_spaceships()
 {
 	const std::string apps_img = "E:\\Assets\\visual studio\\Realizer2D\\apps.png";
-	player = new Player();
-	player->setName("player");
-	r2d::Object2D *left_hand = new r2d::Object2D("left"), * right_hand = new r2d::Object2D("right");
-	r2d::Object2D* apps_o = new r2d::Object2D("apps");
+	player = new Player[ply_count];
+	for (int i{ 0 }; i < ply_count; i++)
+	{
+		player[i] = Player();
+		player[i].setName("player");
+		r2d::Object2D* left_hand = new r2d::Object2D("left"), * right_hand = new r2d::Object2D("right");
 
-	left_hand->setPosition({ -32.0f, 16.0f });
-	right_hand->setPosition({ 32.0f, 16.0f });
-	left_hand->installComponent(new r2d::components::CircleDrawer(8.0f));
-	right_hand->installComponent(new r2d::components::CircleDrawer(8.0f));
+		left_hand->setPosition({ -32.0f, 16.0f });
+		right_hand->setPosition({ 32.0f, 16.0f });
+		left_hand->installComponent(new r2d::components::CircleDrawer(8.0f));
+		right_hand->installComponent(new r2d::components::CircleDrawer(8.0f));
 
-	sf::Texture* p = new sf::Texture();
-	p->loadFromFile(apps_img);
-	apps_o->installComponent(new r2d::components::SpriteDrawer(p));
+		r2d::Points_t points{
+			sf::Vector2f(-16.0f, 74.0f), sf::Vector2f(-22.6f, 31.0f), sf::Vector2f(4.4f, 4.0f), sf::Vector2f(31.5f, 31.0f)
+		};
 
-	player->addChild(left_hand);
-	player->addChild(right_hand);
-	//player->addChild(apps_o);
+		player[i].addChild(left_hand);
+		player[i].addChild(right_hand);
+		//player->addChild(apps_o);
 
-	player->installComponent(new r2d::components::CircleDrawer(16.0f, 24));
+		player[i].installComponent(new r2d::components::CircleDrawer(16.0f));
+		((r2d::components::CircleDrawer*)player[i].getComponent(typeid(r2d::components::CircleDrawer).hash_code()))->setColor({ 255, 155, 55 });
 
-	player->addToSceneTree();
-	apps_o->addToSceneTree();
+		player[i].setZIndex(1);
+
+		player[i].setPosition(r2d::random::randf_range(-512.0f, 512.0f), r2d::random::randf_range(-512.0f, 512.0f));
+		player[i].addToSceneTree();
+	}
 }
 
 r2d::Object2D* circle;
-r2d::components::CircleDrawer* drawer_cir = new r2d::components::CircleDrawer(128.0f, 8);
+r2d::components::CircleDrawer* drawer_cir = new r2d::components::CircleDrawer(128.0f);
 void start_circles()
 {
 	circle = new r2d::Object2D();
@@ -146,7 +152,6 @@ float cir_time;
 void physics_circles(real_t delta)
 {
 	cir_time += delta;
-	drawer_cir->setSegmentsCount(uint16_t(abs(sin(cir_time / 2.5f) * 32.0f)) + 16U);
 }
 
 const wchar_t* widen(const char* txt)
@@ -157,13 +162,14 @@ const wchar_t* widen(const char* txt)
 	return p;
 }
 
+
 int main(int argc, const char** argv)
 {
 	
 	r2d::Engine::SetOnInitAction(demos.at(demotype).init);
 	r2d::Engine::SetProcessAction(demos.at(demotype).process);
 	r2d::Engine::SetPhysicsProcessAction(demos.at(demotype).physics);
-	r2d::Engine::SetDrawingAction(demos.at(demotype).drawer);
+	r2d::VisualServer::SetDrawingAction(demos.at(demotype).drawer);
 	r2d::Engine::Fire();
 
 	return EXIT_SUCCESS;

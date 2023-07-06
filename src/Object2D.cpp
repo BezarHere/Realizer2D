@@ -152,6 +152,21 @@ Error Object2D::setName(const std::string& name)
 	return OK;
 }
 
+ObjectComponent2D* Object2D::getComponent(const size_t typehash) const
+{
+	const auto& iter = std::find_if(
+		m_components.begin(),
+		m_components.end(),
+		[typehash](ObjectComponent2D* ptr) { return ptr && typeid(*ptr).hash_code() == typehash; }
+	);
+	return iter == m_components.end() ? nullptr : *iter;
+}
+
+void Object2D::setZIndex(ZIndex_t zindex)
+{
+	m_zIndex = zindex;
+}
+
 void Object2D::installComponent(ObjectComponent2D* component)
 {
 	// can't install a component owned by another object (or reistall an already installed component)

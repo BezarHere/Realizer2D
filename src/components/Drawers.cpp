@@ -48,7 +48,6 @@ namespace R2D::components
 		m_buffer.getBuffer()->update(vertcies);
 	}
 
-
 	CircleDrawer::CircleDrawer()
 		: CircleDrawer(8.0f, 16U)
 	{
@@ -57,7 +56,7 @@ namespace R2D::components
 	CircleDrawer::CircleDrawer(real_t radius, uint16_t segments_count)
 		: m_radius(radius), m_segmentsCount(segments_count)
 	{
-		update_buffer();
+		updateState();
 	}
 
 	CircleDrawer::~CircleDrawer()
@@ -67,7 +66,7 @@ namespace R2D::components
 	void CircleDrawer::setRadius(real_t radius)
 	{
 		m_radius = radius;
-		update_buffer();
+		updateState();
 	}
 
 	void components::CircleDrawer::setSegmentsCount(uint16_t segments_count)
@@ -75,7 +74,7 @@ namespace R2D::components
 		if (segments_count == m_segmentsCount)
 			return;
 		m_segmentsCount = segments_count;
-		update_buffer();
+		updateState();
 	}
 
 	void CircleDrawer::draw(sf::RenderTarget& target, sf::RenderStates state) const
@@ -84,7 +83,7 @@ namespace R2D::components
 		target.draw(*(m_buffer.getBuffer()), state);
 	}
 
-	void CircleDrawer::update_buffer()
+	void CircleDrawer::updateState()
 	{
 		if (m_segmentsCount < 3)
 		{
@@ -105,7 +104,7 @@ namespace R2D::components
 			vertcies[i].position = base_poly[i] * m_radius;
 			vertcies[i].color = clr;
 		}
-		
+
 		m_buffer.getBuffer()->create(poly_size);
 		m_buffer.getBuffer()->update(vertcies);
 	}
@@ -118,7 +117,9 @@ namespace R2D::components
 	void CircleDrawer::createVertciesCache(uint16_t seg_count)
 	{
 		assert_msg(seg_count >= 3, "can't create a cricle polygon with less then 3 verts")
-		const Vector2f_t pivot { 1.0f, 0.0f };
+			const Vector2f_t pivot {
+			1.0f, 0.0f
+		};
 		real_t rot_step = Tau / (real_t)(seg_count);
 		Vector2f_t rotator = pivot.rotated(rot_step);
 		Points_t vertices;
@@ -190,6 +191,11 @@ namespace R2D::components
 		updateVertcies();
 	}
 
+	void SpriteDrawer::updateTexture(sf::Texture* texture)
+	{
+		m_texture = texture;
+	}
+
 	void SpriteDrawer::draw(sf::RenderTarget& target, sf::RenderStates state) const
 	{
 		if (m_flipH || m_flipV)
@@ -210,12 +216,10 @@ namespace R2D::components
 		{
 			m_stretchMode == SpriteStretchMode::Expand ? (sf::Vector2f)m_texture->getSize() : m_size
 		};
-
 		sf::Vector2f half_draw_size{ draw_size / 2.0f };
 
 		sf::Vertex vertcies[6]
 		{
-
 			sf::Vertex(-half_draw_size, color, {0.0f, 0.0f}),
 			sf::Vertex({half_draw_size.x, -half_draw_size.y}, color, {draw_size.x, 0.0f}),
 			sf::Vertex(half_draw_size, color, draw_size),
@@ -223,9 +227,64 @@ namespace R2D::components
 			sf::Vertex(half_draw_size, color, draw_size),
 			sf::Vertex({-half_draw_size.x, half_draw_size.y}, color, {0.0f, draw_size.y}),
 			sf::Vertex(-half_draw_size, color, {0.0f, 0.0f}),
-
 		};
 		m_buffer.getBuffer()->update(vertcies);
+	}
+
+	PolygonDrawer::PolygonDrawer()
+	{
+		updateVertcies();
+	}
+
+	PolygonDrawer::PolygonDrawer(Points_t points)
+		: m_points{points}
+	{
+		updateVertcies();
+	}
+
+	PolygonDrawer::~PolygonDrawer()
+	{
+	}
+
+	void PolygonDrawer::draw(sf::RenderTarget& target, sf::RenderStates state) const
+	{
+		state.transform.combine(getTransform());
+		target.draw(*(m_buffer.getBuffer()), state);
+	}
+
+	void PolygonDrawer::setPoints(const Points_t& points)
+	{
+		m_points = points;
+		updateVertcies();
+	}
+
+	void PolygonDrawer::updateVertcies()
+	{
+		size_t points_count = m_points.size();
+		if (points_count < 3)
+		{
+			m_buffer.getBuffer()->create(0);
+			return;
+		}
+
+		size_t vertcies_count = (points_count - 2) * 3;
+		sf::Vertex* vertcies = new sf::Vertex[vertcies_count];
+
+		for (size_t i{ 0 }; i < (points_count - 2); i++)
+		{
+			size_t i3 = i * 3;
+			vertcies[i3].position = m_points[0];
+			vertcies[i3].color = color;
+			vertcies[i3 + 1].position = m_points[i + 1];
+			vertcies[i3 + 1].color = color;
+			vertcies[i3 + 2].position = m_points[i + 2];
+			vertcies[i3 + 2].color = color;
+		}
+		
+		m_buffer.getBuffer()->create(vertcies_count);
+		m_buffer.getBuffer()->update(vertcies);
+
+		delete[] vertcies;
 	}
 
 }

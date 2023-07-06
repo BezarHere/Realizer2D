@@ -15,6 +15,7 @@
 #include <unordered_map>
 
 #include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
 
 _R2D_NAMESPACE_START_
 
@@ -30,15 +31,14 @@ _R2D_NAMESPACE_START_
 #define doswap(a, b) __doswap__(a, b)
 #endif // !swap_ab
 
-#ifndef lengthof
-#define lengthof(a) (((size_t)sizeof(a)) / (size_t)sizeof(*a))
-#endif // !lengthof
-
 #ifdef HIGH_PRECI
 typedef double real_t;
 #else
 typedef float real_t;
 #endif // HIGH_PRECI
+
+template <typename _T>
+extern constexpr size_t lengthof(const _T* const x);
 
 typedef sf::Vector2<real_t> Vector2f_t;
 
@@ -93,7 +93,8 @@ typedef void (*Action_t)();
 typedef void (*DrawerFunction_t)(sf::RenderTarget& target, sf::RenderStates state);
 typedef Action_t ProcessFunction_t;
 typedef void (*PhysicsFunction_t)(float delta);
-typedef std::vector<sf::Vector2f> Points_t;
+
+typedef std::vector<sf::Vector2<real_t>> Points_t;
 
 extern std::string MyPath;
 
@@ -151,6 +152,11 @@ template <class T> inline sf::Rect<T> operator|(const sf::Rect<T>& left, const s
 		position.x, position.y,
 		(left.left + left.width > right.left + right.width ? left.left + left.width : right.left + right.width) - position.x,
 		(left.top + left.height > right.top + right.height ? left.top + left.height : right.top + right.height) - position.y);
+}
+
+inline constexpr size_t combine_hash(size_t lhs, size_t rhs) {
+	lhs ^= rhs + 0x9e3779b9 + (lhs << 6) + (lhs >> 2);
+	return lhs;
 }
 
 

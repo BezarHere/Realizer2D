@@ -10,8 +10,32 @@ VisualServer::VisualServer()
 	screenResized();
 }
 
+void VisualServer::SetDrawingAction(DrawerFunction_t action)
+{
+	s_drawAction = action;
+}
+
 void VisualServer::update()
 {
+	const auto& objs = SceneTree::GetRootObjects();
+	std::vector<_ZHeightElement> obj_z_order;
+	sf::RenderWindow& window = *VisualServer::GetWindow();
+
+	for (Object2D* p : objs)
+	{
+		obj_z_order.push_back(_ZHeightElement(p));
+	}
+
+	std::sort(obj_z_order.begin(), obj_z_order.end());
+
+	for (const _ZHeightElement& p : obj_z_order)
+	{
+		p.object->draw(window, m_worldRenderStates);
+	}
+
+
+	if (s_drawAction)
+		s_drawAction(window, m_worldRenderStates);
 }
 
 void VisualServer::updateView()
