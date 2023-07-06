@@ -15,6 +15,46 @@ File::File(const std::string& path, const OpenMode mode)
 	recalculate();
 }
 
+inline bool File::isForReading() const
+{
+	return m_mode & 1;
+}
+
+inline bool File::isForWriting() const
+{
+	return !(m_mode & 1);
+}
+
+inline const std::string& File::getPath() const
+{
+	return m_path;
+}
+
+inline size_t File::size() const
+{
+	return m_size;
+}
+
+inline size_t File::space() const
+{
+	return m_space;
+}
+
+inline bool File::good() const
+{
+	return m_stream.good();
+}
+
+inline bool File::fail() const
+{
+	return m_stream.fail();
+}
+
+inline std::ios::iostate File::state() const
+{
+	return m_stream.rdstate();
+}
+
 void File::write(const char* const buffer, size_t from, size_t to)
 {
 	if (isForReading() || m_stream.fail())
@@ -28,8 +68,7 @@ void File::write(const char* const buffer, size_t from, size_t to)
 	// remove terminating null
 	if (m_mode == WriteAscii)
 	{
-		w_length--;
-		if (w_length <= 0) return;
+		if (--w_length <= 0) return;
 	}
 
 	m_stream.write(buffer, w_length);
@@ -71,6 +110,36 @@ char* File::read(size_t len)
 
 	recalculate();
 	return value;
+}
+
+void File::flush()
+{
+	m_stream.flush();
+}
+
+void File::close()
+{
+	m_stream.close();
+}
+
+bool File::valid() const
+{
+	return !fail() && m_stream.is_open();
+}
+
+bool File::canRead() const
+{
+	return isForReading() && !fail() && m_stream.is_open();
+}
+
+bool File::canWrite() const
+{
+	return isForWriting() && !fail() && m_stream.is_open();
+}
+
+File::operator bool() const
+{
+	return valid();
 }
 
 void File::recalculate()

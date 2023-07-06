@@ -4,11 +4,11 @@
 _R2D_NAMESPACE_START_
 
 class Object2D;
-class ObjectComponent2D
+class ObjectComponent
 {
 	friend class Object2D;
 public:
-	ObjectComponent2D();
+	ObjectComponent();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates state) const {}
 
 	inline const Object2D* getObject() const { return m_obj; }
@@ -20,7 +20,7 @@ public:
 protected:
 	virtual void update(real_t delta) {}
 
-	ObjectComponent2D(const uint64_t uid);
+	ObjectComponent(const uint64_t uid);
 	const uint64_t unique_id;
 private:
 	bool m_active;

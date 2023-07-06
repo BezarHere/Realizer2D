@@ -53,12 +53,10 @@ public:
 
 	static void SetProcessAction(ProcessFunction_t action);
 	static void SetPhysicsProcessAction(PhysicsFunction_t action);
-	static void SetDrawingAction(DrawerFunction_t action);
 	static void SetOnInitAction(Action_t action);
 
 	static inline ProcessFunction_t GetProcessAction() { return m_processAction; }
 	static inline PhysicsFunction_t GetPhysicsProcessAction() { return m_physicsAction; }
-	static inline DrawerFunction_t GetDrawingAction() { return m_drawAction; }
 	static inline Action_t GetOnInitAction() { return m_onInitAction; }
 
 	void RegisterObject(Object2D* object);
@@ -107,14 +105,11 @@ private:
 
 	static inline ProcessFunction_t m_processAction;
 	static inline PhysicsFunction_t m_physicsAction;
-	static inline DrawerFunction_t m_drawAction;
 	static inline Action_t m_onInitAction;
 
 	uint32_t m_currentFrame;
 
 	bool m_mainLoopLocked = false;
-	sf::RenderStates m_worldRenderStates;
-	sf::RenderStates m_screenRenderStates;
 
 	sf::Vector2f m_mousePosition;
 	sf::Vector2f m_lastMousePosition;

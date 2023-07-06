@@ -1,13 +1,12 @@
 #pragma once
-#include "../global.h"
-#include "../ObjectComponent2D.h"
+#include "base.h"
 #include "../utils/VertexBufferWraper.h"
 
 _R2D_NAMESPACE_START_
 
 namespace components {
 
-	class Timer : public ObjectComponent2D
+	class Timer : public ObjectComponent
 	{
 	public:
 		Timer(real_t time);
@@ -33,11 +32,11 @@ namespace components {
 		void update(real_t delta) override;
 
 	private:
-		Action_t m_timeoutAction;
-		real_t m_timeLeft;
-		real_t m_waitTime;
-		bool m_oneShot;
-		bool m_paused;
+		Action_t m_timeoutAction{ nullptr };
+		real_t m_timeLeft{ 0.0f };
+		real_t m_waitTime{ 1.0f };
+		bool m_oneShot{ false };
+		bool m_paused{ true };
 	};
 
 }

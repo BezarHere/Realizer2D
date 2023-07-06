@@ -29,17 +29,19 @@ public:
 	File() = delete;
 	File(const std::string& path, const OpenMode mode = OpenMode::ReadAscii);
 
-	inline bool isForReading() const { return (m_mode & 1); }
-	inline bool isForWriting() const { return !(m_mode & 1); }
-	inline const std::string& getPath() const { return m_path; }
-	inline size_t size() const { return m_size; }
-	inline size_t space() const { return m_space; }
+	inline bool isForReading() const;
+	inline bool isForWriting() const;
+	inline const std::string& getPath() const;
+	inline size_t size() const;
+	inline size_t space() const;
 
-	inline bool good() const { return m_stream.good(); }
+	inline bool good() const;
+
 	// if fail is true, all reading and writing will fail
 	// failing happens if the path is invalid or the program can't access the file ( former is more propeple )
-	inline bool fail() const { return m_stream.fail(); }
-	inline std::ios::iostate state() const { return m_stream.rdstate(); }
+	inline bool fail() const;
+
+	inline std::ios::iostate state() const;
 
 	// brief writes the buffer to the file
 	// - if 'to' is set to a value smaller or equal to the paramter 'from' or remained the default value (0)
@@ -50,6 +52,20 @@ public:
 	// otherwise the rest of the file will be returned ( Not recomended )
 	virtual char* read(size_t len = 0U);
 
+	// flushes the buffer to the file system, called automaticly on closing
+	void flush();
+
+	// closes and flushes, making the file accessible for writing by other processes
+	void close();
+
+	bool valid() const;
+
+	bool canRead() const;
+	bool canWrite() const;
+	
+	// [syntax sugar] same as valid
+	// if the stream is valid this will return true, otherwise false
+	operator bool() const;
 
 private:
 	void recalculate();

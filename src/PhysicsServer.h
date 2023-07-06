@@ -5,9 +5,9 @@ _R2D_NAMESPACE_START_
 
 class PhysicsServer
 {
+public:
 
 private:
-
 	
 };
 

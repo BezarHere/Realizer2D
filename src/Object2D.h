@@ -72,7 +72,10 @@ public:
 	inline ObjID_t getObjectID() const { return m_objId; }
 	inline void setObjectID(ObjID_t new_oid) { assert(m_objId == 0); m_objId = new_oid; }
 
-	inline void setZIndex(ZIndex_t zindex) { m_zIndex = zindex; }
+	// returns first component of with typehash
+	ObjectComponent2D* getComponent(const size_t typehash) const;
+
+	void setZIndex(ZIndex_t zindex);
 	inline ZIndex_t getZIndex() { return m_zIndex; }
 
 	virtual void installComponent(ObjectComponent2D* component);
@@ -81,9 +84,9 @@ public:
 	virtual bool hasComponent(ObjectComponent2D* component) const;
 	virtual const std::unordered_set<ObjectComponent2D*>& getComponents() const;
 
-	Vector2f_t getGlobalPosition() const;
-	Vector2f_t getGlobalRotation() const;
-	Vector2f_t getGlobalScale() const;
+	Vector2 getGlobalPosition() const;
+	Vector2 getGlobalRotation() const;
+	Vector2 getGlobalScale() const;
 
 	Error addToSceneTree();
 

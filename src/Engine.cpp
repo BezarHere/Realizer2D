@@ -28,7 +28,7 @@ Engine::Engine()
 		m_mouseInput[(Mouse_t::Button)i];
 	}
 
-	PEEK((sizeof(Object2D) + sizeof(components::RectangleDrawer)) * 1000);
+	
 	//main_loop();
 	atexit(Engine::finalize_program);
 }
@@ -74,11 +74,6 @@ void Engine::SetPhysicsProcessAction(PhysicsFunction_t action)
 	Engine::m_physicsAction = action;
 }
 
-void Engine::SetDrawingAction(DrawerFunction_t action)
-{
-	Engine::m_drawAction = action;
-}
-
 void Engine::SetOnInitAction(Action_t action)
 {
 	Engine::m_onInitAction = action;
@@ -105,17 +100,8 @@ void Engine::physics()
 void Engine::draw()
 {
 	VisualServer::Singleton()->update();
-	m_worldRenderStates.transform = sf::Transform();
-	sf::RenderWindow& window = *VisualServer::GetWindow();
 
-	auto& pd = SceneTree::GetRootObjects();
-	for (auto* p : pd)
-	{
-		p->draw(window, m_worldRenderStates);
-	}
-
-	if (Engine::m_drawAction)
-		Engine::m_drawAction(window, m_worldRenderStates);
+	
 }
 
 void Engine::finalize_program()
@@ -260,7 +246,7 @@ void Engine::registerInput(const sf::Event::MouseWheelScrollEvent& scroll_event)
 
 void Engine::registerInput(const sf::Event::KeyEvent& key_event, bool pressed)
 {
-	InputEvent& input_event = m_keyboardInput[key_event.code];
+	InputEvent& input_event = m_keyboardInput.at(key_event.code);
 	input_event.pressed = pressed;
 	input_event.frame = m_currentFrame;
 }

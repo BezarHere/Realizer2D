@@ -54,6 +54,7 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="cpp.hint" />
+    <None Include="shaders\circle.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\global.h">
@@ -413,6 +414,15 @@
     <ClInclude Include="src\core\StretchMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CollisionShape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\global.cpp">
@@ -452,6 +462,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\components\Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\Physics.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CollisionShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

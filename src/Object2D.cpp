@@ -152,6 +152,21 @@ Error Object2D::setName(const std::string& name)
 	return OK;
 }
 
+ObjectComponent2D* Object2D::getComponent(const size_t typehash) const
+{
+	const auto& iter = std::find_if(
+		m_components.begin(),
+		m_components.end(),
+		[typehash](ObjectComponent2D* ptr) { return ptr && typeid(*ptr).hash_code() == typehash; }
+	);
+	return iter == m_components.end() ? nullptr : *iter;
+}
+
+void Object2D::setZIndex(ZIndex_t zindex)
+{
+	m_zIndex = zindex;
+}
+
 void Object2D::installComponent(ObjectComponent2D* component)
 {
 	// can't install a component owned by another object (or reistall an already installed component)
@@ -183,9 +198,9 @@ const std::unordered_set<ObjectComponent2D*>& Object2D::getComponents() const
 	return m_components;
 }
 
-Vector2f_t Object2D::getGlobalPosition() const
+Vector2 Object2D::getGlobalPosition() const
 {
-	Vector2f_t position = getPosition();
+	Vector2 position = getPosition();
 	Object2D* parent = m_parent;
 	while (parent)
 	{
@@ -195,14 +210,14 @@ Vector2f_t Object2D::getGlobalPosition() const
 	return position;
 }
 
-Vector2f_t Object2D::getGlobalRotation() const
+Vector2 Object2D::getGlobalRotation() const
 {
-	return Vector2f_t();
+	return Vector2();
 }
 
-Vector2f_t Object2D::getGlobalScale() const
+Vector2 Object2D::getGlobalScale() const
 {
-	return Vector2f_t();
+	return Vector2();
 }
 
 Error Object2D::addToSceneTree()
