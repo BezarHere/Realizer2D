@@ -44,6 +44,7 @@ typedef sf::FloatRect Rectf;
 typedef sf::IntRect Recti;
 
 typedef sf::Vector2<real_t> Vector2;
+typedef sf::Vector2<int> Point2;
 
 template <class T>
 inline void __doswap__(T& a, T& b)

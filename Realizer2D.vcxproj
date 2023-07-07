@@ -312,7 +312,6 @@
     <ClInclude Include="deps\SFML\Window\WindowHandle.hpp" />
     <ClInclude Include="deps\SFML\Window\WindowStyle.hpp" />
     <ClInclude Include="include\Realizer2D.h" />
-    <ClInclude Include="src\CollisionObject.h" />
     <ClInclude Include="src\CollisionShape.h" />
     <ClInclude Include="src\CollisionShape2D.h" />
     <ClInclude Include="src\components\base.h" />
@@ -355,6 +354,7 @@
     <ClCompile Include="src\Object2D.cpp" />
     <ClCompile Include="src\ObjectComponent.cpp" />
     <ClCompile Include="src\ObjectComponent2D.cpp" />
+    <ClCompile Include="src\PhysicsServer.cpp" />
     <ClCompile Include="src\SceneTree.cpp" />
     <ClCompile Include="src\utils\VertexBufferWraper.cpp" />
     <ClCompile Include="src\VisualServer.cpp" />
