@@ -4,10 +4,6 @@
 #include <istream>
 #include <ostream>
 
-// why the fuck am i creating this while the main rendering shit is still a mess
-// this shitty shit can't handle fucking unicode wtf
-// can somebody do something about this mess, thanks!
-
 _R2D_NAMESPACE_START_
 
 class File

@@ -348,6 +348,9 @@ public:
     ////////////////////////////////////////////////////////////
     Transform& scale(const Vector2f& factors, const Vector2f& center);
 
+    inline float getRotation() const { return std::atan2(m_matrix[1], m_matrix[0]); }
+    inline Vector2f getOrigin() const { return Vector2f(m_matrix[12], m_matrix[13]); }
+
     ////////////////////////////////////////////////////////////
     // Static member data
     ////////////////////////////////////////////////////////////

@@ -1,6 +1,6 @@
 #pragma once
 #include "global.h"
-#include "Object2D.h"
+#include "Object.h"
 
 _R2D_NAMESPACE_START_
 

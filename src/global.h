@@ -14,8 +14,12 @@
 #include <assert.h>
 #include <unordered_map>
 
+#include "../include/prefix.h"
+
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
+
+
 
 _R2D_NAMESPACE_START_
 
@@ -38,12 +42,24 @@ typedef float real_t;
 #endif // HIGH_PRECI
 
 template <typename _T>
-extern constexpr size_t lengthof(const _T* const x);
+inline constexpr size_t lengthof(const _T* const x)
+{
+	return ((size_t)sizeof(x)) / ((size_t)sizeof(*x));
+}
 
 typedef sf::FloatRect Rectf;
 typedef sf::IntRect Recti;
 
 typedef sf::Vector2<real_t> Vector2;
+typedef sf::Vector2<int> Point2;
+typedef sf::Transform Transform2D;
+
+typedef void (*Action_t)();
+typedef void (*DrawerFunction_t)(sf::RenderTarget& target, sf::RenderStates state);
+typedef Action_t ProcessFunction_t;
+typedef void (*PhysicsFunction_t)(float delta);
+
+typedef std::vector<Vector2> Points_t;
 
 template <class T>
 inline void __doswap__(T& a, T& b)
@@ -76,11 +92,6 @@ struct _Find_Value_In_Map
 template <class T>
 inline consteval const char* this_name(T* value) { return typeid(*value).raw_name(); }
 
-template <typename T> inline  std::ostream& operator<<(std::ostream & stream, const sf::Rect<T>&p) {
-	stream << '(' << p.left << ", " << p.top << ", " << p.width << ", " << p.height << ')';
-	return stream;
-}
-
 inline std::ostream& operator<<(std::ostream & stream, const sf::Color & p) {
 	stream << '(' << (int)p.r << ", " << (int)p.g << ", " << (int)p.b << ", " << (int)p.a << ')';
 	return stream;
@@ -90,14 +101,6 @@ template <class T>
 inline std::string to_string(sf::Vector2<T> vec) {
 	return "(" + to_string(vec.x) + ", " + to_string(vec.y) + ")";
 }
-
-
-typedef void (*Action_t)();
-typedef void (*DrawerFunction_t)(sf::RenderTarget& target, sf::RenderStates state);
-typedef Action_t ProcessFunction_t;
-typedef void (*PhysicsFunction_t)(float delta);
-
-typedef std::vector<sf::Vector2<real_t>> Points_t;
 
 extern std::string MyPath;
 

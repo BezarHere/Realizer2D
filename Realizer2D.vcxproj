@@ -99,11 +99,13 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>global.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>flac.lib;freetype.lib;ogg.lib;openal32.lib;sfml-main.lib;sfml-main-d.lib;sfml-audio-d.lib;sfml-audio-s-d.lib;sfml-audio-s.lib;sfml-audio.lib;sfml-graphics-d.lib;sfml-graphics-s-d.lib;sfml-graphics-s.lib;sfml-graphics.lib;sfml-network-d.lib;sfml-network-s-d.lib;sfml-network-s.lib;sfml-network.lib;sfml-system-d.lib;sfml-system-s-d.lib;sfml-system-s.lib;sfml-system.lib;sfml-window-d.lib;sfml-window-s-d.lib;sfml-window-s.lib;sfml-window.lib;vorbis.lib;vorbisenc.lib;vorbisfile.lib;$(CoreLibraryDependencies);$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>flac.lib;freetype.lib;ogg.lib;openal32.lib;sfml-main.lib;sfml-main-d.lib;sfml-audio-d.lib;sfml-audio.lib;sfml-graphics-d.lib;sfml-graphics.lib;sfml-network-d.lib;sfml-network.lib;sfml-system-d.lib;sfml-system.lib;sfml-window-d.lib;sfml-window.lib;vorbis.lib;vorbisenc.lib;vorbisfile.lib;$(CoreLibraryDependencies);$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -152,7 +154,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>flac.lib;freetype.lib;ogg.lib;openal32.lib;sfml-main.lib;sfml-main-d.lib;sfml-audio-d.lib;sfml-audio-s-d.lib;sfml-audio-s.lib;sfml-audio.lib;sfml-graphics-d.lib;sfml-graphics-s-d.lib;sfml-graphics-s.lib;sfml-graphics.lib;sfml-network-d.lib;sfml-network-s-d.lib;sfml-network-s.lib;sfml-network.lib;sfml-system-d.lib;sfml-system-s-d.lib;sfml-system-s.lib;sfml-system.lib;sfml-window-d.lib;sfml-window-s-d.lib;sfml-window-s.lib;sfml-window.lib;vorbis.lib;vorbisenc.lib;vorbisfile.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>flac.lib;freetype.lib;ogg.lib;openal32.lib;sfml-main.lib;sfml-main-d.lib;sfml-audio-d.lib;sfml-audio.lib;sfml-graphics-d.lib;sfml-graphics.lib;sfml-network-d.lib;sfml-network.lib;sfml-system-d.lib;sfml-system.lib;sfml-window-d.lib;sfml-window.lib;vorbis.lib;vorbisenc.lib;vorbisfile.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -311,10 +313,9 @@
     <ClInclude Include="deps\SFML\Window\Window.hpp" />
     <ClInclude Include="deps\SFML\Window\WindowHandle.hpp" />
     <ClInclude Include="deps\SFML\Window\WindowStyle.hpp" />
+    <ClInclude Include="include\prefix.h" />
     <ClInclude Include="include\Realizer2D.h" />
-    <ClInclude Include="src\CollisionObject.h" />
-    <ClInclude Include="src\CollisionShape.h" />
-    <ClInclude Include="src\CollisionShape2D.h" />
+    <ClInclude Include="src\Collidors.h" />
     <ClInclude Include="src\components\base.h" />
     <ClInclude Include="src\components\Drawers.h" />
     <ClInclude Include="src\components\Timer.h" />
@@ -323,13 +324,14 @@
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\File.h" />
     <ClInclude Include="src\global.h" />
-    <ClInclude Include="src\Object2D.h" />
+    <ClInclude Include="src\Object.h" />
     <ClInclude Include="src\ObjectComponent.h" />
     <ClInclude Include="src\ObjectComponent2D.h" />
     <ClInclude Include="src\OS.h" />
     <ClInclude Include="src\PhysicsServer.h" />
     <ClInclude Include="src\random.h" />
     <ClInclude Include="src\SceneTree.h" />
+    <ClInclude Include="src\Solver.h" />
     <ClInclude Include="src\utils\CacheGuard.hpp" />
     <ClInclude Include="src\utils\TreeStructure.h" />
     <ClInclude Include="src\utils\VertexBufferWraper.h" />
@@ -340,10 +342,10 @@
     <ClCompile Include="Demo\main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\ApplicationConfig.h" />
-    <ClCompile Include="src\CollisionShape.cpp" />
-    <ClCompile Include="src\CollisionShape2D.cpp" />
+    <ClCompile Include="src\Application.h" />
+    <ClCompile Include="src\Collidors.cpp" />
     <ClCompile Include="src\components\Drawers.cpp" />
+    <ClCompile Include="src\components\Physics.cpp" />
     <ClCompile Include="src\components\Physics.h" />
     <ClCompile Include="src\components\Timer.cpp" />
     <ClCompile Include="src\Engine.cpp" />
@@ -352,10 +354,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">global.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="src\Object2D.cpp" />
+    <ClCompile Include="src\Object.cpp" />
     <ClCompile Include="src\ObjectComponent.cpp" />
-    <ClCompile Include="src\ObjectComponent2D.cpp" />
+    <ClCompile Include="src\PhysicsServer.cpp" />
     <ClCompile Include="src\SceneTree.cpp" />
+    <ClCompile Include="src\Solver.cpp" />
     <ClCompile Include="src\utils\VertexBufferWraper.cpp" />
     <ClCompile Include="src\VisualServer.cpp" />
   </ItemGroup>

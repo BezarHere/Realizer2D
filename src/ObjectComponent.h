@@ -11,20 +11,26 @@ public:
 	ObjectComponent();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates state) const {}
 
-	inline const Object2D* getObject() const { return m_obj; }
-	inline void setActive(bool active) { m_active = active; }
-	inline bool isActive() const { return m_active; }
+	inline const Object2D* getOwner() const { return m_owner; }
 
-	inline virtual uint32_t getId() const = 0;
+	virtual void setActive(bool active);
+	inline bool isActive() const { return m_active; }
 
 protected:
 	virtual void update(real_t delta) {}
 
-	ObjectComponent(const uint64_t uid);
-	const uint64_t unique_id;
+	// called if the owner is deactivated globaly
+	virtual void ownerVisiblityChangeCallback();
+
+	// called BEFORE the owner is detached
+	virtual void ownerDetachedCallback();
+
+	// called AFTER the owner is attached
+	virtual void ownerAtachedCallback();
+
 private:
-	bool m_active;
-	Object2D* m_obj;
+	bool m_active{ true };
+	Object2D* m_owner{ nullptr };
 };
 
 _R2D_NAMESPACE_END_

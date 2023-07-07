@@ -99,8 +99,23 @@ bool Rect<T>::contains(const Vector2<T>& point) const
 template <typename T>
 bool Rect<T>::intersects(const Rect<T>& rectangle) const
 {
-    Rect<T> intersection;
-    return intersects(rectangle, intersection);
+  return intersects(rectangle, false);
+}
+
+template <typename T>
+bool Rect<T>::intersects(const Rect<T>& rectangle, bool count_edges) const
+{
+  if (count_edges)
+  {
+    return  this->left <= rectangle.left + rectangle.width &&
+      this->left + this->width >= rectangle.left &&
+      this->top <= rectangle.top + rectangle.height &&
+      this->top + this->height >= rectangle.top;
+  }
+  return  this->left < rectangle.left + rectangle.width &&
+    this->left + this->width > rectangle.left &&
+    this->top < rectangle.top + rectangle.height &&
+    this->top + this->height > rectangle.top;
 }
 
 
@@ -157,3 +172,4 @@ inline bool operator !=(const Rect<T>& left, const Rect<T>& right)
 {
     return !(left == right);
 }
+

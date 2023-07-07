@@ -211,7 +211,14 @@ public:
 		{
 			return sf::Vector2<T>(x * other.x, y * other.y);
 		}
-
+		
+		template <typename E>
+		inline sf::Vector2<T>& operator*=(const sf::Vector2<E>& other)
+		{
+			x *= (T)other.x;
+			y *= (T)other.y;
+			return *this;
+		}
 		////////////////////////////////////////////////////////////
 		/// end of the modified section
 		////////////////////////////////////////////////////////////

@@ -68,14 +68,14 @@ public:
     ~Context();
 
     ////////////////////////////////////////////////////////////
-    /// \brief Activate or deactivate explicitly the context
+    /// \brief Activate or hide explicitly the context
     ///
-    /// \param active True to activate, false to deactivate
+    /// \param active True to show, false to hide
     ///
     /// \return True on success, false on failure
     ///
     ////////////////////////////////////////////////////////////
-    bool setActive(bool active);
+    bool setVisible(bool active);
 
     ////////////////////////////////////////////////////////////
     /// \brief Get the settings of the context

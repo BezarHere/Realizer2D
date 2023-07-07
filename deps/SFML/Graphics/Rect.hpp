@@ -134,6 +134,7 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     bool intersects(const Rect<T>& rectangle) const;
+    bool intersects(const Rect<T>& rectangle, bool count_edges) const;
 
     ////////////////////////////////////////////////////////////
     /// \brief Check the intersection between two rectangles
@@ -152,6 +153,24 @@ public:
     bool intersects(const Rect<T>& rectangle, Rect<T>& intersection) const;
     
 
+    template <typename T>
+    inline void merge(const Rect<T>& other)
+    {
+      left = std::min(left, other.left);
+      top = std::min(top, other.top);
+      width = std::max(this->width + this->left, other.width + other.left) - left;
+      height = std::max(this->height + this->top, other.height + other.top) - top;
+    }
+
+    template <typename T>
+    inline Rect<T> merged(const Rect<T>& other)
+    {
+      Rect<T> rect = *this;
+      rect.merge(other);
+      return rect;
+    }
+
+
     ////////////////////////////////////////////////////////////
     /// \brief retruns the end of the rectangle
     ///
@@ -168,6 +187,12 @@ public:
     T width;  ///< Width of the rectangle
     T height; ///< Height of the rectangle
 };
+
+
+template <typename T> inline std::ostream& operator<<(std::ostream& stream, const sf::Rect<T>& p) {
+  stream << '(' << p.left << ", " << p.top << ", " << p.width << ", " << p.height << ')';
+  return stream;
+}
 
 ////////////////////////////////////////////////////////////
 /// \relates Rect

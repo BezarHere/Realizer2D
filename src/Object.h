@@ -1,7 +1,7 @@
 #pragma once
 #include <deque>
 #include <unordered_set>
-#include "ObjectComponent2D.h"
+#include "ObjectComponent.h"
 #include "global.h"
 #include "core/Errors.h"
 
@@ -73,19 +73,20 @@ public:
 	inline void setObjectID(ObjID_t new_oid) { assert(m_objId == 0); m_objId = new_oid; }
 
 	// returns first component of with typehash
-	ObjectComponent2D* getComponent(const size_t typehash) const;
+	ObjectComponent* getComponent(const size_t typehash) const;
 
 	void setZIndex(ZIndex_t zindex);
 	inline ZIndex_t getZIndex() { return m_zIndex; }
 
-	virtual void installComponent(ObjectComponent2D* component);
-	virtual void removeComponent(ObjectComponent2D* component);
-	// -- to check if a component is owned by this; check the getObject() == this_obj
-	virtual bool hasComponent(ObjectComponent2D* component) const;
-	virtual const std::unordered_set<ObjectComponent2D*>& getComponents() const;
+	virtual void installComponent(ObjectComponent* component);
+	virtual void removeComponent(ObjectComponent* component);
+	// -- to check if a component is owned by this; check the getOwner() == this_obj
+	virtual bool hasComponent(ObjectComponent* component) const;
+	virtual const std::unordered_set<ObjectComponent*>& getComponents() const;
 
+	Transform2D getGlobalTransform() const;
 	Vector2 getGlobalPosition() const;
-	Vector2 getGlobalRotation() const;
+	real_t getGlobalRotation() const;
 	Vector2 getGlobalScale() const;
 
 	Error addToSceneTree();
@@ -99,10 +100,24 @@ public:
 
 	inline bool isQueuedForDeletion() const { return m_queuedForDeletion; }
 
+	bool isVisible() const;
+
+	// if the object or any parent of it is invisible, this will return false otherwise true
+	bool isBranchVisible() const;
+
+	void setVisible(bool visible);
+	void show();
+	void hide();
+
+private:
+
+	void updateBranchVisiblty();
+	void propgateVisiblityChangeCallback();
+
+	void doUpdate(real_t delta);
+
 	virtual void _onRemovedFromScene();
 	virtual void _onAddedToScene();
-
-public:
 
 private:
 	// called before renaming, check for name collisions before calling
@@ -111,11 +126,14 @@ private:
 	Engine* engine;
 	std::string m_name;
 	ObjID_t m_objId = 0;
-	//std::unordered_map<const char*, std::shared_ptr<ObjectComponent2D>> m_components;
-	std::unordered_set<ObjectComponent2D*> m_components;
+	//std::unordered_map<const char*, std::shared_ptr<ObjectComponent>> m_components;
+	std::unordered_set<ObjectComponent*> m_components;
 	std::unordered_map<std::string, Object2D*> m_children;
 	Object2D* m_parent{ nullptr };
 	ZIndex_t m_zIndex = 0;
+
+	bool m_visible{ true };
+	bool m_branchVisible{ true };
 	bool m_insideScene{ false };
 	bool m_queuedForDeletion{ false };
 };

@@ -113,17 +113,17 @@ public:
     virtual Vector2u getSize() const;
 
     ////////////////////////////////////////////////////////////
-    /// \brief Activate or deactivate the window as the current target
+    /// \brief Activate or hide the window as the current target
     ///        for OpenGL rendering
     ///
     /// A window is active only on the current thread, if you want to
-    /// make it active on another thread you have to deactivate it
+    /// make it active on another thread you have to hide it
     /// on the previous thread first if it was active.
     /// Only one window can be active on a thread at a time, thus
     /// the window previously active (if any) automatically gets deactivated.
     /// This is not to be confused with requestFocus().
     ///
-    /// \param active True to activate, false to deactivate
+    /// \param active True to show, false to hide
     ///
     /// \return True if operation was successful, false otherwise
     ///

@@ -84,7 +84,7 @@ void Engine::update()
 	auto& root_objs = SceneTree::GetRootObjects();
 	for (Object2D *p : root_objs)
 	{
-		p->update(m_physicsDeltaTime);
+		p->doUpdate(m_physicsDeltaTime);
 	}
 
 	if (Engine::m_processAction)

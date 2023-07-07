@@ -5,12 +5,6 @@
 
 _R2D_COMP_NS_START_
 
-constexpr uint32_t _RectangleDrawer_id		= 0xf421c19d;
-constexpr uint32_t _Faker_id							= 0x9ac17fae;
-constexpr uint32_t _CircleDrawer_id				= _RectangleDrawer_id ^ _Faker_id;
-constexpr uint32_t _SpriteDrawer_id				= _CircleDrawer_id ^ _RectangleDrawer_id;
-constexpr uint32_t _PolygonDrawer_id				= _CircleDrawer_id ^ _RectangleDrawer_id;
-
 class Drawer : public ObjectComponent, public sf::Transformable
 {
 public:
@@ -34,8 +28,6 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
 	inline void setColor(sf::Color clr) override { color = clr; update_buffer(); }
 
-	inline uint32_t getId() const { return _RectangleDrawer_id; }
-
 private:
 	void update_buffer();
 private:
@@ -57,7 +49,6 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
 	inline void setColor(sf::Color clr) override { color = clr; updateState(); }
 
-	inline uint32_t getId() const { return _CircleDrawer_id; }
 private:
 	void updateState();
 	static bool hasVertciesCacheSegCount(uint16_t seg_count);
@@ -82,7 +73,6 @@ public:
 	const Points_t& getPoints() const { return m_points; }
 	inline void setColor(sf::Color clr) override { color = clr; updateVertcies(); }
 
-	inline uint32_t getId() const { return _PolygonDrawer_id; }
 private:
 	void updateVertcies();
 private:
@@ -114,8 +104,6 @@ public:
 	void updateTexture(sf::Texture* texture);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
-
-	inline uint32_t getId() const { return _SpriteDrawer_id; }
 
 	inline void setColor(sf::Color clr) override { color = clr; updateVertcies(); }
 private:

@@ -1,5 +1,5 @@
 #include "global.h"
-#include "Object2D.h"
+#include "Object.h"
 #include "Engine.h"
 
 _R2D_NAMESPACE_START_
@@ -46,7 +46,7 @@ Object2D::Object2D(const std::string& name)
 
 Object2D::~Object2D()
 {
-	for (ObjectComponent2D* p : m_components)
+	for (ObjectComponent* p : m_components)
 	{
 		delete p;
 	}
@@ -60,7 +60,7 @@ Object2D::~Object2D()
 
 void Object2D::update(real_t delta)
 {
-	for (ObjectComponent2D* comp : m_components)
+	for (ObjectComponent* comp : m_components)
 	{
 		comp->update(delta);
 	}
@@ -73,7 +73,7 @@ void Object2D::update(real_t delta)
 void Object2D::draw(sf::RenderTarget& target, sf::RenderStates state) const
 {
 	state.transform.combine(getTransform());
-	for (ObjectComponent2D* comp : m_components)
+	for (ObjectComponent* comp : m_components)
 	{
 		comp->draw(target, state);
 	}
@@ -83,6 +83,8 @@ void Object2D::draw(sf::RenderTarget& target, sf::RenderStates state) const
 	}
 }
 
+
+// TODO: Implement more rubost kill function
 void Object2D::kill()
 {
 	if (m_parent == nullptr)
@@ -93,6 +95,35 @@ void Object2D::kill()
 	{
 		delete this;
 	}
+}
+
+bool Object2D::isVisible() const
+{
+	return m_visible;
+}
+
+bool Object2D::isBranchVisible() const
+{
+	return m_visible && m_parent ? m_branchVisible : true;
+}
+
+void Object2D::setVisible(bool visible)
+{
+	if (visible == m_visible)
+		return;
+	m_visible = visible;
+
+	propgateVisiblityChangeCallback();
+}
+
+void Object2D::show()
+{
+	setVisible(true);
+}
+
+void Object2D::hide()
+{
+	setVisible(false);
 }
 
 void Object2D::addChild(Object2D* child)
@@ -152,12 +183,12 @@ Error Object2D::setName(const std::string& name)
 	return OK;
 }
 
-ObjectComponent2D* Object2D::getComponent(const size_t typehash) const
+ObjectComponent* Object2D::getComponent(const size_t typehash) const
 {
 	const auto& iter = std::find_if(
 		m_components.begin(),
 		m_components.end(),
-		[typehash](ObjectComponent2D* ptr) { return ptr && typeid(*ptr).hash_code() == typehash; }
+		[typehash](ObjectComponent* ptr) { return ptr && typeid(*ptr).hash_code() == typehash; }
 	);
 	return iter == m_components.end() ? nullptr : *iter;
 }
@@ -167,25 +198,27 @@ void Object2D::setZIndex(ZIndex_t zindex)
 	m_zIndex = zindex;
 }
 
-void Object2D::installComponent(ObjectComponent2D* component)
+void Object2D::installComponent(ObjectComponent* component)
 {
 	// can't install a component owned by another object (or reistall an already installed component)
-	assert(component->m_obj == nullptr);
-	component->m_obj = this;
+	assert(component->m_owner == nullptr);
+	component->m_owner = this;
+	component->ownerAtachedCallback();
 	m_components.insert(component);
 }
 
-void Object2D::removeComponent(ObjectComponent2D* component)
+void Object2D::removeComponent(ObjectComponent* component)
 {
 	// can't remove a component not owned by this
-	assert(component->m_obj == this);
-	component->m_obj = nullptr;
+	assert(component->m_owner == this);
+	component->ownerDetachedCallback();
+	component->m_owner = nullptr;
 	m_components.erase(component);
 }
 
-bool Object2D::hasComponent(ObjectComponent2D* component) const
+bool Object2D::hasComponent(ObjectComponent* component) const
 {
-	for (ObjectComponent2D* p : m_components)
+	for (ObjectComponent* p : m_components)
 	{
 		if (p == component)
 			return true;
@@ -193,31 +226,45 @@ bool Object2D::hasComponent(ObjectComponent2D* component) const
 	return false;
 }
 
-const std::unordered_set<ObjectComponent2D*>& Object2D::getComponents() const
+const std::unordered_set<ObjectComponent*>& Object2D::getComponents() const
 {
 	return m_components;
+}
+
+Transform2D Object2D::getGlobalTransform() const
+{
+	Transform2D transform = getTransform();
+	if (m_parent)
+	{
+		transform *= m_parent->getGlobalTransform();
+	}
+	return transform;
 }
 
 Vector2 Object2D::getGlobalPosition() const
 {
 	Vector2 position = getPosition();
-	Object2D* parent = m_parent;
-	while (parent)
+	if (m_parent)
 	{
-		position += parent->getPosition();
-		parent = parent->getParent();
+		position += m_parent->getGlobalPosition();
 	}
 	return position;
 }
 
-Vector2 Object2D::getGlobalRotation() const
+real_t Object2D::getGlobalRotation() const
 {
-	return Vector2();
+	// no good
+	return ((Vector2*)getGlobalTransform().getMatrix())->angle();
 }
 
 Vector2 Object2D::getGlobalScale() const
 {
-	return Vector2();
+	Vector2 scale = getScale();
+	if (m_parent)
+	{
+		scale *= m_parent->getGlobalScale();
+	}
+	return scale;
 }
 
 Error Object2D::addToSceneTree()
@@ -229,6 +276,32 @@ Error Object2D::addToSceneTree()
 	}
 	SceneTree::AddObject(this);
 	return Error::OK;
+}
+
+void Object2D::updateBranchVisiblty()
+{
+	bool old_bv = m_branchVisible;
+	m_branchVisible = m_parent ? m_parent->isBranchVisible() : true;
+	if (old_bv != m_branchVisible)
+		propgateVisiblityChangeCallback();
+}
+
+void Object2D::propgateVisiblityChangeCallback()
+{
+	for (ObjectComponent* comp : m_components)
+	{
+		comp->ownerVisiblityChangeCallback();
+	}
+
+	for (const auto& kv : m_children)
+	{
+		kv.second->updateBranchVisiblty();
+	}
+}
+
+void Object2D::doUpdate(real_t delta)
+{
+	update(delta);
 }
 
 void Object2D::_onRemovedFromScene()

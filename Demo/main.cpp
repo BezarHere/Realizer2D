@@ -1,25 +1,28 @@
 #include <iostream>
-#include "../include/Realizer2D.h"
 #include <vector>
 #include <string>
 #include <array>
 #include <list>
 #include <fstream>
+#define R2D_VERBOSE
+#include "../include/Realizer2D.h"
 
 using r2d::real_t;
 
 void start_spaceships();
 void start_circles();
 void physics_circles(real_t delta);
+void start_bath();
 
 enum class DemoType
 {
 	None,
 	Spaceship,
-	Circles
+	Circles,
+	Bath
 };
 
-constexpr DemoType demotype = DemoType::Spaceship;
+constexpr DemoType demotype = DemoType::Bath;
 
 struct DemoData
 {
@@ -34,6 +37,7 @@ const std::unordered_map<DemoType, DemoData> demos
 	{ DemoType::None,      { nullptr, nullptr, nullptr, nullptr } },
 	{ DemoType::Spaceship, { start_spaceships, nullptr, nullptr, nullptr } },
 	{ DemoType::Circles,	 { start_circles, nullptr, nullptr, physics_circles } },
+	{ DemoType::Bath,			 { start_bath, nullptr, nullptr, nullptr } },
 };
 
 
@@ -56,10 +60,10 @@ public:
 		}
 	}
 
-	const real_t speed{ 100.0 };
+	const real_t speed{ 100.0f };
 	r2d::Vector2 dir;
 	real_t time{};
-	const real_t lifetime{ 0.4 };
+	const real_t lifetime{ 0.4f };
 };
 
 class Player : public r2d::Object2D
@@ -154,18 +158,47 @@ void physics_circles(real_t delta)
 	cir_time += delta;
 }
 
+r2d::Object2D* bath_platform;
+r2d::Object2D* bath_balls;
+void start_bath()
+{
+	bath_platform = new r2d::Object2D("platform");
+	auto* phy = new r2d::components::StaticBody();
+	bath_platform->installComponent(phy);
+	phy->addCollidor(new r2d::RectangleCollidor({128.0f, 24.0f}));
+	bath_platform->installComponent(new r2d::components::RectangleDrawer({ 128.0f, 24.0f }));
+	bath_platform->setPosition(0.0f, 64.0f);
+	bath_platform->addToSceneTree();
+	phy->updateCache();
+	PEEK(phy->getCollectiveAABB());
+	for (const auto& p : phy->getCollidor(0)->getPoints())
+	{
+		PEEK(p);
+	}
+}
+
 const wchar_t* widen(const char* txt)
 {
-	size_t size = lengthof(txt);
+	size_t size = r2d::lengthof(txt);
 	wchar_t* p = new wchar_t[size];
 	for (size_t i{ 0 }; i < size; i++) p[i] = (wchar_t)txt[i];
 	return p;
 }
 
+template <typename _T>
+void print_ptr(const _T* const ptr, size_t size)
+{
+	for (size_t i{ 0 }; i < size; i++)
+	{
+		if (i)
+			std::cout << ", ";
+		std::cout << *(ptr + i);
+
+	}
+}
 
 int main(int argc, const char** argv)
 {
-	
 	r2d::Engine::SetOnInitAction(demos.at(demotype).init);
 	r2d::Engine::SetProcessAction(demos.at(demotype).process);
 	r2d::Engine::SetPhysicsProcessAction(demos.at(demotype).physics);

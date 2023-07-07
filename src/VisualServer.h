@@ -2,7 +2,7 @@
 #include <stack>
 #include <set>
 #include "global.h"
-#include "ApplicationConfig.h"
+#include "Application.h"
 #include "SceneTree.h"
 #include "components/Drawers.h"
 
