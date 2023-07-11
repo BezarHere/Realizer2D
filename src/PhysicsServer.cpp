@@ -67,6 +67,14 @@ void PhysicsServer::Init()
 }
 
 
+void PhysicsServer::update(real_t delta)
+{
+}
+
+void PhysicsServer::updateStep(real_t delta)
+{
+}
+
 void PhysicsServer::Solve(components::PhysicsBody* body_a, components::PhysicsBody* body_b)
 {
 	// two static bodies can't collide

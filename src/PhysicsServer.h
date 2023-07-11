@@ -12,6 +12,8 @@ class PhysicsServer final
 	friend _STRUCT__PhysicsServer___Init;
 public:
 
+	void update(real_t delta);
+	void updateStep(real_t delta);
 
 	static void Solve(PhysicsBody *body_a, PhysicsBody *body_b);
 
@@ -35,6 +37,7 @@ private:
 
 	static inline std::vector<components::PhysicsBody*> s_objects;
 	static inline std::unordered_map<Point2, PhyCellCollection_t> s_phyObjectCells;
+	static inline real_t s_deltaTime{ 1.0f };
 };
 
 #undef SOLVE_FUNC_DEF
