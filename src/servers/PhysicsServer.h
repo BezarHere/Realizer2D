@@ -1,9 +1,12 @@
 #pragma once
+#include <stack>
 #include "global.h"
-#include "Object.h"
+#include "scene/Object.h"
+#include "scene/Collidors.h"
 #include "Solver.h"
 
 _R2D_NAMESPACE_START_
+#define global static inline
 
 struct _STRUCT__PhysicsServer___Init;
 class PhysicsServer final
@@ -11,9 +14,13 @@ class PhysicsServer final
 	typedef components::PhysicsBody PhysicsBody;
 	friend _STRUCT__PhysicsServer___Init;
 public:
+	
+	/////////////////////////////
+	
+	/////////////////////////////
 
 	void update(real_t delta);
-	void updateStep(real_t delta);
+	void updateStep();
 
 	static void Solve(PhysicsBody *body_a, PhysicsBody *body_b);
 
@@ -27,18 +34,24 @@ public:
 	static void ResolveCollision(PhysicsBody* body_a, PhysicsBody* body_b);
 
 private:
+	static void populateGrid();
+
 	static void Init();
 
 private:
 	typedef struct
 	{
 		std::vector<components::PhysicsBody*> bodies;
-	} PhyCellCollection_t;
-
-	static inline std::vector<components::PhysicsBody*> s_objects;
-	static inline std::unordered_map<Point2, PhyCellCollection_t> s_phyObjectCells;
-	static inline real_t s_deltaTime{ 1.0f };
+	} CollisionGridCell_t;
+	global constexpr int CollisionGridCellSize{ 64 };
+	global std::vector<components::PhysicsBody*> s_bodies;
+	global std::unordered_map<Point2, CollisionGridCell_t> s_collisionGrid;
+	global std::unordered_set<Point2> s_availableCollisionGridCells; // for perfoment searching, i guess
+	global real_t s_deltaTime{ 1.0f };
+	global real_t s_stepDeltaTime{ 1.0f };
+	global int s_updateSteps{ 1 }; // higher = more accurate physics = more cost on cpu
 };
 
-#undef SOLVE_FUNC_DEF
+
+#undef global
 _R2D_NAMESPACE_END_

@@ -3,6 +3,26 @@
 
 namespace R2D::components
 {
+	Drawer::Drawer()
+		: m_mat()
+	{
+	}
+
+	Material& Drawer::getMaterial()
+	{
+		return m_mat;
+	}
+
+	const Material& Drawer::getMaterial() const
+	{
+		return m_mat;
+	}
+
+	void Drawer::setMaterial(const Material& mat)
+	{
+		//m_mat = mat;
+	}
+
 	RectangleDrawer::RectangleDrawer()
 		: RectangleDrawer({ 16.0f, 16.0f })
 	{

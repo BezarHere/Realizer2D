@@ -13,16 +13,19 @@ void start_spaceships();
 void start_circles();
 void physics_circles(real_t delta);
 void start_bath();
+void start_collision_test();
+void physics_collision_test(real_t delta);
 
 enum class DemoType
 {
 	None,
 	Spaceship,
 	Circles,
-	Bath
+	Bath,
+	CollisionTest
 };
 
-constexpr DemoType demotype = DemoType::Bath;
+constexpr DemoType demotype = DemoType::CollisionTest;
 
 struct DemoData
 {
@@ -34,10 +37,11 @@ struct DemoData
 
 const std::unordered_map<DemoType, DemoData> demos
 {
-	{ DemoType::None,      { nullptr, nullptr, nullptr, nullptr } },
-	{ DemoType::Spaceship, { start_spaceships, nullptr, nullptr, nullptr } },
-	{ DemoType::Circles,	 { start_circles, nullptr, nullptr, physics_circles } },
-	{ DemoType::Bath,			 { start_bath, nullptr, nullptr, nullptr } },
+	{ DemoType::None,					{ nullptr, nullptr, nullptr, nullptr } },
+	{ DemoType::Spaceship,		{ start_spaceships, nullptr, nullptr, nullptr } },
+	{ DemoType::Circles,			{ start_circles, nullptr, nullptr, physics_circles } },
+	{ DemoType::Bath,					{ start_bath, nullptr, nullptr, nullptr } },
+	{ DemoType::CollisionTest,{ start_collision_test, nullptr, nullptr, physics_collision_test } },
 };
 
 
@@ -138,7 +142,7 @@ void start_spaceships()
 
 		player[i].setZIndex(1);
 
-		player[i].setPosition(r2d::random::randf_range(-512.0f, 512.0f), r2d::random::randf_range(-512.0f, 512.0f));
+		player[i].setPosition(r2d::Random::RandfRange(-512.0f, 512.0f), r2d::Random::RandfRange(-512.0f, 512.0f));
 		player[i].addToSceneTree();
 	}
 }
@@ -175,6 +179,38 @@ void start_bath()
 	{
 		PEEK(p);
 	}
+}
+
+r2d::Object2D *collision_test_create_tringle(std::string name, bool kinetic)
+{
+	r2d::Object2D* traingle = new r2d::Object2D(name);
+	r2d::Points_t points = {
+		r2d::Vector2(r2d::Random::RandfRange(-8.0f, 8.0f), r2d::Random::RandfRange(-8.0f, 8.0f) - 16.0f),
+		r2d::Vector2(r2d::Random::RandfRange(-8.0f, 8.0f) + 16.0f, r2d::Random::RandfRange(-8.0f, 8.0f) + 8.0f),
+		r2d::Vector2(r2d::Random::RandfRange(-8.0f, 8.0f) - 16.0f, r2d::Random::RandfRange(-8.0f, 8.0f) + 8.0f),
+	};
+	auto drawer = new r2d::components::PolygonDrawer(points);
+	traingle->installComponent(drawer);
+	r2d::components::PhysicsBody* phy_body;
+	if (kinetic)
+		phy_body = (new r2d::components::KinematicBody());
+	else
+		phy_body = (new r2d::components::StaticBody());
+	traingle->installComponent(phy_body);
+	traingle->addToSceneTree();
+	return traingle;
+}
+
+r2d::Object2D* traingles[2];
+void start_collision_test()
+{
+	traingles[0] = collision_test_create_tringle("first", false);
+	traingles[1] = collision_test_create_tringle("second", true);
+}
+
+void physics_collision_test(real_t delta)
+{
+	traingles[1]->setPosition(r2d::Engine::Singleton()->getMousePosition());
 }
 
 const wchar_t* widen(const char* txt)

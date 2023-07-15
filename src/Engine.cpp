@@ -15,7 +15,6 @@ Engine::Engine()
 		!Engine::s_instance,
 		"r2d::Engine can't be created by the user, use r2d::Engine::GetSingleton()"
 	);
-	random::randomize();
 
 
 	for (int i = 0; i < Keyboard_t::KeyCount; i++)
@@ -99,9 +98,47 @@ void Engine::physics()
 
 void Engine::draw()
 {
-	VisualServer::Singleton()->update();
+	
 
 	
+}
+
+void Engine::pollEvents()
+{
+	sf::RenderWindow* MainWindow = VisualServer::GetWindow();
+	sf::Event window_event;
+
+	while (MainWindow->pollEvent(window_event)) {
+
+		switch (window_event.type)
+		{
+			case sf::Event::MouseMoved:
+				m_lastMousePosition = m_mousePosition;
+				m_mousePosition.x = (float)window_event.mouseMove.x;
+				m_mousePosition.y = (float)window_event.mouseMove.y;
+				break;
+			case sf::Event::KeyPressed:
+				registerInput(window_event.key, true);
+				break;
+			case sf::Event::KeyReleased:
+				registerInput(window_event.key, false);
+				break;
+			case sf::Event::MouseButtonPressed:
+				registerInput(window_event.mouseButton, true);
+				break;
+			case sf::Event::MouseButtonReleased:
+				registerInput(window_event.mouseButton, false);
+				break;
+			case sf::Event::MouseWheelScrolled:
+				registerInput(window_event.mouseWheelScroll);
+				break;
+			case sf::Event::Closed:
+				exit(EXIT_SUCCESS);
+				break;
+			default:
+				break;
+		}
+	}
 }
 
 void Engine::finalize_program()
@@ -134,44 +171,15 @@ void Engine::main_loop()
 		m_lastFrameTime = current_frame_time;
 		m_currentFrame++;
 
-		MainWindow->clear(R2D_CLEAR_CLR);
-		// check all events
-		while (MainWindow->pollEvent(window_event)) {
+		VisualServer::Singleton()->PreDraw();
+		pollEvents();
 
-			switch (window_event.type)
-			{
-				case sf::Event::MouseMoved:
-					m_lastMousePosition = m_mousePosition;
-					m_mousePosition.x = (float)window_event.mouseMove.x;
-					m_mousePosition.y = (float)window_event.mouseMove.y;
-					break;
-				case sf::Event::KeyPressed:
-					registerInput(window_event.key, true);
-					break;
-				case sf::Event::KeyReleased:
-					registerInput(window_event.key, false);
-					break;
-				case sf::Event::MouseButtonPressed:
-					registerInput(window_event.mouseButton, true);
-					break;
-				case sf::Event::MouseButtonReleased:
-					registerInput(window_event.mouseButton, false);
-					break;
-				case sf::Event::MouseWheelScrolled:
-					registerInput(window_event.mouseWheelScroll);
-					break;
-				case sf::Event::Closed:
-					exit(EXIT_SUCCESS);
-					break;
-				default:
-					break;
-			}
-		}
-		
 		update();
 		physics();
+
 		draw();
 
+		VisualServer::Singleton()->update();
 		MainWindow->display();
 		SceneTree::FlushDeletionQueue();
 	}
@@ -226,6 +234,16 @@ bool Engine::isKeyJustPressed(sf::Keyboard::Key key) const
 bool Engine::isKeyJustReleased(sf::Keyboard::Key key) const
 {
 	return !m_keyboardInput.at(key).pressed && m_keyboardInput.at(key).frame == m_currentFrame;
+}
+
+Vector2 Engine::getMousePosition() const
+{
+	return m_mousePosition;
+}
+
+Vector2 Engine::getMouseScreenPosition() const
+{
+	return m_worldMousePosition;
 }
 
 

@@ -4,3 +4,5 @@
 #define COL_FUNC_DEF(name, colldidor_a, colldidor_b) void (*name) (components::PhysicsBody* body_a, const colldidor_a* col_a, components::PhysicsBody* body_b, const colldidor_b* col_b)
 #define SolverFunctionEntry(type_a, type_b, function_ptr) {{(CollidorShapeType)(type_a > type_b ? type_b : type_a), (CollidorShapeType)(type_a < type_b ? type_b : type_a)}, (Solver::SolverFunction)(function_ptr)}
 #define doswap(a, b) __doswap__(a, b)
+#define global
+#define R2D_CLEAR_CLR sf::Color(12U, 12U, 12U, 0U)

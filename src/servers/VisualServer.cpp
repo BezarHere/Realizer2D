@@ -3,13 +3,6 @@
 
 _R2D_NAMESPACE_START_
 
-VisualServer::VisualServer()
-	: m_viewStretchMode(s_config.stretchMode),
-		m_appliedConfig(VisualServer::s_config)
-{
-	screenResized();
-}
-
 void VisualServer::SetDrawingAction(DrawerFunction_t action)
 {
 	s_drawAction = action;
@@ -48,13 +41,13 @@ void VisualServer::updateView()
 			pview.setSize(window_size / m_viewZoom);
 			break;
 		case ViewStretchMode::KeepHorizontal:
-			pview.setSize(sf::Vector2f((float)m_appliedConfig.windowSize.x, window_size.y) / m_viewZoom);
+			pview.setSize(sf::Vector2f((float)s_startWindowSize.x, window_size.y) / m_viewZoom);
 			break;
 		case ViewStretchMode::KeepVertical:
-			pview.setSize(sf::Vector2f(window_size.x, (float)m_appliedConfig.windowSize.y) / m_viewZoom);
+			pview.setSize(sf::Vector2f(window_size.x, (float)s_startWindowSize.y) / m_viewZoom);
 			break;
 		case ViewStretchMode::Keep:
-			pview.setSize((sf::Vector2f)m_appliedConfig.windowSize / m_viewZoom);
+			pview.setSize((sf::Vector2f)s_startWindowSize / m_viewZoom);
 			break;
 		default:
 			break;
@@ -104,20 +97,25 @@ void VisualServer::setViewCentered(bool centered)
 	updateView();
 }
 
-void VisualServer::screenResized()
+void VisualServer::ScreenResized()
 {
 	updateView();
+}
+
+void VisualServer::PreDraw()
+{
+	s_window->clear(ApplicationConfig::MasterConfig().getClearColor());
 }
 
 
 
 void VisualServer::start()
 {
-	assert_msg(!s_instance, "can't start the visual server: already started")
-	sf::VideoMode vmode{ s_config.windowSize.x, s_config.windowSize.y, 8 };
+	ScreenResized();
+	sf::VideoMode vmode{ ApplicationConfig::MasterConfig().getStartWidowSize().x, ApplicationConfig::MasterConfig().getStartWidowSize().y, 8};
 	sf::ContextSettings vcontext{ 8U, 8U, 0U };
-	s_window = new VSRenderWindow(vmode, s_config.title, sf::Style::Default, vcontext);
-	s_instance = new VisualServer();
+	s_window = new VSRenderWindow(vmode, ApplicationConfig::MasterConfig().getTitle(), sf::Style::Default, vcontext);
+	s_startWindowSize = ApplicationConfig::MasterConfig().getStartWidowSize();
 	
 }
 

@@ -234,7 +234,8 @@ public:
 
 template <typename T> struct std::hash<sf::Vector2<T>> {
 inline size_t operator()(const sf::Vector2<T>& obj) const {
-		return combine_hash(std::hash<T>()(obj.x), std::hash<T>()(obj.y));
+		size_t lhs = std::hash<T>()(obj.x);
+		return lhs ^  std::hash<T>()(obj.y) + 0x9e3779b9 + (lhs << 6) + (lhs >> 2);
 	}
 };
 

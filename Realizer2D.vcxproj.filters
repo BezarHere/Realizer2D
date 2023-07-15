@@ -60,10 +60,10 @@
     <ClInclude Include="src\global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Object.h">
+    <ClInclude Include="src\scene\Object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\PhysicsServer.h">
+    <ClInclude Include="src\servers\PhysicsServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\VisualS.h">
@@ -72,7 +72,7 @@
     <ClInclude Include="src\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\SceneTree.h">
+    <ClInclude Include="src\scene\SceneTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\TreeStructure.h">
@@ -387,16 +387,16 @@
     <ClInclude Include="include\Realizer2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\VisualServer.h">
+    <ClInclude Include="src\servers\VisualServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\random.h">
+    <ClInclude Include="src\Random.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\OS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\File.h">
+    <ClInclude Include="src\resource\File.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\Errors.h">
@@ -411,16 +411,31 @@
     <ClInclude Include="src\components\base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ObjectComponent.h">
+    <ClInclude Include="src\scene\ObjectComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Collidors.h">
+    <ClInclude Include="src\scene\Collidors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\prefix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Solver.h">
+    <ClInclude Include="src\servers\Solver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource\SceneFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\servers\ResourcesServer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Segment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -431,7 +446,7 @@
     <ClCompile Include="src\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Object.cpp">
+    <ClCompile Include="src\scene\Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\components\Drawers.cpp">
@@ -443,13 +458,13 @@
     <ClCompile Include="Demo\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\VisualServer.cpp">
+    <ClCompile Include="src\servers\VisualServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneTree.cpp">
+    <ClCompile Include="src\scene\SceneTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\File.cpp">
+    <ClCompile Include="src\resource\File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\components\Timer.cpp">
@@ -458,13 +473,13 @@
     <ClCompile Include="src\components\Physics.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ObjectComponent.cpp">
+    <ClCompile Include="src\scene\ObjectComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Collidors.cpp">
+    <ClCompile Include="src\scene\Collidors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\PhysicsServer.cpp">
+    <ClCompile Include="src\servers\PhysicsServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\components\Physics.cpp">
@@ -473,7 +488,22 @@
     <ClCompile Include="src\Application.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Solver.cpp">
+    <ClCompile Include="src\servers\Solver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\resource\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\Segment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

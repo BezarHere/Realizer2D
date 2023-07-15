@@ -1,6 +1,6 @@
 #pragma once
 #include "global.h"
-#include "Collidors.h"
+#include "scene/Collidors.h"
 #include "components/Physics.h"
 
 _R2D_NAMESPACE_START_

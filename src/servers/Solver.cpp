@@ -5,6 +5,13 @@ using namespace r2d::components;
 
 _R2D_NAMESPACE_START_
 
+struct PolygonEdge
+{
+	Vector2 offset;
+	Vector2 normal;
+	real_t length;
+};
+
 PhysicsBodyForm::PhysicsBodyForm(components::PhysicsBody* p_body, const CollidorShape* p_col, const Transform2D& p_trans)
 	: body(p_body), collidor(p_col), transform(p_trans)
 {

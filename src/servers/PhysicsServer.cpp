@@ -43,7 +43,11 @@ static inline std::unordered_map<_CollidorShapeTypeKey, Solver::SolverFunction> 
 	SolverFunctionEntry(
 		CollidorShapeType::Circle,
 		CollidorShapeType::Circle,
-		Solver::SolveCircleVsCircle)
+		Solver::SolveCircleVsCircle),
+	SolverFunctionEntry(
+		CollidorShapeType::Rectangle,
+		CollidorShapeType::Rectangle,
+		Solver::SolveRectangleVsRectangle)
 };
 
 static constexpr size_t _PhyObjectsAreanaDesiredSize = 0xfffff; // 2^20 - 1 (~1 mb) or 131071 64x ptrs or 262143 86x ptrs
@@ -63,54 +67,72 @@ struct _STRUCT__PhysicsServer___Init
 
 void PhysicsServer::Init()
 {
-	s_objects.reserve(_PhyObjectsAreanaDesiredSize / sizeof(void*));
+	s_bodies.reserve(_PhyObjectsAreanaDesiredSize / sizeof(void*));
 }
 
 
 void PhysicsServer::update(real_t delta)
 {
+	s_deltaTime = delta;
+	s_stepDeltaTime = delta / s_updateSteps;
+	for (int i{ 0 }; i < s_updateSteps; i++)
+		updateStep();
 }
 
-void PhysicsServer::updateStep(real_t delta)
+void PhysicsServer::updateStep()
 {
+	populateGrid();
+	for (const auto& kv : s_collisionGrid)
+	{
+		for (PhysicsBody* body_a : kv.second.bodies)
+		{
+			for (PhysicsBody* body_b : kv.second.bodies)
+			{
+				if (body_a == body_b)
+					continue;
+				Solve(body_a, body_b);
+			}
+		}
+	}
 }
 
 void PhysicsServer::Solve(components::PhysicsBody* body_a, components::PhysicsBody* body_b)
 {
 	// two static bodies can't collide
 	if (body_a->isStatic() == true && body_a->isStatic())
-	{
 		return;
-	}
 
-	// yeah...
-	if (body_a->getType() > body_b->getType())
-	{
-		doswap(body_a, body_b);
-	}
 
 	// low cost detection
 	if (!Solver::CheckCollision_Broad(body_a, body_b))
 		return;
 
+	// yeah... my implementation of SAT can't handle an A type bigger then the B type
+	// like dynamic vs static is not possible but static vs dynamic is, wich has no diffrence (as i know)
+	if (body_a->getType() > body_b->getType())
+	{
+		doswap(body_a, body_b);
+	}
+	
 	ResolveCollision(body_a, body_b);
 }
 
 bool PhysicsServer::_has_registeryPhyComp(components::PhysicsBody* comp)
 {
-	return std::find(s_objects.begin(), s_objects.end(), comp) != s_objects.end();
+	return std::find(s_bodies.begin(), s_bodies.end(), comp) != s_bodies.end();
 }
 
 void PhysicsServer::_registerPhyComp(components::PhysicsBody* comp)
 {
-	s_objects.push_back(comp);
+	s_bodies.push_back(comp);
 }
 
 void PhysicsServer::_unregisterPhyComp(components::PhysicsBody* comp)
 {
-	s_objects.erase(std::find(s_objects.begin(), s_objects.end(), comp));
+	s_bodies.erase(std::find(s_bodies.begin(), s_bodies.end(), comp));
 }
 
+// TODO: add responses after fixing SAT
 void PhysicsServer::ResolveCollision(PhysicsBody* body_a, PhysicsBody* body_b)
 {
 	Transform2D trans_a = body_a->getOwner()->getGlobalTransform();
@@ -127,6 +149,28 @@ void PhysicsServer::ResolveCollision(PhysicsBody* body_a, PhysicsBody* body_b)
 			CollisionCallback callback{};
 
 			solverMap.at({ col_a->getType(), col_b->getType() })(form_a, form_b, callback);
+		}
+	}
+}
+
+void PhysicsServer::populateGrid()
+{
+	s_collisionGrid.clear();
+	s_availableCollisionGridCells.clear();
+
+	for (PhysicsBody* body : s_bodies)
+	{
+		body->updateCache();
+		const AABB aabb = body->getCollectiveAABB() / (float)CollisionGridCellSize;
+		const Point2 grid_position{ (int)aabb.left, (int)aabb.top };
+		for (int x{ 0 }; x < ceil(aabb.width); x++)
+		{
+			for (int y{ 0 }; y < ceil(aabb.height); y++)
+			{
+				Point2 grid_pos{ x + grid_position.x, y + grid_position.y };
+				s_collisionGrid[grid_pos].bodies.push_back(body);
+				s_availableCollisionGridCells.insert(grid_pos);
+			}
 		}
 	}
 }

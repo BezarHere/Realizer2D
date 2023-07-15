@@ -1,7 +1,7 @@
 #pragma once
 #include "global.h"
 #include "base.h"
-#include "../Collidors.h"
+#include "scene/Collidors.h"
 
 
 _R2D_COMP_NS_START_
@@ -31,6 +31,12 @@ public:
 
 	const AABB& getCollectiveAABB() const;
 
+	// a body should sleep when it's not real needed for the moment to conserve performance
+	// sleeping bodies wont be updated unless there is a collision
+	virtual void setSleep(bool sleep);
+	bool getSleep() const;
+
+
 protected:
 
 	void ownerDetachedCallback() override;
@@ -42,7 +48,7 @@ private:
 
 protected:
 	bool m_registered{ false };
-	// no good
+	bool m_sleep{ true };
 	std::vector<CollidorShape*> m_collidors;
 	AABB m_collectiveAABB{};
 };

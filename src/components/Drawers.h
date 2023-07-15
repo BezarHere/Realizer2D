@@ -2,18 +2,26 @@
 #include "base.h"
 #include "../utils/VertexBufferWraper.h"
 #include "../core/StretchMode.h"
+#include "../resource/Material.h"
 
 _R2D_COMP_NS_START_
 
 class Drawer : public ObjectComponent, public sf::Transformable
 {
 public:
+	Drawer();
 
 	inline virtual void setColor(sf::Color clr) { color = clr; }
 	inline virtual const sf::Color& getColor() { return color; }
 
+	Material& getMaterial();
+	const Material& getMaterial() const;
+	void setMaterial(const Material& mat);
+
 protected:
 	sf::Color color{ 255, 255, 255, 255 };
+private:
+	Material m_mat;
 };
 
 class RectangleDrawer : public Drawer

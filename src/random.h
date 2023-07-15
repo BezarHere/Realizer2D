@@ -5,73 +5,43 @@
 
 _R2D_NAMESPACE_START_
 
-namespace random
+class RandomInstance
 {
+public:
+	RandomInstance(uint32_t seed);
 
-	inline void randomize()
-	{
-		srand((uint32_t)(std::chrono::high_resolution_clock::now().time_since_epoch().count() & 0xffffffff));
-	}
+	void setSeed(uint32_t seed);
+	uint32_t getSeed() const;
+	uint32_t getState() const;
 
+private:
+	void advanceState();
+
+private:
+	uint32_t m_seed;
+	uint32_t m_state;
+};
+
+// TODO: make this reli on a shared RandomInstance object for random values
+class Random
+{
+public:
+	static void Randomize();
 	// [0.0f, 1.0f]
-	inline float rand_float()
-	{
-		return (float)rand() / 32767.0f;
-	}
-
+	static float RandFloat();
 	// [0.0, 1.0]
-	inline double rand_double()
-	{
-		return (double)rand() / 32767.0;
-	}
-
+	static double RandDouble();
 	// [0, 255]
-	inline int8_t rand_8u()
-	{
-		return (uint8_t)(rand() & 0xff);
-	}
-
-	inline int8_t rand_8()
-	{
-		return (int8_t)(rand() & 0xff);
-	}
-
-	inline int16_t rand_16()
-	{
-		return (int16_t)rand();
-	}
-
-	inline int32_t rand_32()
-	{
-		return (rand() << 16) + rand();
-	}
-
-	inline int64_t rand_64()
-	{
-		return ((int64_t)(rand_32()) << 32) + rand_32();
-	}
-
-	inline float randf_range(float from, float to)
-	{
-		if (from > to)
-			doswap(from, to);
-		return from + (rand_float() * (to - from));
-	}
-
-	inline double randd_range(double from, double to)
-	{
-		if (from > to)
-			doswap(from, to);
-		return from + (rand_double() * (to - from));
-	}
-
-	inline int32_t randi_range(int32_t from, int32_t to)
-	{
-		if (from > to)
-			doswap(from, to);
-		return from + (rand_32() % (to - from));
-	}
-
-}
+	static int8_t Rand8U();
+	static int8_t Rand8();
+	static int16_t Rand16();
+	static int32_t Rand32();
+	static int64_t Rand64();
+	static float RandfRange(float from, float to);
+	static double RanddRange(double from, double to);
+	static int32_t RandiRange(int32_t from, int32_t to);
+private:
+	static inline RandomInstance *s_sharedRandom = new RandomInstance(std::chrono::steady_clock::now().time_since_epoch().count() & 0xffffffff);
+};
 
 _R2D_NAMESPACE_END_

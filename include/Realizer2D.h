@@ -1,8 +1,10 @@
 #pragma once
 
 
-#include "../src/global.h"
-#include "../src/Engine.h"
-#include "../src/File.h"
-#include "../src/components/Drawers.h"
+#include "global.h"
+#include "Engine.h"
+#include "resource/File.h"
+#include "components/Drawers.h"
+#include "components/Physics.h"
+#include "components/Timer.h"
 

@@ -170,6 +170,15 @@ public:
       return rect;
     }
 
+    inline Rect<T> operator/(const T value) const
+    {
+      return Rect<T>(left / value, top / value, width / value, height / value);
+    }
+
+    inline Rect<T> operator*(const T value) const
+    {
+      return Rect<T>(left * value, top * value, width * value, height * value);
+    }
 
     ////////////////////////////////////////////////////////////
     /// \brief retruns the end of the rectangle

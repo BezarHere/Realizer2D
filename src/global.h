@@ -52,6 +52,8 @@ typedef sf::IntRect Recti;
 
 typedef sf::Vector2<real_t> Vector2;
 typedef sf::Vector2<int> Point2;
+typedef sf::Vector2<uint32_t> Size2;
+typedef sf::Color Color;
 typedef sf::Transform Transform2D;
 
 typedef void (*Action_t)();

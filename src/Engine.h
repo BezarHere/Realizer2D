@@ -1,10 +1,10 @@
 #pragma once
-#include "Object.h"
+#include "scene/Object.h"
 #include "components/Drawers.h"
-#include "VisualServer.h"
-#include "PhysicsServer.h"
+#include "servers/VisualServer.h"
+#include "servers/PhysicsServer.h"
 #include "random.h"
-#include "SceneTree.h"
+#include "scene/SceneTree.h"
 
 
 
@@ -44,7 +44,6 @@ public:
 	friend class VisualServer;
 	friend class PhysicsServer;
 	friend class Object2D;
-	Engine();
 
 	__forceinline static Engine* Singleton() { return Engine::s_instance; }
 
@@ -77,7 +76,12 @@ public:
 	bool isKeyJustPressed(Keyboard_t::Key key) const;
 	bool isKeyJustReleased(Keyboard_t::Key key) const;
 
+	Vector2 getMousePosition() const;
+	Vector2 getMouseScreenPosition() const;
+
 private:
+	Engine();
+
 	struct InputEvent
 	{
 		bool pressed = false;
@@ -93,6 +97,8 @@ private:
 	void update();
 	void physics();
 	void draw();
+
+	void pollEvents();
 
 	void registerInput(const sf::Event::MouseButtonEvent& button_event, bool pressed);
 	void registerInput(const sf::Event::MouseWheelScrollEvent& scroll_event);
@@ -112,6 +118,7 @@ private:
 	bool m_mainLoopLocked = false;
 
 	sf::Vector2f m_mousePosition;
+	sf::Vector2f m_worldMousePosition;
 	sf::Vector2f m_lastMousePosition;
 
 	std::unordered_map<Keyboard_t::Key, InputEvent> m_keyboardInput{};

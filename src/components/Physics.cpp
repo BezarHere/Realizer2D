@@ -1,6 +1,6 @@
 #include "global.h"
-#include "../PhysicsServer.h"
-#include "../Object.h"
+#include "servers/PhysicsServer.h"
+#include "scene/Object.h"
 #include "Physics.h"
 
 
@@ -76,6 +76,16 @@ void PhysicsBody::updateCache()
 const AABB& PhysicsBody::getCollectiveAABB() const
 {
   return m_collectiveAABB;
+}
+
+void PhysicsBody::setSleep(bool sleep)
+{
+  m_sleep = sleep;
+}
+
+bool PhysicsBody::getSleep() const
+{
+    return m_sleep;
 }
 
 void PhysicsBody::ownerDetachedCallback()

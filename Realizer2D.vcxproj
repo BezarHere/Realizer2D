@@ -71,18 +71,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>E:\Assets\visual studio\Realizer2D\deps;E:\Assets\visual studio\Realizer2D\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;E:\Assets\visual studio\Realizer2D\deps;E:\Assets\visual studio\Realizer2D\src;$(IncludePath)</IncludePath>
     <LibraryPath>E:\Assets\visual studio\Realizer2D\deps\SFML\lib;$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>E:\Assets\visual studio\Realizer2D\deps;E:\Assets\visual studio\Realizer2D\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;E:\Assets\visual studio\Realizer2D\deps;E:\Assets\visual studio\Realizer2D\src;$(IncludePath)</IncludePath>
     <LibraryPath>E:\Assets\visual studio\Realizer2D\deps\SFML\lib;$(LibraryPath)</LibraryPath>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\Assets\visual studio\Realizer2D\deps;E:\Assets\visual studio\Realizer2D\src;$(VC_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;E:\Assets\visual studio\Realizer2D\deps;E:\Assets\visual studio\Realizer2D\src;$(VC_IncludePath)</IncludePath>
     <LibraryPath>E:\Assets\visual studio\Realizer2D\deps\SFML\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
@@ -90,6 +90,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <IncludePath>$(ProjectDir)src;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -315,52 +316,62 @@
     <ClInclude Include="deps\SFML\Window\WindowStyle.hpp" />
     <ClInclude Include="include\prefix.h" />
     <ClInclude Include="include\Realizer2D.h" />
-    <ClInclude Include="src\Collidors.h" />
+    <ClInclude Include="src\core\Segment.h" />
+    <ClInclude Include="src\scene\Collidors.h" />
     <ClInclude Include="src\components\base.h" />
     <ClInclude Include="src\components\Drawers.h" />
     <ClInclude Include="src\components\Timer.h" />
     <ClInclude Include="src\core\Errors.h" />
     <ClInclude Include="src\core\StretchMode.h" />
     <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\File.h" />
+    <ClInclude Include="src\scene\Input.h" />
+    <ClInclude Include="src\servers\ResourcesServer.h" />
+    <ClInclude Include="src\resource\File.h" />
     <ClInclude Include="src\global.h" />
-    <ClInclude Include="src\Object.h" />
-    <ClInclude Include="src\ObjectComponent.h" />
+    <ClInclude Include="src\resource\Material.h" />
+    <ClInclude Include="src\scene\Object.h" />
+    <ClInclude Include="src\scene\ObjectComponent.h" />
     <ClInclude Include="src\ObjectComponent2D.h" />
     <ClInclude Include="src\OS.h" />
-    <ClInclude Include="src\PhysicsServer.h" />
-    <ClInclude Include="src\random.h" />
-    <ClInclude Include="src\SceneTree.h" />
-    <ClInclude Include="src\Solver.h" />
+    <ClInclude Include="src\servers\PhysicsServer.h" />
+    <ClInclude Include="src\Random.h" />
+    <ClInclude Include="src\resource\SceneFile.h" />
+    <ClInclude Include="src\scene\SceneTree.h" />
+    <ClInclude Include="src\servers\Solver.h" />
     <ClInclude Include="src\utils\CacheGuard.hpp" />
     <ClInclude Include="src\utils\TreeStructure.h" />
     <ClInclude Include="src\utils\VertexBufferWraper.h" />
     <ClInclude Include="src\VisualS.h" />
-    <ClInclude Include="src\VisualServer.h" />
+    <ClInclude Include="src\servers\VisualServer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Demo\main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Application.h" />
-    <ClCompile Include="src\Collidors.cpp" />
+    <ClCompile Include="src\core\Segment.cpp" />
+    <ClCompile Include="src\Random.cpp" />
+    <ClCompile Include="src\scene\Collidors.cpp" />
     <ClCompile Include="src\components\Drawers.cpp" />
     <ClCompile Include="src\components\Physics.cpp" />
     <ClCompile Include="src\components\Physics.h" />
     <ClCompile Include="src\components\Timer.cpp" />
     <ClCompile Include="src\Engine.cpp" />
-    <ClCompile Include="src\File.cpp" />
+    <ClCompile Include="src\resource\File.cpp" />
     <ClCompile Include="src\global.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">global.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="src\Object.cpp" />
-    <ClCompile Include="src\ObjectComponent.cpp" />
-    <ClCompile Include="src\PhysicsServer.cpp" />
-    <ClCompile Include="src\SceneTree.cpp" />
-    <ClCompile Include="src\Solver.cpp" />
+    <ClCompile Include="src\scene\Input.cpp" />
+    <ClCompile Include="src\scene\Object.cpp" />
+    <ClCompile Include="src\scene\ObjectComponent.cpp" />
+    <ClCompile Include="src\servers\PhysicsServer.cpp" />
+    <ClCompile Include="src\resource\Material.cpp" />
+    <ClCompile Include="src\scene\SceneTree.cpp" />
+    <ClCompile Include="src\servers\Solver.cpp" />
     <ClCompile Include="src\utils\VertexBufferWraper.cpp" />
-    <ClCompile Include="src\VisualServer.cpp" />
+    <ClCompile Include="src\servers\VisualServer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
