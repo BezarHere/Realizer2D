@@ -7,15 +7,28 @@ ObjectComponent::ObjectComponent()
 {
 }
 
-void ObjectComponent::ownerVisiblityChangeCallback()
+uint32_t ObjectComponent::getSingleton() const
+{
+	return 0U;
+}
+
+void ObjectComponent::onOwnerVisiblityChanged()
 {
 }
 
-void ObjectComponent::ownerDetachedCallback()
+void ObjectComponent::onOwnerDetached()
 {
 }
 
-void ObjectComponent::ownerAtachedCallback()
+void ObjectComponent::onOwnerAtached()
+{
+}
+
+void ObjectComponent::entredScene()
+{
+}
+
+void ObjectComponent::exitedScene()
 {
 }
 

@@ -45,42 +45,45 @@ public:
 	friend class PhysicsServer;
 	friend class Object2D;
 
-	__forceinline static Engine* Singleton() { return Engine::s_instance; }
-
 	// call to start the Realizer 2D's processes
-	static void Fire();
+	[[nodiscard]] static Error Fire();
 
 	static void SetProcessAction(ProcessFunction_t action);
 	static void SetPhysicsProcessAction(PhysicsFunction_t action);
 	static void SetOnInitAction(Action_t action);
 
-	static inline ProcessFunction_t GetProcessAction() { return m_processAction; }
-	static inline PhysicsFunction_t GetPhysicsProcessAction() { return m_physicsAction; }
-	static inline Action_t GetOnInitAction() { return m_onInitAction; }
+	static inline ProcessFunction_t GetProcessAction() { return s_processAction; }
+	static inline PhysicsFunction_t GetPhysicsProcessAction() { return s_physicsAction; }
+	static inline Action_t GetOnInitAction() { return s_onInitAction; }
 
-	void RegisterObject(Object2D* object);
-	void PopObject(Object2D* object);
+	static void RegisterObject(Object2D* object);
+	static void PopObject(Object2D* object);
 
-	void start();
+	static bool IsMouseButtonPressed(sf::Mouse::Button);
+	static bool IsMouseButtonJustPressed(sf::Mouse::Button);
+	static bool IsMouseButtonJustReleased(sf::Mouse::Button);
 
-	bool isMouseButtonPressed(sf::Mouse::Button) const;
-	bool isMouseButtonJustPressed(sf::Mouse::Button) const;
-	bool isMouseButtonJustReleased(sf::Mouse::Button) const;
+	static bool IsScrollingUp();
+	static bool IsScrollingDown();
+	static bool IsScrollingLeft();
+	static bool IsScrollingRight();
 
-	bool isScrollingUp() const;
-	bool isScrollingDown() const;
-	bool isScrollingLeft() const;
-	bool isScrollingRight() const;
+	static bool IsKeyPressed(Keyboard_t::Key key);
+	static bool IsKeyJustPressed(Keyboard_t::Key key);
+	static bool IsKeyJustReleased(Keyboard_t::Key key);
 
-	bool isKeyPressed(Keyboard_t::Key key) const;
-	bool isKeyJustPressed(Keyboard_t::Key key) const;
-	bool isKeyJustReleased(Keyboard_t::Key key) const;
+	// the mouse position in global coords
+	static Vector2 GetMousePosition();
 
-	Vector2 getMousePosition() const;
-	Vector2 getMouseScreenPosition() const;
-
+	// the mouse in screen space:
+	// (0, 0) is the mouse at the topleft of the screen,
+	// (screen_size.x, screen_size.y) is the mouse at the bottom right.
+	static Vector2 GetMouseScreenPosition();
 private:
-	Engine();
+	Engine() = delete;
+	Engine(const Engine& other) = delete;
+	//inline Engine* operator new() = delete;
+	static void Init();
 
 	struct InputEvent
 	{
@@ -91,44 +94,45 @@ private:
 
 	typedef float MouseWheelDelta_t;
 
-	void main_loop();
-	static void finalize_program();
+	static inline void Main();
+	static void Final();
 
-	void update();
-	void physics();
-	void draw();
+	static inline void Update();
+	static inline void physics();
+	static inline void draw();
 
-	void pollEvents();
+	static inline void pollEvents();
 
-	void registerInput(const sf::Event::MouseButtonEvent& button_event, bool pressed);
-	void registerInput(const sf::Event::MouseWheelScrollEvent& scroll_event);
-	void registerInput(const sf::Event::KeyEvent& key_event, bool pressed);
+	static inline void registerInput(const sf::Event::MouseButtonEvent& button_event, bool pressed);
+	static inline void registerInput(const sf::Event::MouseWheelScrollEvent& scroll_event);
+	static inline void registerInput(const sf::Event::KeyEvent& key_event, bool pressed);
 
 private:
-	static inline Engine* s_instance{nullptr};
-	static inline ObjID_t m_objCounter = 0;
-	static inline std::unordered_map<ObjID_t, Object2D*> m_objsRegistery{};
+	// TODO: remove this
+	static inline ObjID_t s_objCounter{ 0U };
+	static inline std::unordered_map<ObjID_t, Object2D*> s_objsRegistery{};
 
-	static inline ProcessFunction_t m_processAction;
-	static inline PhysicsFunction_t m_physicsAction;
-	static inline Action_t m_onInitAction;
+	static inline ProcessFunction_t s_processAction{ nullptr };
+	static inline PhysicsFunction_t s_physicsAction{ nullptr };
+	static inline Action_t s_onInitAction{ nullptr };
 
-	uint32_t m_currentFrame;
+	static inline uint32_t s_currentFrame{ 0U };
 
-	bool m_mainLoopLocked = false;
+	static inline bool s_mainLoopLocked{ false };
 
-	sf::Vector2f m_mousePosition;
-	sf::Vector2f m_worldMousePosition;
-	sf::Vector2f m_lastMousePosition;
+	static inline sf::Vector2f s_mousePosition{ 0.0f, 0.0f };
+	static inline sf::Vector2f s_worldMousePosition{ 0.0f, 0.0f };
+	static inline sf::Vector2f s_lastMousePosition{ 0.0f, 0.0f };
 
-	std::unordered_map<Keyboard_t::Key, InputEvent> m_keyboardInput{};
-	std::unordered_map<sf::Mouse::Button, InputEvent> m_mouseInput{};
-	MouseWheelDelta_t m_mouseWheelV;
-	MouseWheelDelta_t m_mouseWheelH;
+	static inline std::unordered_map<Keyboard_t::Key, InputEvent> s_keyboardInput{};
+	static inline std::unordered_map<sf::Mouse::Button, InputEvent> s_mouseInput{};
+	static inline MouseWheelDelta_t s_mouseWheelV{ 0.0f };
+	static inline MouseWheelDelta_t s_mouseWheelH{ 0.0f };
 
-	std::chrono::steady_clock::time_point m_lastFrameTime = std::chrono::high_resolution_clock::now();
-	real_t m_physicsDeltaTime = 1.0f / 60.0f;
+	static inline std::chrono::steady_clock::time_point s_lastFrameTime{ std::chrono::high_resolution_clock::now() };
+	static inline real_t s_physicsDeltaTime{ 1.0f / 60.0f };
 
+	static inline bool s_created{ false };
 };
 
 _R2D_NAMESPACE_END_

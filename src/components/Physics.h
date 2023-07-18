@@ -36,11 +36,14 @@ public:
 	virtual void setSleep(bool sleep);
 	bool getSleep() const;
 
+	uint32_t getSingleton() const override;
 
 protected:
 
-	void ownerDetachedCallback() override;
-	void ownerAtachedCallback() override;
+	void onOwnerDetached() override;
+	void onOwnerAtached() override;
+	void entredScene() override;
+	void exitedScene() override;
 
 private:
 	void _registerMe();

@@ -88,16 +88,29 @@ bool PhysicsBody::getSleep() const
     return m_sleep;
 }
 
-void PhysicsBody::ownerDetachedCallback()
+uint32_t PhysicsBody::getSingleton() const
+{
+  return 1U;
+}
+
+void PhysicsBody::onOwnerDetached()
 {
   if (isActive())
    _unregisterMe();
 }
 
-void PhysicsBody::ownerAtachedCallback()
+void PhysicsBody::onOwnerAtached()
 {
   if (isActive())
     _registerMe();
+}
+
+void PhysicsBody::entredScene()
+{
+}
+
+void PhysicsBody::exitedScene()
+{
 }
 
 void PhysicsBody::_registerMe()
@@ -141,4 +154,7 @@ PhysicsBodyType StaticBody::getType() const
 
 _R2D_COMP_NS_END_
 
-
+_R2D_register_comp(PhysicsBody);
+_R2D_register_comp(StaticBody);
+_R2D_register_comp(KinematicBody);
+_R2D_register_comp(DynamicBody);

@@ -24,7 +24,7 @@ uint32_t RandomInstance::getState() const
 
 void RandomInstance::advanceState()
 {
-	m_state = r2d::combine_hash(m_seed, m_state);
+	m_state = (uint32_t)((r2d::combine_hash(m_seed, m_state) >> 16) & 0xffffffff);
 }
 
 void Random::Randomize()

@@ -10,7 +10,7 @@ public:
 	CacheGuard(TSIG sign);
 	CacheGuard();
 
-	void update(TVAL value, TSIG sign);
+	void Update(TVAL value, TSIG sign);
 	inline const TVAL getValue() const { return value; }
 	inline const TSIG getSignature() const { return m_signature; }
 
@@ -43,7 +43,7 @@ inline CacheGuard<TVAL, TSIG>::CacheGuard()
 }
 
 template<class TVAL, class TSIG>
-inline void CacheGuard<TVAL, TSIG>::update(TVAL value, TSIG sign)
+inline void CacheGuard<TVAL, TSIG>::Update(TVAL value, TSIG sign)
 {
 	if (sign == m_signature)
 		return;

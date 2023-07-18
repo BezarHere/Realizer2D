@@ -49,66 +49,26 @@ Color ApplicationConfig::getClearColor() const
 
 void ApplicationConfig::makeMaster()
 {
-	PushToConfigStack(*this);
+	ReplaceMasterConfig(*this);
 }
 
-void ApplicationConfig::PushToConfigStack(ApplicationConfig& config)
+void ApplicationConfig::ReplaceMasterConfig(ApplicationConfig& config)
 {
-	ApplicationConfig* config_ptr = &config;
-	for (const ApplicationConfig& i : s_configStack._Get_container())
-	{
-		// possibly adding a config that is already inside
-		if (&i == config_ptr)
-		{
-			_pr_warning("Failed to add config to the stack: apllication config already inside the config stack!");
-			return;
-		}
-	}
-	s_configStack.push(config);
-}
-
-ApplicationConfig& ApplicationConfig::PopMasterConfig()
-{
-	ApplicationConfig& master = MasterConfig();
-	RemoveMasterConfig();
-	return master;
+	if (&s_masterConfig == &config)
+		return;
+	s_masterConfig.removedFromMaster();
+	s_masterConfig = config;
 }
 
 ApplicationConfig& ApplicationConfig::MasterConfig()
 {
-	return s_configStack.top();
+	return s_masterConfig;
 }
 
-void ApplicationConfig::RemoveMasterConfig()
+ApplicationConfig& ApplicationConfig::CreateInit()
 {
-	s_configStack.pop();
-	ValidateMasterStack();
-}
-
-const std::stack<ApplicationConfig> ApplicationConfig::GetConfigStack()
-{
-	return s_configStack;
-}
-
-std::stack<ApplicationConfig> ApplicationConfig::CreateInitStack()
-{
-	std::stack<ApplicationConfig> stack;
-	ApplicationConfig starter;
-	stack.push(starter);
-	return stack;
-}
-
-void ApplicationConfig::ValidateMasterStack(bool show_warning)
-{
-	if (s_configStack.empty())
-	{
-		if (show_warning)
-		{
-			_pr_warning("Master config stack is emptied: the used master application config for all the engine processes is being removed, a default application config is now the master config.");
-		}
-		ApplicationConfig default_cfg;
-		s_configStack.push(default_cfg);
-	}
+	s_masterConfigPuppet = new ApplicationConfig();
+	return *s_masterConfigPuppet;
 }
 
 void ApplicationConfig::removedFromMaster()

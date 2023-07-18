@@ -14,7 +14,7 @@ namespace components
 	{
 		if (time <= 0.0f)
 		{
-			_pr_error("can't set 'time left' to a value less then or equal to 0.0");
+			_r2d_error("can't set 'time left' to a value less then or equal to 0.0");
 			return;
 		}
 		m_timeLeft = time;
@@ -24,7 +24,7 @@ namespace components
 	{
 		if (time <= 0.0f)
 		{
-			_pr_error("can't set 'wait time' to a value less then or equal to 0.0");
+			_r2d_error("can't set 'wait time' to a value less then or equal to 0.0");
 			return;
 		}
 		m_waitTime = time;

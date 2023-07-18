@@ -55,6 +55,8 @@
     </None>
     <None Include="cpp.hint" />
     <None Include="shaders\circle.frag" />
+    <None Include="shaders\postprocessing.frag" />
+    <None Include="build.py" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\global.h">
@@ -438,6 +440,12 @@
     <ClInclude Include="src\scene\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\global.cpp">
@@ -504,6 +512,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\Errors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

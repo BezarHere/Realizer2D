@@ -113,7 +113,8 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy "$(ProjectDir)shaders" "$(OutDir)" /E /H /C /I /Y</Command>
+      <Command>py "$(ProjectDir)build.py" "$(OutDir)"
+py "$(ProjectDir)src/statics.py"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -136,7 +137,8 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy "$(ProjectDir)shaders" "$(OutDir)" /E /H /C /I /Y</Command>
+      <Command>py "$(ProjectDir)build.py" "$(OutDir)"
+py "$(ProjectDir)src/statics.py"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -162,7 +164,8 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy "$(ProjectDir)shaders" "$(OutDir)" /E /H /C /I /Y</Command>
+      <Command>py "$(ProjectDir)build.py" "$(OutDir)"
+py "$(ProjectDir)src/statics.py"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -188,10 +191,12 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy "$(ProjectDir)shaders" "$(OutDir)" /E /H /C /I /Y</Command>
+      <Command>py "$(ProjectDir)build.py" "$(OutDir)"
+py "$(ProjectDir)src/statics.py"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="build.py" />
     <None Include="cpp.hint" />
     <None Include="deps\SFML\Audio\SoundFileFactory.inl" />
     <None Include="deps\SFML\Graphics\Glsl.inl" />
@@ -214,6 +219,7 @@
     <None Include="sfml-window-2.dll" />
     <None Include="sfml-window-d-2.dll" />
     <None Include="shaders\circle.frag" />
+    <None Include="shaders\postprocessing.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="deps\SFML\Audio.hpp" />
@@ -316,6 +322,8 @@
     <ClInclude Include="deps\SFML\Window\WindowStyle.hpp" />
     <ClInclude Include="include\prefix.h" />
     <ClInclude Include="include\Realizer2D.h" />
+    <ClInclude Include="src\algorithms.h" />
+    <ClInclude Include="src\components\Camera.h" />
     <ClInclude Include="src\core\Segment.h" />
     <ClInclude Include="src\scene\Collidors.h" />
     <ClInclude Include="src\components\base.h" />
@@ -350,6 +358,8 @@
     </ClCompile>
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Application.h" />
+    <ClCompile Include="src\components\Camera.cpp" />
+    <ClCompile Include="src\core\Errors.cpp" />
     <ClCompile Include="src\core\Segment.cpp" />
     <ClCompile Include="src\Random.cpp" />
     <ClCompile Include="src\scene\Collidors.cpp" />

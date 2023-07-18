@@ -86,7 +86,7 @@ char* File::read(size_t len)
 	// not enough reading space
 	if (space() < len)
 	{
-		_pr_error(
+		_r2d_error(
 			"Not enough data for buffer of size " + std::to_string(reading_length) + ", there is only " + std::to_string(space()) + " bytes for reading: returning 'nullptr'");
 		return nullptr;
 	}

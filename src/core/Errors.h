@@ -3,13 +3,16 @@
 
 _R2D_NAMESPACE_START_
 
-// why the need in a man for a surpluse of errors, 65536 errors shall suffice
-enum Error : uint16_t
+enum class Error : uint32_t
 {
-	OK,
-	FAILED,
-	ERR_NAME_ALREADY_EXISTS,
-	ERR_ALREADY_EXISTS
+	Ok,
+	Failed,
+	NameAlreadyExists,
+	AlreadyExists,
+	Max // meaningless.
 };
+
+extern const std::string& GetErrorName(Error error);
+
 
 _R2D_NAMESPACE_END_

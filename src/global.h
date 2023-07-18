@@ -71,16 +71,26 @@ inline void __doswap__(T& a, T& b)
 	b = temp;
 }
 
-extern void _pr_error(std::string l);
-extern void _pr_warning(std::string l);
+#define _r2d_error(msg) std::cerr << "R2D: " << __FILE__ << ':' << __LINE__ << ": " << (msg) << std::endl;
+#define _r2d_warning(msg) std::clog << "R2D: " << __FILE__ << ':' << __LINE__ << ": " << (msg) << std::endl;
+#ifdef _DEBUG
+#define _r2d_print(msg) std::cout << "R2D: " << __FILE__ << ':' << __LINE__ << ": " << (msg) << std::endl;
+#elif
+#define _r2d_print(msg)
+#endif
 
+//extern void _r2d_error(std::string l);
+//extern void _r2d_warning(std::string l);
+// 
 // use as a predicate in 'std::find'
 template <typename _T>
 struct _Find_Value_In_Map
 {
 	template <typename _TK>
 	inline bool operator()(const std::pair<_TK, _T>& pair) const
-	{	return pair.second == value; }
+	{
+		return pair.second == value;
+	}
 
 	_T value;
 };

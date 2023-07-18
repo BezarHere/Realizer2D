@@ -31,17 +31,14 @@ ObjectPath::PathData_t ObjectPath::GetData(const std::string& path)
 }
 
 Object2D::Object2D()
-	: engine{ Engine::Singleton() }
 {
-	assert_msg(engine, "can't create an Object2D without the engine starting first.");
-	if (engine)engine->RegisterObject(this);
+	Engine::RegisterObject(this);
 }
 
 Object2D::Object2D(const std::string& name)
-	: m_name(name), engine{ Engine::Singleton() }
+	: m_name(name)
 {
-	assert_msg(engine, "can't create an Object2D without the engine starting first.");
-	if (engine)engine->RegisterObject(this);
+	Engine::RegisterObject(this);
 }
 
 Object2D::~Object2D()
@@ -55,7 +52,7 @@ Object2D::~Object2D()
 	{
 		delete kv.second;
 	}
-	engine->PopObject(this);
+	Engine::PopObject(this);
 }
 
 void Object2D::update(real_t delta)
@@ -175,22 +172,17 @@ Error Object2D::setName(const std::string& name)
 	if (m_parent)
 	{
 		if (m_parent->hasChild(name))
-			return ERR_NAME_ALREADY_EXISTS;
+			return Error::NameAlreadyExists;
 
 		m_parent->childRenamed(m_name, name);
 	}
 	m_name = name;
-	return OK;
+	return Error::Ok;
 }
 
-ObjectComponent* Object2D::getComponent(const size_t typehash) const
+ObjectComponent* Object2D::getComponent(const size_t index) const
 {
-	const auto& iter = std::find_if(
-		m_components.begin(),
-		m_components.end(),
-		[typehash](ObjectComponent* ptr) { return ptr && typeid(*ptr).hash_code() == typehash; }
-	);
-	return iter == m_components.end() ? nullptr : *iter;
+	return m_components[index];
 }
 
 void Object2D::setZIndex(ZIndex_t zindex)
@@ -198,22 +190,43 @@ void Object2D::setZIndex(ZIndex_t zindex)
 	m_zIndex = zindex;
 }
 
-void Object2D::installComponent(ObjectComponent* component)
+Error Object2D::addComponent(ObjectComponent* component)
 {
 	// can't install a component owned by another object (or reistall an already installed component)
 	assert(component->m_owner == nullptr);
+
+	// already has a singleton or this isn't a singleton
+	if (hasComponentSingleton(component->getSingleton()))
+	{
+		return Error::AlreadyExists;
+	}
+	else
+	{
+		m_singletonComponentLookupTable.insert(component->getSingleton());
+	}
+
 	component->m_owner = this;
-	component->ownerAtachedCallback();
-	m_components.insert(component);
+	component->onOwnerAtached();
+	m_components.push_back(component);
+	return Error::Ok;
 }
 
 void Object2D::removeComponent(ObjectComponent* component)
 {
 	// can't remove a component not owned by this
 	assert(component->m_owner == this);
-	component->ownerDetachedCallback();
-	component->m_owner = nullptr;
-	m_components.erase(component);
+	removeComponent(component, true);
+}
+
+std::vector<ObjectComponent*>::const_iterator Object2D::findComponent(ObjectComponent* component) const
+{
+	for (auto i = m_components.begin(); i != m_components.end(); i++)
+	{
+		if (*i == component)
+			return i;
+	}
+	// can't find it :(
+	return m_components.end();
 }
 
 bool Object2D::hasComponent(ObjectComponent* component) const
@@ -226,7 +239,7 @@ bool Object2D::hasComponent(ObjectComponent* component) const
 	return false;
 }
 
-const std::unordered_set<ObjectComponent*>& Object2D::getComponents() const
+const std::vector<ObjectComponent*>& Object2D::getComponents() const
 {
 	return m_components;
 }
@@ -271,11 +284,55 @@ Error Object2D::addToSceneTree()
 {
 	if (getParent())
 	{
-		_pr_error("can't add a low object (with a parent) to be a root object");
-		return Error::FAILED;
+		_r2d_error("can't add a low object (with a parent) to be a root object");
+		return Error::Failed;
 	}
 	SceneTree::AddObject(this);
-	return Error::OK;
+	return Error::Ok;
+}
+
+bool Object2D::isInsideScene() const
+{
+	return m_insideScene;
+}
+
+bool Object2D::hasComponentSingleton(uint8_t singleton_id) const
+{
+	// TODO: make this faster...
+	return singleton_id ?
+		m_singletonComponentLookupTable.find(singleton_id) != m_singletonComponentLookupTable.end() : false;
+}
+
+void Object2D::regenerateComponentsSingletonTable()
+{
+	m_singletonComponentLookupTable.clear();
+	for (ObjectComponent* comp : m_components)
+	{
+		if (comp->getSingleton())
+		{
+			if (hasComponentSingleton(comp->getSingleton()))
+			{
+				// FIXME: no more info? what's the type of the component?
+				_r2d_error("found a bugged singleton component with sig-id: " + std::to_string(comp->getSingleton()) + ", deleting the component.");
+				removeComponent(comp, false);
+			}
+			else
+			{
+				m_singletonComponentLookupTable.insert(comp->getSingleton());
+			}
+		}
+	}
+}
+
+void Object2D::removeComponent(ObjectComponent* component, bool update_singleton)
+{
+	component->onOwnerDetached();
+	component->m_owner = nullptr;
+
+	if (update_singleton && component->getSingleton())
+		m_singletonComponentLookupTable.erase(component->getSingleton());
+
+	m_components.erase(findComponent(component));
 }
 
 void Object2D::updateBranchVisiblty()
@@ -290,7 +347,7 @@ void Object2D::propgateVisiblityChangeCallback()
 {
 	for (ObjectComponent* comp : m_components)
 	{
-		comp->ownerVisiblityChangeCallback();
+		comp->onOwnerVisiblityChanged();
 	}
 
 	for (const auto& kv : m_children)
@@ -312,6 +369,10 @@ void Object2D::_onRemovedFromScene()
 	{
 		kv.second->_onRemovedFromScene();
 	}
+	for (auto comp : m_components)
+	{
+		comp->exitedScene();
+	}
 }
 
 void Object2D::_onAddedToScene()
@@ -321,6 +382,10 @@ void Object2D::_onAddedToScene()
 	for (const auto& kv : m_children)
 	{
 		kv.second->_onAddedToScene();
+	}
+	for (auto comp : m_components)
+	{
+		comp->entredScene();
 	}
 }
 

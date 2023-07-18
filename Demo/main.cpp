@@ -77,23 +77,22 @@ public:
 	{
 		Bullet* p = new Bullet(velocity.normalized());
 		p->setPosition(getGlobalPosition());
-		p->installComponent(new r2d::components::CircleDrawer(4.0f));
+		p->addComponent(new r2d::components::CircleDrawer(4.0f));
 		r2d::SceneTree::AddObject(p);
 	}
 
 	void update(real_t delta) override
 	{
-		r2d::Engine* engine = r2d::Engine::Singleton();
 		r2d::Vector2 v;
-		if (engine->isKeyPressed(r2d::Keyboard_t::W))
+		if (r2d::Engine::IsKeyPressed(r2d::Keyboard_t::W))
 			v.y -= 1.0f;
-		if (engine->isKeyPressed(r2d::Keyboard_t::S))
+		if (r2d::Engine::IsKeyPressed(r2d::Keyboard_t::S))
 			v.y += 1.0f;
-		if (engine->isKeyPressed(r2d::Keyboard_t::A))
+		if (r2d::Engine::IsKeyPressed(r2d::Keyboard_t::A))
 			v.x -= 1.0f;
-		if (engine->isKeyPressed(r2d::Keyboard_t::D))
+		if (r2d::Engine::IsKeyPressed(r2d::Keyboard_t::D))
 			v.x += 1.0f;
-		if (engine->isKeyJustPressed(r2d::Keyboard_t::Space))
+		if (r2d::Engine::IsKeyJustPressed(r2d::Keyboard_t::Space))
 		{
 			shoot();
 		}
@@ -126,8 +125,8 @@ void start_spaceships()
 
 		left_hand->setPosition({ -32.0f, 16.0f });
 		right_hand->setPosition({ 32.0f, 16.0f });
-		left_hand->installComponent(new r2d::components::CircleDrawer(8.0f));
-		right_hand->installComponent(new r2d::components::CircleDrawer(8.0f));
+		left_hand->addComponent(new r2d::components::CircleDrawer(8.0f));
+		right_hand->addComponent(new r2d::components::CircleDrawer(8.0f));
 
 		r2d::Points_t points{
 			sf::Vector2f(-16.0f, 74.0f), sf::Vector2f(-22.6f, 31.0f), sf::Vector2f(4.4f, 4.0f), sf::Vector2f(31.5f, 31.0f)
@@ -137,7 +136,7 @@ void start_spaceships()
 		player[i].addChild(right_hand);
 		//player->addChild(apps_o);
 
-		player[i].installComponent(new r2d::components::CircleDrawer(16.0f));
+		player[i].addComponent(new r2d::components::CircleDrawer(16.0f));
 		((r2d::components::CircleDrawer*)player[i].getComponent(typeid(r2d::components::CircleDrawer).hash_code()))->setColor({ 255, 155, 55 });
 
 		player[i].setZIndex(1);
@@ -152,7 +151,7 @@ r2d::components::CircleDrawer* drawer_cir = new r2d::components::CircleDrawer(12
 void start_circles()
 {
 	circle = new r2d::Object2D();
-	circle->installComponent(drawer_cir);
+	circle->addComponent(drawer_cir);
 	r2d::SceneTree::AddObject(circle);
 }
 
@@ -168,9 +167,9 @@ void start_bath()
 {
 	bath_platform = new r2d::Object2D("platform");
 	auto* phy = new r2d::components::StaticBody();
-	bath_platform->installComponent(phy);
+	bath_platform->addComponent(phy);
 	phy->addCollidor(new r2d::RectangleCollidor({128.0f, 24.0f}));
-	bath_platform->installComponent(new r2d::components::RectangleDrawer({ 128.0f, 24.0f }));
+	bath_platform->addComponent(new r2d::components::RectangleDrawer({ 128.0f, 24.0f }));
 	bath_platform->setPosition(0.0f, 64.0f);
 	bath_platform->addToSceneTree();
 	phy->updateCache();
@@ -190,27 +189,34 @@ r2d::Object2D *collision_test_create_tringle(std::string name, bool kinetic)
 		r2d::Vector2(r2d::Random::RandfRange(-8.0f, 8.0f) - 16.0f, r2d::Random::RandfRange(-8.0f, 8.0f) + 8.0f),
 	};
 	auto drawer = new r2d::components::PolygonDrawer(points);
-	traingle->installComponent(drawer);
+	traingle->addComponent(drawer);
 	r2d::components::PhysicsBody* phy_body;
 	if (kinetic)
 		phy_body = (new r2d::components::KinematicBody());
 	else
 		phy_body = (new r2d::components::StaticBody());
-	traingle->installComponent(phy_body);
+	traingle->addComponent(phy_body);
 	traingle->addToSceneTree();
 	return traingle;
 }
 
 r2d::Object2D* traingles[2];
+r2d::Object2D* camera_obj;
 void start_collision_test()
 {
 	traingles[0] = collision_test_create_tringle("first", false);
 	traingles[1] = collision_test_create_tringle("second", true);
+	camera_obj = new r2d::Object2D("cam");
+	r2d::components::Camera* cam = new r2d::components::Camera();
+	cam->makeCurrent();
+	cam->setCentered(true);
+	camera_obj->addComponent(cam);
+	camera_obj->addToSceneTree();
 }
 
 void physics_collision_test(real_t delta)
 {
-	traingles[1]->setPosition(r2d::Engine::Singleton()->getMousePosition());
+	traingles[1]->setPosition(r2d::Engine::GetMousePosition());
 }
 
 const wchar_t* widen(const char* txt)
@@ -239,7 +245,10 @@ int main(int argc, const char** argv)
 	r2d::Engine::SetProcessAction(demos.at(demotype).process);
 	r2d::Engine::SetPhysicsProcessAction(demos.at(demotype).physics);
 	r2d::VisualServer::SetDrawingAction(demos.at(demotype).drawer);
-	r2d::Engine::Fire();
+	if (r2d::Engine::Fire() != r2d::Error::Ok)
+	{
+		std::cerr << "FAILED TO RUN REALIZER 2D" << std::endl;
+	}
 
 	return EXIT_SUCCESS;
 }

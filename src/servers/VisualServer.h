@@ -5,6 +5,7 @@
 #include "Application.h"
 #include "scene/SceneTree.h"
 #include "components/Drawers.h"
+#include "components/Camera.h"
 
 _R2D_NAMESPACE_START_
 #define global static inline
@@ -13,8 +14,7 @@ class VisualServer final
 {
 	friend class Engine;
 public:
-	static inline VisualServer* Singleton() { return VisualServer::s_instance; }
-	static inline sf::RenderWindow* GetWindow() { return (sf::RenderWindow*)VisualServer::s_window; }
+	static inline sf::RenderWindow* GetWindow() { return VisualServer::s_window; }
 
 	static void SetDrawingAction(DrawerFunction_t action);
 	static inline DrawerFunction_t GetDrawingAction() { return s_drawAction; }
@@ -23,19 +23,16 @@ public:
 	
 	// automaticlty updated
 	// ** only call if you know what you're doing **
-	static void update();
 
 	static void updateView();
-	
-	static void setViewPosition(sf::Vector2f position);
-	static void moveView(sf::Vector2f offset);
-	static void setViewZoom(sf::Vector2f amount);
-	static void setViewZoom(float amount);
-	static void setViewCentered(bool centered);
 
-	global sf::Vector2f getViewPosition() { return m_viewPosition; }
-	global sf::Vector2f getViewZoom() { return m_viewZoom; }
-	global bool isViewCentered() { return m_viewCentered; }
+	// same as calling make current on the camera
+	static void MakeCameraCurrent(components::Camera* camera);
+	static components::Camera* GetCamera();
+
+	static Vector2 GetScreenSize();
+	// the topleft position in global coords
+	static Vector2 GetScreenOrigin();
 
 	struct _ZHeightElement
 	{
@@ -63,6 +60,7 @@ private:
 	class VSRenderWindow : public sf::RenderWindow
 	{
 	public:
+		VSRenderWindow(){}
 		VSRenderWindow(
 			sf::VideoMode mode,
 			const std::string& title,
@@ -73,25 +71,28 @@ private:
 		inline void onResize() override { VisualServer::ScreenResized(); }
 	};
 
-	VisualServer() = 0;
+	VisualServer() = delete;
+
+	// safe way, making the default cam visible in the normal get camera function might be buggey.
+	static components::Camera* GetCameraInt();
 
 	static void ScreenResized();
 	static void PreDraw();
+	static void DoDraw();
 
 private:
-	global VSRenderWindow* s_window;
+	global sf::RenderTexture s_drawTexture;
+	global VSRenderWindow* s_window{ nullptr };
 	global DrawerFunction_t s_drawAction;
 	global const ApplicationConfig m_appliedConfig;
 	global const ViewStretchMode m_viewStretchMode = ViewStretchMode::Expand;
-	global Vector2 m_viewZoom = sf::Vector2f(1.0f, 1.0f);
-	global Vector2 m_viewPosition = sf::Vector2f(0.0f, 0.0f);
 	global Vector2 s_screenSize{};
 	global Vector2 s_screenTopleft{};
-	// if false; the view will be anchored at the topleft
-	global bool m_viewCentered = true;
 	global sf::RenderStates m_worldRenderStates;
 	global sf::RenderStates m_screenRenderStates;
 	global Size2 s_startWindowSize;
+	global components::Camera s_defaultCamera{};
+	global components::Camera* s_currentCamera = nullptr;
 
 	// current way of handling z-index
 

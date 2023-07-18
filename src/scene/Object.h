@@ -73,16 +73,17 @@ public:
 	inline void setObjectID(ObjID_t new_oid) { assert(m_objId == 0); m_objId = new_oid; }
 
 	// returns first component of with typehash
-	ObjectComponent* getComponent(const size_t typehash) const;
+	ObjectComponent* getComponent(const size_t index) const;
 
 	void setZIndex(ZIndex_t zindex);
 	inline ZIndex_t getZIndex() { return m_zIndex; }
 
-	virtual void installComponent(ObjectComponent* component);
+	virtual Error addComponent(ObjectComponent* component);
 	virtual void removeComponent(ObjectComponent* component);
+	virtual std::vector<ObjectComponent*>::const_iterator findComponent(ObjectComponent* component) const;
 	// -- to check if a component is owned by this; check the getOwner() == this_obj
 	virtual bool hasComponent(ObjectComponent* component) const;
-	virtual const std::unordered_set<ObjectComponent*>& getComponents() const;
+	virtual const std::vector<ObjectComponent*>& getComponents() const;
 
 	Transform2D getGlobalTransform() const;
 	Vector2 getGlobalPosition() const;
@@ -109,7 +110,19 @@ public:
 	void show();
 	void hide();
 
+	// if this object is in the scene tree
+	// only objects in the scene tree get updated/drawn
+	// if the object is outside the tree, it's more or less in an idle state
+	bool isInsideScene() const;
+
+	// only works with components that has isSingleton() == true
+	bool hasComponentSingleton(uint8_t singleton_id) const;
+
+	// call this if you find some weired bugs with adding singleton components (and also report the bug!)
+	void regenerateComponentsSingletonTable();
+
 private:
+	void removeComponent(ObjectComponent* component, bool update_singleton);
 
 	void updateBranchVisiblty();
 	void propgateVisiblityChangeCallback();
@@ -123,11 +136,11 @@ private:
 	// called before renaming, check for name collisions before calling
 	void childRenamed(const std::string& og_name, const std::string& new_name);
 private:
-	Engine* engine;
 	std::string m_name;
 	ObjID_t m_objId = 0;
 	//std::unordered_map<const char*, std::shared_ptr<ObjectComponent>> m_components;
-	std::unordered_set<ObjectComponent*> m_components;
+	std::vector<ObjectComponent*> m_components;
+	std::unordered_set<uint32_t> m_singletonComponentLookupTable;
 	std::unordered_map<std::string, Object2D*> m_children;
 	Object2D* m_parent{ nullptr };
 	ZIndex_t m_zIndex = 0;

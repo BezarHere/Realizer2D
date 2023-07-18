@@ -6,3 +6,5 @@
 #define doswap(a, b) __doswap__(a, b)
 #define global
 #define R2D_CLEAR_CLR sf::Color(12U, 12U, 12U, 0U)
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+#define min(a, b) ((a) < (b) ? (a) : (b))
