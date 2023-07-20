@@ -180,6 +180,30 @@ public:
       return Rect<T>(left * value, top * value, width * value, height * value);
     }
 
+    inline void setPosition(Vector2<T> position)
+    {
+      left = position.x;
+      top = position.y;
+    }
+
+    inline void setPosition(T x, T y)
+    {
+      left = x;
+      top = y;
+    }
+
+    inline void setSize(T pwidth, T pheight)
+    {
+      width = pwidth;
+      height = pheight;
+    }
+
+    inline void setEnd(T x, T y)
+    {
+      width = x - left;
+      height = y - top;
+    }
+
     ////////////////////////////////////////////////////////////
     /// \brief retruns the end of the rectangle
     ///

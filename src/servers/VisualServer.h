@@ -2,9 +2,10 @@
 #include <stack>
 #include <set>
 #include "global.h"
-#include "Application.h"
+#include "core/ApplicationConfig.h"
 #include "scene/SceneTree.h"
-#include "components/Drawers.h"
+#include "components/Graphical.h"
+#include "components/Gui.h"
 #include "components/Camera.h"
 
 _R2D_NAMESPACE_START_
@@ -88,8 +89,8 @@ private:
 	global const ViewStretchMode m_viewStretchMode = ViewStretchMode::Expand;
 	global Vector2 s_screenSize{};
 	global Vector2 s_screenTopleft{};
-	global sf::RenderStates m_worldRenderStates;
-	global sf::RenderStates m_screenRenderStates;
+	global sf::RenderStates s_worldRenderStates;
+	global sf::RenderStates s_screenRenderStates;
 	global Size2 s_startWindowSize;
 	global components::Camera s_defaultCamera{};
 	global components::Camera* s_currentCamera = nullptr;

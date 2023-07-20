@@ -8,3 +8,4 @@
 #define R2D_CLEAR_CLR sf::Color(12U, 12U, 12U, 0U)
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #define min(a, b) ((a) < (b) ? (a) : (b))
+#define _R2D_COMP_NS_START_ _R2D_NAMESPACE_START_ namespace components {

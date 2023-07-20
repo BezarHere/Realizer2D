@@ -67,6 +67,7 @@ void Object2D::update(real_t delta)
 	}
 }
 
+// the 'uses relative coords' state is handled by the visual server
 void Object2D::draw(sf::RenderTarget& target, sf::RenderStates state) const
 {
 	state.transform.combine(getTransform());
@@ -121,6 +122,16 @@ void Object2D::show()
 void Object2D::hide()
 {
 	setVisible(false);
+}
+
+void Object2D::setUsesRelativeCoords(bool using_rel_coords)
+{
+	m_usesRelativeCoords = using_rel_coords;
+}
+
+bool Object2D::getUsesRelativeCoords() const
+{
+	return m_usesRelativeCoords;
 }
 
 void Object2D::addChild(Object2D* child)

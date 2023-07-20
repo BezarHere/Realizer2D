@@ -6,13 +6,14 @@ namespace R2D::utils
 	{
 	public:
 		// takes ownership of the buffer
-		VertexBufferWraper(sf::VertexBuffer* buffer);
+		VertexBufferWraper(const sf::VertexBuffer& buffer);
 		VertexBufferWraper(sf::PrimitiveType type, sf::VertexBuffer::Usage usage, size_t size = 0);
 		~VertexBufferWraper();
 
-		inline sf::VertexBuffer* getBuffer() const { return m_buffer.get(); }
+		__forceinline sf::VertexBuffer& getBuffer() { return m_buffer; }
+		__forceinline const sf::VertexBuffer& getBuffer() const { return m_buffer; }
 
 	private:
-		const std::unique_ptr<sf::VertexBuffer> m_buffer;
+		sf::VertexBuffer m_buffer;
 	};
 }

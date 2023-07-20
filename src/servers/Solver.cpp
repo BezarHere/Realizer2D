@@ -1,5 +1,6 @@
 #include "global.h"
 #include "solver.h"
+#include "utils/algorithms.h"
 
 using namespace r2d::components;
 

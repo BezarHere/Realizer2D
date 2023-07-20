@@ -109,6 +109,14 @@ public:
 	void setVisible(bool visible);
 	void show();
 	void hide();
+	
+	// if true: this will be drawn like every other game object
+	// else: this will be drawn directly on screen like UI
+	void setUsesRelativeCoords(bool using_rel_coords);
+
+	// will the pbject drawing be effected by the camera, if this is false the object will draw like UI
+	// all children will have the same property value, so this only works on root objects
+	bool getUsesRelativeCoords() const;
 
 	// if this object is in the scene tree
 	// only objects in the scene tree get updated/drawn
@@ -144,6 +152,8 @@ private:
 	std::unordered_map<std::string, Object2D*> m_children;
 	Object2D* m_parent{ nullptr };
 	ZIndex_t m_zIndex = 0;
+	// will the pbject drawing be effected by the camera, if this is false the object will draw like UI
+	bool m_usesRelativeCoords{ true };
 
 	bool m_visible{ true };
 	bool m_branchVisible{ true };

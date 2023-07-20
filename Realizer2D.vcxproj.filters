@@ -380,7 +380,7 @@
     <ClInclude Include="src\utils\CacheGuard.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\Drawers.h">
+    <ClInclude Include="src\components\Graphical.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\VertexBufferWraper.h">
@@ -392,10 +392,10 @@
     <ClInclude Include="src\servers\VisualServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Random.h">
+    <ClInclude Include="src\utils\Random.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\OS.h">
+    <ClInclude Include="src\servers\OS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\resource\File.h">
@@ -443,7 +443,19 @@
     <ClInclude Include="src\components\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\algorithms.h">
+    <ClInclude Include="src\utils\algorithms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\TileMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource\TileSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource\Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\Gui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -457,7 +469,7 @@
     <ClCompile Include="src\scene\Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\components\Drawers.cpp">
+    <ClCompile Include="src\components\Graphical.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\VertexBufferWraper.cpp">
@@ -493,7 +505,7 @@
     <ClCompile Include="src\components\Physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Application.h">
+    <ClCompile Include="src\core\ApplicationConfig.h">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="src\servers\Solver.cpp">
@@ -505,19 +517,28 @@
     <ClCompile Include="src\core\Segment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Random.cpp">
+    <ClCompile Include="src\utils\Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Application.cpp">
+    <ClCompile Include="src\core\ApplicationConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\components\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\core\Errors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\resource\TileSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\algorithms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\Gui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

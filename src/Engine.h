@@ -1,9 +1,9 @@
 #pragma once
 #include "scene/Object.h"
-#include "components/Drawers.h"
+#include "components/Graphical.h"
 #include "servers/VisualServer.h"
 #include "servers/PhysicsServer.h"
-#include "random.h"
+#include "utils/Random.h"
 #include "scene/SceneTree.h"
 
 

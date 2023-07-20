@@ -322,12 +322,16 @@ py "$(ProjectDir)src/statics.py"</Command>
     <ClInclude Include="deps\SFML\Window\WindowStyle.hpp" />
     <ClInclude Include="include\prefix.h" />
     <ClInclude Include="include\Realizer2D.h" />
-    <ClInclude Include="src\algorithms.h" />
+    <ClInclude Include="src\components\Gui.h" />
+    <ClInclude Include="src\utils\algorithms.h" />
     <ClInclude Include="src\components\Camera.h" />
+    <ClInclude Include="src\components\TileMap.h" />
     <ClInclude Include="src\core\Segment.h" />
+    <ClInclude Include="src\resource\Resource.h" />
+    <ClInclude Include="src\resource\TileSet.h" />
     <ClInclude Include="src\scene\Collidors.h" />
     <ClInclude Include="src\components\base.h" />
-    <ClInclude Include="src\components\Drawers.h" />
+    <ClInclude Include="src\components\Graphical.h" />
     <ClInclude Include="src\components\Timer.h" />
     <ClInclude Include="src\core\Errors.h" />
     <ClInclude Include="src\core\StretchMode.h" />
@@ -340,9 +344,9 @@ py "$(ProjectDir)src/statics.py"</Command>
     <ClInclude Include="src\scene\Object.h" />
     <ClInclude Include="src\scene\ObjectComponent.h" />
     <ClInclude Include="src\ObjectComponent2D.h" />
-    <ClInclude Include="src\OS.h" />
+    <ClInclude Include="src\servers\OS.h" />
     <ClInclude Include="src\servers\PhysicsServer.h" />
-    <ClInclude Include="src\Random.h" />
+    <ClInclude Include="src\utils\Random.h" />
     <ClInclude Include="src\resource\SceneFile.h" />
     <ClInclude Include="src\scene\SceneTree.h" />
     <ClInclude Include="src\servers\Solver.h" />
@@ -356,14 +360,17 @@ py "$(ProjectDir)src/statics.py"</Command>
     <ClCompile Include="Demo\main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Application.cpp" />
-    <ClCompile Include="src\Application.h" />
+    <ClCompile Include="src\components\Gui.cpp" />
+    <ClCompile Include="src\utils\algorithms.cpp" />
+    <ClCompile Include="src\core\ApplicationConfig.cpp" />
+    <ClCompile Include="src\core\ApplicationConfig.h" />
     <ClCompile Include="src\components\Camera.cpp" />
     <ClCompile Include="src\core\Errors.cpp" />
     <ClCompile Include="src\core\Segment.cpp" />
-    <ClCompile Include="src\Random.cpp" />
+    <ClCompile Include="src\utils\Random.cpp" />
+    <ClCompile Include="src\resource\TileSet.cpp" />
     <ClCompile Include="src\scene\Collidors.cpp" />
-    <ClCompile Include="src\components\Drawers.cpp" />
+    <ClCompile Include="src\components\Graphical.cpp" />
     <ClCompile Include="src\components\Physics.cpp" />
     <ClCompile Include="src\components\Physics.h" />
     <ClCompile Include="src\components\Timer.cpp" />

@@ -1,5 +1,5 @@
 #include "global.h"
-#include "Application.h"
+#include "ApplicationConfig.h"
 
 _R2D_NAMESPACE_START_
 

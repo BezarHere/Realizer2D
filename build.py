@@ -16,6 +16,8 @@ def copy_shaders():
 
 @atMain
 def main():
+  print("running python build script:")
   copy_shaders()
+  print("completed python build script.")
 	
 

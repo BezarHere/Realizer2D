@@ -1,5 +1,5 @@
 #include "global.h"
-#include "Drawers.h"
+#include "Graphical.h"
 
 namespace R2D::components
 {
@@ -51,7 +51,7 @@ namespace R2D::components
 	void RectangleDrawer::draw(sf::RenderTarget& target, sf::RenderStates state) const
 	{
 		state.transform.combine(getTransform());
-		target.draw(*(m_buffer.getBuffer()), state);
+		target.draw(m_buffer.getBuffer(), state);
 	}
 
 	void RectangleDrawer::update_buffer()
@@ -65,7 +65,7 @@ namespace R2D::components
 			{ Vector2(-m_size.x / 2.0f, m_size.y / 2.0f), color },
 			{ Vector2(-m_size.x / 2.0f, -m_size.y / 2.0f), color },
 		};
-		m_buffer.getBuffer()->update(vertcies);
+		m_buffer.getBuffer().update(vertcies);
 	}
 
 	CircleDrawer::CircleDrawer()
@@ -100,14 +100,14 @@ namespace R2D::components
 	void CircleDrawer::draw(sf::RenderTarget& target, sf::RenderStates state) const
 	{
 		state.transform.combine(getTransform());
-		target.draw(*(m_buffer.getBuffer()), state);
+		target.draw(m_buffer.getBuffer(), state);
 	}
 
 	void CircleDrawer::updateState()
 	{
 		if (m_segmentsCount < 3)
 		{
-			m_buffer.getBuffer()->create(0);
+			m_buffer.getBuffer().create(0);
 			return;
 		}
 
@@ -125,8 +125,8 @@ namespace R2D::components
 			vertcies[i].color = clr;
 		}
 
-		m_buffer.getBuffer()->create(poly_size);
-		m_buffer.getBuffer()->update(vertcies);
+		m_buffer.getBuffer().create(poly_size);
+		m_buffer.getBuffer().update(vertcies);
 	}
 
 	bool CircleDrawer::hasVertciesCacheSegCount(uint16_t seg_count)
@@ -224,7 +224,7 @@ namespace R2D::components
 		}
 		state.transform.combine(getTransform());
 		state.texture = m_texture;
-		target.draw(*(m_buffer.getBuffer()), state);
+		target.draw(m_buffer.getBuffer(), state);
 	}
 
 	void SpriteDrawer::updateVertcies()
@@ -248,7 +248,7 @@ namespace R2D::components
 			sf::Vertex({-half_draw_size.x, half_draw_size.y}, color, {0.0f, draw_size.y}),
 			sf::Vertex(-half_draw_size, color, {0.0f, 0.0f}),
 		};
-		m_buffer.getBuffer()->update(vertcies);
+		m_buffer.getBuffer().update(vertcies);
 	}
 
 	PolygonDrawer::PolygonDrawer()
@@ -269,7 +269,7 @@ namespace R2D::components
 	void PolygonDrawer::draw(sf::RenderTarget& target, sf::RenderStates state) const
 	{
 		state.transform.combine(getTransform());
-		target.draw(*(m_buffer.getBuffer()), state);
+		target.draw(m_buffer.getBuffer(), state);
 	}
 
 	void PolygonDrawer::setPoints(const Points_t& points)
@@ -283,7 +283,7 @@ namespace R2D::components
 		size_t points_count = m_points.size();
 		if (points_count < 3)
 		{
-			m_buffer.getBuffer()->create(0);
+			m_buffer.getBuffer().create(0);
 			return;
 		}
 
@@ -301,8 +301,8 @@ namespace R2D::components
 			vertcies[i3 + 2].color = color;
 		}
 		
-		m_buffer.getBuffer()->create(vertcies_count);
-		m_buffer.getBuffer()->update(vertcies);
+		m_buffer.getBuffer().create(vertcies_count);
+		m_buffer.getBuffer().update(vertcies);
 
 		delete[] vertcies;
 	}

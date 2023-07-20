@@ -3,17 +3,19 @@
 
 namespace R2D::utils
 {
-	VertexBufferWraper::VertexBufferWraper(sf::VertexBuffer* buffer)
+	VertexBufferWraper::VertexBufferWraper(const sf::VertexBuffer &buffer)
 		: m_buffer(buffer)
 	{
 	}
+
 	VertexBufferWraper::VertexBufferWraper(sf::PrimitiveType type, sf::VertexBuffer::Usage usage, size_t size)
-		: VertexBufferWraper(new sf::VertexBuffer(type, usage))
+		: VertexBufferWraper(sf::VertexBuffer(type, usage))
 	{
-		m_buffer->create(size);
+		m_buffer.create(size);
 	}
+
 	VertexBufferWraper::~VertexBufferWraper()
 	{
-		m_buffer->create(0);
+		m_buffer.create(0);
 	}
 }

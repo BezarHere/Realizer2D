@@ -109,10 +109,7 @@ inline std::ostream& operator<<(std::ostream & stream, const sf::Color & p) {
 	return stream;
 }
 
-template <class T>
-inline std::string to_string(sf::Vector2<T> vec) {
-	return "(" + to_string(vec.x) + ", " + to_string(vec.y) + ")";
-}
+
 
 extern std::string MyPath;
 
@@ -179,3 +176,11 @@ inline constexpr size_t combine_hash(size_t lhs, size_t rhs) {
 
 
 _R2D_NAMESPACE_END_
+
+namespace std
+{
+	template <class T>
+	inline string to_string(sf::Vector2<T> vec) {
+		return "(" + to_string(vec.x) + ", " + to_string(vec.y) + ")";
+	}
+}

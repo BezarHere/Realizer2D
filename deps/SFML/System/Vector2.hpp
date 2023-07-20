@@ -106,6 +106,11 @@ public:
 			return Vector2<T>(x, y) / l;
 		}
 
+		inline Vector2<T> direction(const Vector2<T>& to) const
+		{
+			return (to - *this).normalized();
+		}
+
 		inline Vector2<T> tangent() const
 		{
 			return Vector2<T>(-y, x);

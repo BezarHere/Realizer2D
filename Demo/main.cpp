@@ -25,7 +25,7 @@ enum class DemoType
 	CollisionTest
 };
 
-constexpr DemoType demotype = DemoType::CollisionTest;
+constexpr DemoType demotype = DemoType::Spaceship;
 
 struct DemoData
 {
@@ -44,6 +44,7 @@ const std::unordered_map<DemoType, DemoData> demos
 	{ DemoType::CollisionTest,{ start_collision_test, nullptr, nullptr, physics_collision_test } },
 };
 
+r2d::Object2D* cam;
 
 class Bullet : public r2d::Object2D
 {
@@ -83,6 +84,7 @@ public:
 
 	void update(real_t delta) override
 	{
+		cam->move(-getGlobalPosition().direction(cam->getGlobalPosition()) * delta * getGlobalPosition().distance(cam->getGlobalPosition()));
 		r2d::Vector2 v;
 		if (r2d::Engine::IsKeyPressed(r2d::Keyboard_t::W))
 			v.y -= 1.0f;
@@ -110,40 +112,37 @@ private:
 
 };
 
-constexpr int ply_count = 10;
-Player* player;
+Player player{};
+r2d::Object2D* player_ui;
 
 void start_spaceships()
 {
-	const std::string apps_img = "E:\\Assets\\visual studio\\Realizer2D\\apps.png";
-	player = new Player[ply_count];
-	for (int i{ 0 }; i < ply_count; i++)
-	{
-		player[i] = Player();
-		player[i].setName("player");
-		r2d::Object2D* left_hand = new r2d::Object2D("left"), * right_hand = new r2d::Object2D("right");
+	//const std::string apps_img = "E:\\Assets\\visual studio\\Realizer2D\\apps.png";
+	//player = Player();
+	player.setName("player");
+	r2d::Object2D* left_hand = new r2d::Object2D("left"), * right_hand = new r2d::Object2D("right");
 
-		left_hand->setPosition({ -32.0f, 16.0f });
-		right_hand->setPosition({ 32.0f, 16.0f });
-		left_hand->addComponent(new r2d::components::CircleDrawer(8.0f));
-		right_hand->addComponent(new r2d::components::CircleDrawer(8.0f));
+	left_hand->setPosition({ -32.0f, 16.0f });
+	right_hand->setPosition({ 32.0f, 16.0f });
+	left_hand->addComponent(new r2d::components::CircleDrawer(8.0f));
+	right_hand->addComponent(new r2d::components::CircleDrawer(8.0f));
 
-		r2d::Points_t points{
-			sf::Vector2f(-16.0f, 74.0f), sf::Vector2f(-22.6f, 31.0f), sf::Vector2f(4.4f, 4.0f), sf::Vector2f(31.5f, 31.0f)
-		};
+	player.addChild(left_hand);
+	player.addChild(right_hand);
+	//player->addChild(apps_o);
 
-		player[i].addChild(left_hand);
-		player[i].addChild(right_hand);
-		//player->addChild(apps_o);
+	player.addComponent(new r2d::components::CircleDrawer(16.0f));
+	((r2d::components::CircleDrawer*)player.getComponent(0))->setColor({ 255, 155, 55 });
 
-		player[i].addComponent(new r2d::components::CircleDrawer(16.0f));
-		((r2d::components::CircleDrawer*)player[i].getComponent(typeid(r2d::components::CircleDrawer).hash_code()))->setColor({ 255, 155, 55 });
+	player.setZIndex(1);
 
-		player[i].setZIndex(1);
-
-		player[i].setPosition(r2d::Random::RandfRange(-512.0f, 512.0f), r2d::Random::RandfRange(-512.0f, 512.0f));
-		player[i].addToSceneTree();
-	}
+	player.addToSceneTree();
+	
+	player_ui = new r2d::Object2D("ui");
+	player_ui->addComponent(new r2d::components::GraphicalUI());
+	player_ui->setUsesRelativeCoords(false);
+	
+	player_ui->addToSceneTree();
 }
 
 r2d::Object2D* circle;
@@ -202,10 +201,15 @@ r2d::Object2D *collision_test_create_tringle(std::string name, bool kinetic)
 
 r2d::Object2D* traingles[2];
 r2d::Object2D* camera_obj;
+r2d::Points_t tri_points[32];
 void start_collision_test()
 {
 	traingles[0] = collision_test_create_tringle("first", false);
 	traingles[1] = collision_test_create_tringle("second", true);
+	
+	tri_points[0] = ((r2d::components::PolygonDrawer*)traingles[0]->getComponent(0))->getPoints();
+	tri_points[1] = ((r2d::components::PolygonDrawer*)traingles[1]->getComponent(0))->getPoints();
+	
 	camera_obj = new r2d::Object2D("cam");
 	r2d::components::Camera* cam = new r2d::components::Camera();
 	cam->makeCurrent();
@@ -217,6 +221,17 @@ void start_collision_test()
 void physics_collision_test(real_t delta)
 {
 	traingles[1]->setPosition(r2d::Engine::GetMousePosition());
+	/*r2d::Points_t p1 = tri_points[0];
+	r2d::Points_t p2 = tri_points[1];
+	for (r2d::Vector2& p : p1)
+	{
+		p += traingles[0]->getPosition();
+	}
+	for (r2d::Vector2& p : p2)
+	{
+		p += traingles[1]->getPosition();
+	}
+	PEEK(r2d::GJKTest(p1, p2));*/
 }
 
 const wchar_t* widen(const char* txt)
@@ -239,8 +254,18 @@ void print_ptr(const _T* const ptr, size_t size)
 	}
 }
 
+void create_cam()
+{
+	cam = new r2d::Object2D("cam");
+	cam->addComponent(new r2d::components::Camera());
+	cam->addToSceneTree();
+	((r2d::components::Camera*)cam->getComponent(0))->makeCurrent();
+	((r2d::components::Camera*)cam->getComponent(0))->setCentered(false);
+}
+
 int main(int argc, const char** argv)
 {
+	create_cam();
 	r2d::Engine::SetOnInitAction(demos.at(demotype).init);
 	r2d::Engine::SetProcessAction(demos.at(demotype).process);
 	r2d::Engine::SetPhysicsProcessAction(demos.at(demotype).physics);

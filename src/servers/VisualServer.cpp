@@ -28,12 +28,12 @@ void VisualServer::DoDraw()
 
 	for (const _ZHeightElement& p : obj_z_order)
 	{
-		p.object->draw(window, m_worldRenderStates);
+		p.object->draw(window, p.object->getUsesRelativeCoords() ? s_worldRenderStates : s_screenRenderStates);
 	}
 
 
 	if (s_drawAction)
-		s_drawAction(window, m_worldRenderStates);
+		s_drawAction(window, s_worldRenderStates);
 
 	// Post-processing:
 
@@ -49,6 +49,7 @@ void VisualServer::updateView()
 	Vector2 window_size = (Vector2)s_window->getSize();
 	components::Camera* cam = GetCameraInt();
 	Vector2 cam_global_pos = cam == &s_defaultCamera ? cam->getPosition() : cam->getOwner()->getGlobalPosition() + cam->getPosition();
+
 	switch (m_viewStretchMode)
 	{
 		case ViewStretchMode::Expand:
@@ -76,6 +77,7 @@ void VisualServer::updateView()
 		pview.setCenter(cam_global_pos + (pview.getSize() / 2.0f));
 	}
 
+	s_screenRenderStates.transform = Transform2D().translate(pview.getCenter() - (pview.getSize() / 2.0f));
 	s_window->setView(pview);
 }
 
@@ -140,7 +142,7 @@ void VisualServer::ScreenResized()
 void VisualServer::PreDraw()
 {
 	s_window->clear(ApplicationConfig::MasterConfig().getClearColor());
-	s_drawTexture.create(s_window->getSize().x, s_window->getSize().y);
+	//s_drawTexture.create(s_window->getSize().x, s_window->getSize().y);
 }
 
 void VisualServer::start()
