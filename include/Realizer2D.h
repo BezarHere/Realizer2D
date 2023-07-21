@@ -1,6 +1,9 @@
 #pragma once
 
 
+// unrefrenced formal function paramter
+#pragma warning(disable : 4100)
+
 #include "global.h"
 #include "Engine.h"
 #include "core/Errors.h"

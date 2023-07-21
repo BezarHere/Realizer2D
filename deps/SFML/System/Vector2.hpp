@@ -177,6 +177,8 @@ public:
 			y = std::sin(ang) * len;
 		}
 
+		inline Vector2<T> abs() const { return Vector2<T>(std::abs(x), std::abs(y)); }
+
 		template <class E>
 		inline static Vector2<E> linearInterpolate(const Vector2<E>& a, const Vector2<E>& b, float dt)
 		{
@@ -199,13 +201,13 @@ public:
 		}
 
 		// angle '0' is a vector pointing to the left with angle 90 pointing to up
-		inline static Vector2<T> polar2coord(float angle_rad, float len)
+		inline static Vector2<T> Polar2Coord(float angle_rad, float len)
 		{
 			return Vector2<T>(std::cos(angle_rad) * len, std::sin(angle_rad) * len);
 		}
 
 		// first is the *angle* and second is the length
-		inline std::pair<float, float> coord2polar()
+		inline std::pair<float, float> Coord2Polar()
 		{
 			return { angle(), length() };
 		}

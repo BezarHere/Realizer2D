@@ -54,8 +54,8 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="cpp.hint" />
-    <None Include="shaders\circle.frag" />
-    <None Include="shaders\postprocessing.frag" />
+    <None Include="res\shaders\circle.frag" />
+    <None Include="res\shaders\postprocessing.frag" />
     <None Include="build.py" />
   </ItemGroup>
   <ItemGroup>
@@ -458,6 +458,9 @@
     <ClInclude Include="src\components\Gui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\R2DInit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\global.cpp">
@@ -539,6 +542,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\components\Gui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\servers\ResourcesServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\R2DInit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

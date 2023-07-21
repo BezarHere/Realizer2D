@@ -22,13 +22,13 @@ void VisualServer::DoDraw()
 	{
 		obj_z_order.push_back(_ZHeightElement(p));
 	}
-
+	
 	// TODO: add a more efficent sort
 	std::sort(obj_z_order.begin(), obj_z_order.end());
 
 	for (const _ZHeightElement& p : obj_z_order)
 	{
-		p.object->draw(window, p.object->getUsesRelativeCoords() ? s_worldRenderStates : s_screenRenderStates);
+		p.object->draw(window, p.object->isFixedDrawen() ? s_screenRenderStates : s_worldRenderStates);
 	}
 
 
@@ -49,21 +49,54 @@ void VisualServer::updateView()
 	Vector2 window_size = (Vector2)s_window->getSize();
 	components::Camera* cam = GetCameraInt();
 	Vector2 cam_global_pos = cam == &s_defaultCamera ? cam->getPosition() : cam->getOwner()->getGlobalPosition() + cam->getPosition();
+	Vector2 screen_renderer_scale;
 
 	switch (m_viewStretchMode)
 	{
 		case ViewStretchMode::Expand:
 			pview.setSize(window_size / cam->getZoom());
+			screen_renderer_scale = pview.getSize() / window_size;
 			break;
+
 		case ViewStretchMode::KeepHorizontal:
-			pview.setSize(sf::Vector2f((float)s_startWindowSize.x, window_size.y) / cam->getZoom());
+			pview.setSize(Vector2((float)s_startWindowSize.x, window_size.y) / cam->getZoom());
+			screen_renderer_scale = Vector2(pview.getSize().x / s_startWindowSize.x, pview.getSize().y / window_size.y);
 			break;
+
 		case ViewStretchMode::KeepVertical:
-			pview.setSize(sf::Vector2f(window_size.x, (float)s_startWindowSize.y) / cam->getZoom());
+			pview.setSize(Vector2(window_size.x, (float)s_startWindowSize.y) / cam->getZoom());
+			screen_renderer_scale = Vector2(pview.getSize().x / window_size.x, pview.getSize().y / s_startWindowSize.y);
 			break;
+
 		case ViewStretchMode::Keep:
-			pview.setSize((sf::Vector2f)s_startWindowSize / cam->getZoom());
+			pview.setSize((Vector2)s_startWindowSize / cam->getZoom());
+			screen_renderer_scale = pview.getSize() / (Vector2)s_startWindowSize;
 			break;
+
+			//? FIXME: any aspect type stretch doesn't work
+		case ViewStretchMode::KeepAspect:
+			if (window_size.x < window_size.y)
+			{
+				pview.setSize(window_size.x / cam->getZoom());
+				screen_renderer_scale = pview.getSize() / window_size.x;
+			}
+			else
+			{
+				pview.setSize(window_size.y / cam->getZoom());
+				screen_renderer_scale = pview.getSize() / window_size.y;
+			}
+			break;
+
+		case ViewStretchMode::KeepAspectHorizontal:
+			pview.setSize(window_size.x / cam->getZoom());
+			screen_renderer_scale = pview.getSize() / window_size.x;
+			break;
+
+		case ViewStretchMode::KeepAspectVertical:
+			pview.setSize(window_size.y / cam->getZoom());
+			screen_renderer_scale = pview.getSize() / window_size.y;
+			break;
+
 		default:
 			break;
 	}
@@ -77,7 +110,9 @@ void VisualServer::updateView()
 		pview.setCenter(cam_global_pos + (pview.getSize() / 2.0f));
 	}
 
-	s_screenRenderStates.transform = Transform2D().translate(pview.getCenter() - (pview.getSize() / 2.0f));
+	s_screenRenderStates.transform = Transform2D()
+		.translate(pview.getCenter() - (pview.getSize() / 2.0f))
+		.scale(screen_renderer_scale);
 	s_window->setView(pview);
 }
 
@@ -110,6 +145,11 @@ void VisualServer::MakeCameraCurrent(components::Camera* camera)
 	}
 
 	s_currentCamera = camera;
+}
+
+Error VisualServer::Init()
+{
+	return Error::Ok;
 }
 
 components::Camera* VisualServer::GetCamera()
@@ -145,7 +185,7 @@ void VisualServer::PreDraw()
 	//s_drawTexture.create(s_window->getSize().x, s_window->getSize().y);
 }
 
-void VisualServer::start()
+void VisualServer::Start()
 {
 	static constexpr std::pair<uint32_t, uint32_t> MasStartScreenSize{ 1 << 13 , 1 << 12 };
 	if (ApplicationConfig::MasterConfig().getStartWidowSize().x > MasStartScreenSize.first || ApplicationConfig::MasterConfig().getStartWidowSize().y > MasStartScreenSize.second)
@@ -163,8 +203,10 @@ void VisualServer::start()
 	
 	s_window = new VSRenderWindow(vmode, ApplicationConfig::MasterConfig().getTitle(), sf::Style::Default, vcontext);;
 	s_startWindowSize = ApplicationConfig::MasterConfig().getStartWidowSize();
-	ScreenResized();
+	m_viewStretchMode = ApplicationConfig::MasterConfig().getStretchMode();
 	
+	ScreenResized();
 }
+
 
 _R2D_NAMESPACE_END_

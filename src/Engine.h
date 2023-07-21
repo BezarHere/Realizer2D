@@ -5,6 +5,7 @@
 #include "servers/PhysicsServer.h"
 #include "utils/Random.h"
 #include "scene/SceneTree.h"
+#include "R2DInit.h"
 
 
 
@@ -22,9 +23,11 @@ typedef sf::Keyboard Keyboard_t;
 typedef sf::Mouse Mouse_t;
 typedef sf::Vector2i CellIndex_t;
 
+class _R2D_Init;
 
 class Engine final
 {
+	friend class R2DInit;
 public:
 	enum InputModifierFlags : uint8_t
 	{
@@ -83,7 +86,7 @@ private:
 	Engine() = delete;
 	Engine(const Engine& other) = delete;
 	//inline Engine* operator new() = delete;
-	static void Init();
+	static Error Init();
 
 	struct InputEvent
 	{

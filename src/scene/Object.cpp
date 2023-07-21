@@ -124,14 +124,19 @@ void Object2D::hide()
 	setVisible(false);
 }
 
-void Object2D::setUsesRelativeCoords(bool using_rel_coords)
+void Object2D::setFixedDraw(bool fixed_draw)
 {
-	m_usesRelativeCoords = using_rel_coords;
+	m_fixedDraw = fixed_draw;
 }
 
-bool Object2D::getUsesRelativeCoords() const
+bool Object2D::getFixedDraw() const
 {
-	return m_usesRelativeCoords;
+	return m_fixedDraw;
+}
+
+bool Object2D::isFixedDrawen() const
+{
+	return m_fixedDraw;
 }
 
 void Object2D::addChild(Object2D* child)
@@ -191,14 +196,21 @@ Error Object2D::setName(const std::string& name)
 	return Error::Ok;
 }
 
-ObjectComponent* Object2D::getComponent(const size_t index) const
-{
-	return m_components[index];
-}
-
 void Object2D::setZIndex(ZIndex_t zindex)
 {
 	m_zIndex = zindex;
+}
+
+ZIndex_t Object2D::getZIndex() const
+{
+	return m_zIndex;
+}
+
+ZIndex_t Object2D::getAbsoluteZIndex() const
+{
+	if (m_relativeZIndex && m_parent)
+		return m_zIndex + m_parent->getAbsoluteZIndex();
+	return m_zIndex;
 }
 
 Error Object2D::addComponent(ObjectComponent* component)
@@ -291,6 +303,20 @@ Vector2 Object2D::getGlobalScale() const
 	return scale;
 }
 
+Vector2 Object2D::toGlobal(const Vector2 &position) const
+{
+	if (m_parent)
+		return position + getGlobalPosition();
+	return position + getPosition();
+}
+
+Vector2 Object2D::toLocal(const Vector2 &position) const
+{
+	if (m_parent)
+		return position - getGlobalPosition();
+	return position - getPosition();
+}
+
 Error Object2D::addToSceneTree()
 {
 	if (getParent())
@@ -307,9 +333,8 @@ bool Object2D::isInsideScene() const
 	return m_insideScene;
 }
 
-bool Object2D::hasComponentSingleton(uint8_t singleton_id) const
+bool Object2D::hasComponentSingleton(uint32_t singleton_id) const
 {
-	// TODO: make this faster...
 	return singleton_id ?
 		m_singletonComponentLookupTable.find(singleton_id) != m_singletonComponentLookupTable.end() : false;
 }
@@ -323,7 +348,7 @@ void Object2D::regenerateComponentsSingletonTable()
 		{
 			if (hasComponentSingleton(comp->getSingleton()))
 			{
-				// FIXME: no more info? what's the type of the component?
+				//! FIXME: no more info? what's the type of the component?
 				_r2d_error("found a bugged singleton component with sig-id: " + std::to_string(comp->getSingleton()) + ", deleting the component.");
 				removeComponent(comp, false);
 			}

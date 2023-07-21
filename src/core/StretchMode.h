@@ -8,7 +8,10 @@ enum class ViewStretchMode : uint8_t
 	Expand,
 	KeepHorizontal,
 	KeepVertical,
-	Keep
+	Keep,
+	KeepAspect,
+	KeepAspectHorizontal,
+	KeepAspectVertical
 };
 
 enum class SpriteStretchMode : uint8_t

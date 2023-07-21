@@ -7,7 +7,12 @@
 
 _R2D_NAMESPACE_START_
 typedef uint32_t ObjID_t;
-typedef int8_t ZIndex_t;
+typedef int16_t ZIndex_t;
+
+enum class Margin
+{
+	Top, Left, Bottom, Right
+};
 
 class Engine;
 class SceneTree;
@@ -72,11 +77,19 @@ public:
 	inline ObjID_t getObjectID() const { return m_objId; }
 	inline void setObjectID(ObjID_t new_oid) { assert(m_objId == 0); m_objId = new_oid; }
 
-	// returns first component of with typehash
-	ObjectComponent* getComponent(const size_t index) const;
+	template <typename _CompType>
+	inline _CompType* getComponent(const uint32_t index) const
+	{
+		return (_CompType*)(m_components[index]);
+	}
+	/*inline ObjectComponent* getComponent(const uint32_t index) const
+	{
+		return m_components[index];
+	}*/
 
 	void setZIndex(ZIndex_t zindex);
-	inline ZIndex_t getZIndex() { return m_zIndex; }
+	ZIndex_t getZIndex() const;
+	ZIndex_t getAbsoluteZIndex() const;
 
 	virtual Error addComponent(ObjectComponent* component);
 	virtual void removeComponent(ObjectComponent* component);
@@ -89,6 +102,9 @@ public:
 	Vector2 getGlobalPosition() const;
 	real_t getGlobalRotation() const;
 	Vector2 getGlobalScale() const;
+
+	Vector2 toGlobal(const Vector2 &position) const;
+	Vector2 toLocal(const Vector2 &position) const;
 
 	Error addToSceneTree();
 
@@ -112,11 +128,14 @@ public:
 	
 	// if true: this will be drawn like every other game object
 	// else: this will be drawn directly on screen like UI
-	void setUsesRelativeCoords(bool using_rel_coords);
+	void setFixedDraw(bool fixed_draw);
 
 	// will the pbject drawing be effected by the camera, if this is false the object will draw like UI
 	// all children will have the same property value, so this only works on root objects
-	bool getUsesRelativeCoords() const;
+	bool getFixedDraw() const;
+
+	// exciacly like getFixedDraw()
+	bool isFixedDrawen() const;
 
 	// if this object is in the scene tree
 	// only objects in the scene tree get updated/drawn
@@ -124,7 +143,7 @@ public:
 	bool isInsideScene() const;
 
 	// only works with components that has isSingleton() == true
-	bool hasComponentSingleton(uint8_t singleton_id) const;
+	bool hasComponentSingleton(uint32_t singleton_id) const;
 
 	// call this if you find some weired bugs with adding singleton components (and also report the bug!)
 	void regenerateComponentsSingletonTable();
@@ -151,14 +170,23 @@ private:
 	std::unordered_set<uint32_t> m_singletonComponentLookupTable;
 	std::unordered_map<std::string, Object2D*> m_children;
 	Object2D* m_parent{ nullptr };
-	ZIndex_t m_zIndex = 0;
-	// will the pbject drawing be effected by the camera, if this is false the object will draw like UI
-	bool m_usesRelativeCoords{ true };
+	ZIndex_t m_zIndex{ 0 };
+	// position (precentage) on screen where this will be anchored, only used if the object is fixed-drawn
+	real_t m_screenAnchors[4]{ 0.0f, 0.0f, 1.0, 1.0f };
+
+	Vector2 m_screenAnchorOffset{ 0.0f, 0.0f };
+	Vector2 m_screenAnchorScale{ 1.0f, 1.0f };
+
+	// if false, it will be drawn in world, dynamicly affected by camera
+	// if true, it will be drawn like a user interface one the screen directly
+	// only works on root objects, lower objects have their set by their parents
+	bool m_fixedDraw{ false };
 
 	bool m_visible{ true };
 	bool m_branchVisible{ true };
 	bool m_insideScene{ false };
 	bool m_queuedForDeletion{ false };
+	bool m_relativeZIndex{ true };
 };
 
 _R2D_NAMESPACE_END_

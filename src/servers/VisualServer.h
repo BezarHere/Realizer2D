@@ -7,12 +7,14 @@
 #include "components/Graphical.h"
 #include "components/Gui.h"
 #include "components/Camera.h"
+#include "R2DInit.h"
 
 _R2D_NAMESPACE_START_
 #define global static inline
 
 class VisualServer final
 {
+	friend class R2DInit;
 	friend class Engine;
 public:
 	static inline sf::RenderWindow* GetWindow() { return VisualServer::s_window; }
@@ -20,7 +22,9 @@ public:
 	static void SetDrawingAction(DrawerFunction_t action);
 	static inline DrawerFunction_t GetDrawingAction() { return s_drawAction; }
 	
-	static void start();
+	static void Start();
+
+	static Error Init();
 	
 	// automaticlty updated
 	// ** only call if you know what you're doing **
@@ -46,12 +50,12 @@ public:
 
 		inline bool operator<(const _ZHeightElement& other) const
 		{
-			return object->getZIndex() < other.object->getZIndex();
+			return object->getAbsoluteZIndex() < other.object->getAbsoluteZIndex();
 		}
 
 		inline bool operator>(const _ZHeightElement& other) const
 		{
-			return object->getZIndex() > other.object->getZIndex();
+			return object->getAbsoluteZIndex() > other.object->getAbsoluteZIndex();
 		}
 
 		Object2D* object;
@@ -85,8 +89,7 @@ private:
 	global sf::RenderTexture s_drawTexture;
 	global VSRenderWindow* s_window{ nullptr };
 	global DrawerFunction_t s_drawAction;
-	global const ApplicationConfig m_appliedConfig;
-	global const ViewStretchMode m_viewStretchMode = ViewStretchMode::Expand;
+	global ViewStretchMode m_viewStretchMode = ViewStretchMode::Expand;
 	global Vector2 s_screenSize{};
 	global Vector2 s_screenTopleft{};
 	global sf::RenderStates s_worldRenderStates;

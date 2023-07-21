@@ -9,6 +9,7 @@ enum class Error : uint32_t
 	Failed,
 	NameAlreadyExists,
 	AlreadyExists,
+	CouldntLoad,
 	Max // meaningless.
 };
 

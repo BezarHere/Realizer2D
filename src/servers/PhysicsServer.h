@@ -4,15 +4,15 @@
 #include "scene/Object.h"
 #include "scene/Collidors.h"
 #include "Solver.h"
+#include "R2DInit.h"
 
 _R2D_NAMESPACE_START_
 #define global static inline
 
-struct _STRUCT__PhysicsServer___Init;
 class PhysicsServer final
 {
 	typedef components::PhysicsBody PhysicsBody;
-	friend _STRUCT__PhysicsServer___Init;
+	friend class R2DInit;
 public:
 	
 	/////////////////////////////
@@ -36,7 +36,7 @@ public:
 private:
 	static void populateGrid();
 
-	static void Init();
+	static Error Init();
 
 private:
 	typedef struct

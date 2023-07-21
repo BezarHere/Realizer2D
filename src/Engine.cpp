@@ -4,7 +4,7 @@
 
 _R2D_NAMESPACE_START_
 
-void Engine::Init()
+Error Engine::Init()
 {
 	for (int i = 0; i < Keyboard_t::KeyCount; i++)
 	{
@@ -16,16 +16,15 @@ void Engine::Init()
 		s_mouseInput[(Mouse_t::Button)i];
 	}
 
-
-	Main();
 	atexit(Engine::Final);
+	return Error::Ok;
 }
 
 Error Engine::Fire()
 {
-	VisualServer::start();
+	VisualServer::Start();
+	Engine::Main();
 
-	Engine::Init();
 	return Error::Ok;
 }
 

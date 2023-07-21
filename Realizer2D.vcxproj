@@ -94,7 +94,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -102,6 +102,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>global.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,12 +120,14 @@ py "$(ProjectDir)src/statics.py"</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,7 +146,7 @@ py "$(ProjectDir)src/statics.py"</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -153,6 +156,7 @@ py "$(ProjectDir)src/statics.py"</Command>
       <PrecompiledHeaderFile>global.h</PrecompiledHeaderFile>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -170,7 +174,7 @@ py "$(ProjectDir)src/statics.py"</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -178,6 +182,7 @@ py "$(ProjectDir)src/statics.py"</Command>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ForcedIncludeFiles>global.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -218,8 +223,8 @@ py "$(ProjectDir)src/statics.py"</Command>
     <None Include="sfml-system-d-2.dll" />
     <None Include="sfml-window-2.dll" />
     <None Include="sfml-window-d-2.dll" />
-    <None Include="shaders\circle.frag" />
-    <None Include="shaders\postprocessing.frag" />
+    <None Include="res\shaders\circle.frag" />
+    <None Include="res\shaders\postprocessing.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="deps\SFML\Audio.hpp" />
@@ -323,6 +328,7 @@ py "$(ProjectDir)src/statics.py"</Command>
     <ClInclude Include="include\prefix.h" />
     <ClInclude Include="include\Realizer2D.h" />
     <ClInclude Include="src\components\Gui.h" />
+    <ClInclude Include="src\R2DInit.h" />
     <ClInclude Include="src\utils\algorithms.h" />
     <ClInclude Include="src\components\Camera.h" />
     <ClInclude Include="src\components\TileMap.h" />
@@ -361,6 +367,8 @@ py "$(ProjectDir)src/statics.py"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\components\Gui.cpp" />
+    <ClCompile Include="src\R2DInit.cpp" />
+    <ClCompile Include="src\servers\ResourcesServer.cpp" />
     <ClCompile Include="src\utils\algorithms.cpp" />
     <ClCompile Include="src\core\ApplicationConfig.cpp" />
     <ClCompile Include="src\core\ApplicationConfig.h" />

@@ -52,22 +52,10 @@ static inline std::unordered_map<_CollidorShapeTypeKey, Solver::SolverFunction> 
 
 static constexpr size_t _PhyObjectsAreanaDesiredSize = 0xfffff; // 2^20 - 1 (~1 mb) or 131071 64x ptrs or 262143 86x ptrs
 
-
-
-struct _STRUCT__PhysicsServer___Init
-{
-	_STRUCT__PhysicsServer___Init()
-	{
-		PhysicsServer::Init();
-#ifdef R2D_VERBOSE
-		std::cout << "_STRUCT__PhysicsServer___Init\n";
-#endif // R2D_VERBOSE
-	}
-} __PhysicsServer___Init;
-
-void PhysicsServer::Init()
+Error PhysicsServer::Init()
 {
 	s_bodies.reserve(_PhyObjectsAreanaDesiredSize / sizeof(void*));
+	return Error::Ok;
 }
 
 

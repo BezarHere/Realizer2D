@@ -11,7 +11,8 @@ const std::string ErrorName[MaxError]
   "ok",
   "failed",
   "name already exits",
-  "already exits"
+  "already exits",
+  "could not load"
 };
 
 const std::string& GetErrorName(Error error)

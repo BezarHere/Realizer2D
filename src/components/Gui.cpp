@@ -1,12 +1,14 @@
 #include "global.h"
 #include "Gui.h"
+#include "servers/ResourcesServer.h"
 
 _R2D_COMP_NS_START_
+constexpr uint32_t DefaultFontSize{ 12U };
 
-void GraphicalUI::draw(sf::RenderTarget& target, sf::RenderStates state) const
-{
-	target.draw(sf::RectangleShape({ 256.0f, 512.0f }), state);
-}
+//void GraphicalUI::draw(sf::RenderTarget& target, sf::RenderStates state) const
+//{
+//	target.draw(sf::RectangleShape({ 256.0f, 512.0f }), state);
+//}
 
 void GraphicalUI::setPosition(const Vector2& position)
 {
@@ -66,6 +68,37 @@ void GraphicalUI::scale(real_t x, real_t y)
 void GraphicalUI::rotate(real_t angle)
 {
 	sf::Transformable::rotate(angle);
+}
+
+Text::Text()
+	: m_inner{"", ResourcesServer::GetDefaultFont(), DefaultFontSize }
+{
+}
+
+Text::Text(const std::string& text)
+	: m_inner{ text, ResourcesServer::GetDefaultFont(), DefaultFontSize }
+{
+}
+
+void Text::draw(sf::RenderTarget& target, sf::RenderStates state) const
+{
+	state.transform.combine(getTransform());
+	target.draw(m_inner, state);
+}
+
+sf::Text& Text::getInner()
+{
+	return m_inner;
+}
+
+const sf::Text& Text::getInner() const
+{
+	return m_inner;
+}
+
+void Text::setText(const std::string& text)
+{
+	m_inner.setString(text);
 }
 
 _R2D_COMP_NS_END_

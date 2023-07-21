@@ -19,7 +19,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 
-
+// unrefrenced formal function paramter
+#pragma warning(disable : 4100)
 
 _R2D_NAMESPACE_START_
 
@@ -55,6 +56,7 @@ typedef sf::Vector2<int> Point2;
 typedef sf::Vector2<uint32_t> Size2;
 typedef sf::Color Color;
 typedef sf::Transform Transform2D;
+typedef sf::Font Font;
 
 typedef void (*Action_t)();
 typedef void (*DrawerFunction_t)(sf::RenderTarget& target, sf::RenderStates state);

@@ -74,6 +74,8 @@ public:
 class Player : public r2d::Object2D
 {
 public:
+	r2d::Object2D* ui{ nullptr };
+
 	void shoot()
 	{
 		Bullet* p = new Bullet(velocity.normalized());
@@ -82,9 +84,14 @@ public:
 		r2d::SceneTree::AddObject(p);
 	}
 
+	real_t timer{ 0.0f };
 	void update(real_t delta) override
 	{
-		cam->move(-getGlobalPosition().direction(cam->getGlobalPosition()) * delta * getGlobalPosition().distance(cam->getGlobalPosition()));
+		timer += delta;
+		cam->move(-getGlobalPosition().direction(cam->getGlobalPosition()) * delta * getGlobalPosition().distance(cam->getGlobalPosition()) * 8.0f);
+		cam->getComponent<r2d::components::Camera>(0)->setZoom(r2d::lerp<real_t>(
+			velocity.length(), 0.0f, 100.0f
+		) + 0.25f);
 		r2d::Vector2 v;
 		if (r2d::Engine::IsKeyPressed(r2d::Keyboard_t::W))
 			v.y -= 1.0f;
@@ -105,6 +112,7 @@ public:
 			velocity *= real_t(0.94f);
 		move(velocity);
 		setRotation(rad2deg(velocity.angle()) + 90.0f);
+		ui->setPosition(r2d::Vector2::Polar2Coord(timer, 54).abs());
 	}
 
 private:
@@ -122,6 +130,7 @@ void start_spaceships()
 	player.setName("player");
 	r2d::Object2D* left_hand = new r2d::Object2D("left"), * right_hand = new r2d::Object2D("right");
 
+
 	left_hand->setPosition({ -32.0f, 16.0f });
 	right_hand->setPosition({ 32.0f, 16.0f });
 	left_hand->addComponent(new r2d::components::CircleDrawer(8.0f));
@@ -132,17 +141,25 @@ void start_spaceships()
 	//player->addChild(apps_o);
 
 	player.addComponent(new r2d::components::CircleDrawer(16.0f));
-	((r2d::components::CircleDrawer*)player.getComponent(0))->setColor({ 255, 155, 55 });
+	player.getComponent<r2d::components::CircleDrawer>(0)->setColor({ 255, 155, 55 });
 
 	player.setZIndex(1);
 
 	player.addToSceneTree();
 	
 	player_ui = new r2d::Object2D("ui");
-	player_ui->addComponent(new r2d::components::GraphicalUI());
-	player_ui->setUsesRelativeCoords(false);
-	
+	player_ui->addComponent(new r2d::components::Text("Sample text"));
+	player_ui->setFixedDraw(true);
+	player_ui->setZIndex(512);
+
 	player_ui->addToSceneTree();
+	
+	auto player_ui2 = new r2d::Object2D("ui2");
+	player_ui2->addComponent(new r2d::components::Text("Sample text 2"));
+	player_ui2->setPosition(64.0f, 32.0f);
+	player_ui->addChild(player_ui2);
+
+	player.ui = player_ui;
 }
 
 r2d::Object2D* circle;
@@ -207,8 +224,8 @@ void start_collision_test()
 	traingles[0] = collision_test_create_tringle("first", false);
 	traingles[1] = collision_test_create_tringle("second", true);
 	
-	tri_points[0] = ((r2d::components::PolygonDrawer*)traingles[0]->getComponent(0))->getPoints();
-	tri_points[1] = ((r2d::components::PolygonDrawer*)traingles[1]->getComponent(0))->getPoints();
+	tri_points[0] = traingles[0]->getComponent<r2d::components::PolygonDrawer>(0)->getPoints();
+	tri_points[1] = traingles[1]->getComponent<r2d::components::PolygonDrawer>(0)->getPoints();
 	
 	camera_obj = new r2d::Object2D("cam");
 	r2d::components::Camera* cam = new r2d::components::Camera();
@@ -259,8 +276,8 @@ void create_cam()
 	cam = new r2d::Object2D("cam");
 	cam->addComponent(new r2d::components::Camera());
 	cam->addToSceneTree();
-	((r2d::components::Camera*)cam->getComponent(0))->makeCurrent();
-	((r2d::components::Camera*)cam->getComponent(0))->setCentered(false);
+	cam->getComponent<r2d::components::Camera>(0)->makeCurrent();
+	//x ((r2d::components::Camera*)cam->getComponent(0))->setCentered(false);
 }
 
 int main(int argc, const char** argv)

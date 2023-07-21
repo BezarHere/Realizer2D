@@ -3,11 +3,11 @@
 
 _R2D_COMP_NS_START_
 
-class GraphicalUI : public ObjectComponent, sf::Transformable
+class GraphicalUI : public ObjectComponent, public sf::Transformable
 {
 public:
 
-	void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
+	//void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
 
 	void setPosition(const Vector2 &position);
 	void setPosition(real_t x, real_t y);
@@ -30,6 +30,15 @@ private:
 class Text : public GraphicalUI
 {
 public:
+	Text();
+	Text(const std::string& text);
+
+	void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
+
+	sf::Text& getInner();
+	const sf::Text& getInner() const;
+	
+	void setText(const std::string& text);
 
 private:
 	sf::Text m_inner;
