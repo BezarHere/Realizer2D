@@ -183,17 +183,17 @@ Object2D* Object2D::getChild(const std::string& name) const
 	return (*m_children.find(name)).second;
 }
 
-Error Object2D::setName(const std::string& name)
+ErrorCode Object2D::setName(const std::string& name)
 {
 	if (m_parent)
 	{
 		if (m_parent->hasChild(name))
-			return Error::NameAlreadyExists;
+			return ErrorCode::NameAlreadyExists;
 
 		m_parent->childRenamed(m_name, name);
 	}
 	m_name = name;
-	return Error::Ok;
+	return ErrorCode::Ok;
 }
 
 void Object2D::setZIndex(ZIndex_t zindex)
@@ -213,7 +213,7 @@ ZIndex_t Object2D::getAbsoluteZIndex() const
 	return m_zIndex;
 }
 
-Error Object2D::addComponent(ObjectComponent* component)
+ErrorCode Object2D::addComponent(ObjectComponent* component)
 {
 	// can't install a component owned by another object (or reistall an already installed component)
 	assert(component->m_owner == nullptr);
@@ -221,7 +221,7 @@ Error Object2D::addComponent(ObjectComponent* component)
 	// already has a singleton or this isn't a singleton
 	if (hasComponentSingleton(component->getSingleton()))
 	{
-		return Error::AlreadyExists;
+		return ErrorCode::AlreadyExists;
 	}
 	else
 	{
@@ -231,7 +231,7 @@ Error Object2D::addComponent(ObjectComponent* component)
 	component->m_owner = this;
 	component->onOwnerAtached();
 	m_components.push_back(component);
-	return Error::Ok;
+	return ErrorCode::Ok;
 }
 
 void Object2D::removeComponent(ObjectComponent* component)
@@ -287,10 +287,12 @@ Vector2 Object2D::getGlobalPosition() const
 	return position;
 }
 
+
 real_t Object2D::getGlobalRotation() const
 {
-	// no good
-	return ((Vector2*)getGlobalTransform().getMatrix())->angle();
+	if (!m_parent)
+		return getRotation();
+	return getRotation() + m_parent->getGlobalRotation();
 }
 
 Vector2 Object2D::getGlobalScale() const
@@ -301,6 +303,54 @@ Vector2 Object2D::getGlobalScale() const
 		scale *= m_parent->getGlobalScale();
 	}
 	return scale;
+}
+
+const Vector2& Object2D::getCanvasSize() const
+{
+	return m_canvasSize;
+}
+
+void Object2D::setCanvasSize(const Vector2& size)
+{
+	m_canvasSize = size;
+}
+
+const Rectf& Object2D::getCanvasRect() const
+{
+	return { getPosition(), m_canvasSize };
+}
+
+void Object2D::setCanvasRect(const Rectf& rect)
+{
+	m_canvasSize = rect.size();
+	setPosition(rect.position());
+}
+
+bool Object2D::hasBakedPhysics() const
+{
+	if (!m_parent)
+		return m_bakedPhysics;
+	return m_bakedPhysics || m_parent->hasBakedPhysics();
+}
+
+bool Object2D::getBakedPhysics() const
+{
+	return m_bakedPhysics;
+}
+
+void Object2D::setBakedPhysics(bool value)
+{
+	m_bakedPhysics = value;
+}
+
+bool Object2D::physicsRebakeNeeded() const
+{
+	return m_physicsRebakeNeeded;
+}
+
+void Object2D::invalidatePhysicsBaking()
+{
+	m_physicsRebakeNeeded = true;
 }
 
 Vector2 Object2D::toGlobal(const Vector2 &position) const
@@ -317,15 +367,15 @@ Vector2 Object2D::toLocal(const Vector2 &position) const
 	return position - getPosition();
 }
 
-Error Object2D::addToSceneTree()
+ErrorCode Object2D::addToSceneTree()
 {
 	if (getParent())
 	{
 		_r2d_error("can't add a low object (with a parent) to be a root object");
-		return Error::Failed;
+		return ErrorCode::Failed;
 	}
 	SceneTree::AddObject(this);
-	return Error::Ok;
+	return ErrorCode::Ok;
 }
 
 bool Object2D::isInsideScene() const
@@ -358,6 +408,45 @@ void Object2D::regenerateComponentsSingletonTable()
 			}
 		}
 	}
+}
+
+const Rectf& Object2D::getParentCanvasRect() const
+{
+	if (m_parent)
+		return m_parent->getCanvasRect();
+	return { Vector2(0.0f, 0.0f), VisualServer::GetScreenSize() };
+}
+
+const Rectf &Object2D::getCanvasAnchorsRect() const
+{
+	Rectf rect = getParentCanvasRect();
+	rect.left += rect.width * m_canvasAnchors[ 0 ];
+	rect.top += rect.height * m_canvasAnchors[ 1 ];
+	rect.width *= m_canvasAnchors[ 2 ];
+	rect.height *= m_canvasAnchors[ 3 ];
+	return rect;
+}
+
+void Object2D::updateChildrenCanvasRects(const Rectf &updated_rect)
+{
+	for (const auto& kv : m_children)
+	{
+		kv.second->updateCanvasRect(updated_rect);
+	}
+}
+
+void Object2D::updateCanvasRect(const Rectf &updated_parent_canvas_rect)
+{
+	const Rectf& canvas_rect = getCanvasAnchorsRect();
+	Vector2 pos = getPosition() - canvas_rect.position();
+	pos.x += updated_parent_canvas_rect.width * m_canvasAnchors[ 0 ];
+	pos.y += updated_parent_canvas_rect.height * m_canvasAnchors[ 1 ];
+	Vector2 size_dif = updated_parent_canvas_rect.size() - canvas_rect.size();
+	size_dif.x *= m_canvasAnchors[ 2 ];
+	size_dif.y *= m_canvasAnchors[ 3 ];
+	Rectf updated_rect{ pos, m_canvasSize + size_dif};
+	updateChildrenCanvasRects(updated_rect);
+	setCanvasRect(updated_rect);
 }
 
 void Object2D::removeComponent(ObjectComponent* component, bool update_singleton)

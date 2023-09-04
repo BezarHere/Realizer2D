@@ -180,37 +180,44 @@ public:
       return Rect<T>(left * value, top * value, width * value, height * value);
     }
 
-    inline void setPosition(Vector2<T> position)
+    inline void position(Vector2<T> position)
     {
       left = position.x;
       top = position.y;
     }
 
-    inline void setPosition(T x, T y)
+    inline void position(T x, T y)
     {
       left = x;
       top = y;
     }
 
-    inline void setSize(T pwidth, T pheight)
+    inline void size(T pwidth, T pheight)
     {
       width = pwidth;
       height = pheight;
     }
 
-    inline void setEnd(T x, T y)
+    inline void end(T x, T y)
     {
       width = x - left;
       height = y - top;
     }
 
-    ////////////////////////////////////////////////////////////
-    /// \brief retruns the end of the rectangle
-    ///
-    /// \return the end vector2 of the rectangle
-    ///
-    ////////////////////////////////////////////////////////////
-    inline Vector2<T> end() const { return Vector2<T>(left + width, top + height); }
+    inline Vector2<T> position() const
+    {
+      return Vector2<T>(left, top);
+    }
+
+    inline Vector2<T> size() const
+    {
+      return Vector2<T>(left, top);
+    }
+
+    inline Vector2<T> end() const
+    {
+      return Vector2<T>(left + width, top + height);
+    }
 
     ////////////////////////////////////////////////////////////
     // Member data

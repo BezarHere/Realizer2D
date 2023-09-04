@@ -12,3 +12,13 @@
 #define CheckInit(class_name) Error class_name##_error = class_name::Init(); if (class_name##_error != Error::Ok) _r2d_error("Failed to Initialize " + #class_name + " with error: " + GetErrorName(class_name##_error)); else std::cout << "Initializing " + #class_name + " completed" << std::endl
 #define DoInit(class_name) Error class_name##_error = class_name::Init(); if (class_name##_error != Error::Ok) { _r2d_error("Failed to Initialize " + #class_name + " with error: " + GetErrorName(class_name##_error)); } else { std::cout << "Initializing " << #class_name << " completed" << std::endl; }
 #define discard (void)
+#define SAT_NCMB(p1, p2, n) real_t cast_range_a1{}, cast_range_a2{}, cast_range_b1{}, cast_range_b2{}; for (const Vector2 &a : p1) for (const Vector2 &b : p2){ }
+#define out
+#define INFINITY ((float)(_HUGE_ENUF * _HUGE_ENUF))
+#define finline
+#define in
+#define forceinline
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))
+#define _R2D_
+#define _R2D_NAMESPACE_END_ }

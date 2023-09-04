@@ -56,7 +56,6 @@
     <None Include="cpp.hint" />
     <None Include="res\shaders\circle.frag" />
     <None Include="res\shaders\postprocessing.frag" />
-    <None Include="build.py" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\global.h">
@@ -437,9 +436,6 @@
     <ClInclude Include="src\core\Segment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\Input.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\components\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -459,6 +455,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\R2DInit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\Bite\include\Bite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource\ResourceHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\Bite\include\_bite_dye.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\Bite\include\_bite_FileSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\Bite\include\_bite_StreamFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\Bite\include\_bite_Tree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\Bite\include\_bite_utility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\servers\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -523,9 +543,6 @@
     <ClCompile Include="src\utils\Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\Input.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\core\ApplicationConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -548,6 +565,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\R2DInit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\servers\Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

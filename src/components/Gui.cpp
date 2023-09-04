@@ -13,13 +13,13 @@ constexpr uint32_t DefaultFontSize{ 12U };
 void GraphicalUI::setPosition(const Vector2& position)
 {
 	sf::Transformable::setPosition(position);
-	m_rect.setPosition(position);
+	m_rect.position(position);
 }
 
 void GraphicalUI::setPosition(real_t x, real_t y)
 {
 	sf::Transformable::setPosition(x, y);
-	m_rect.setPosition(x, y);
+	m_rect.position(x, y);
 }
 
 // TODO: scales?
@@ -46,13 +46,13 @@ void GraphicalUI::setOrigin(real_t x, real_t y)
 void GraphicalUI::move(const Vector2& offset)
 {
 	sf::Transformable::move(offset);
-	m_rect.setPosition(offset.x + m_rect.left, offset.y + m_rect.top);
+	m_rect.position(offset.x + m_rect.left, offset.y + m_rect.top);
 }
 
 void GraphicalUI::move(real_t x, real_t y)
 {
 	sf::Transformable::move(x, y);
-	m_rect.setPosition(x + m_rect.left, y + m_rect.top);
+	m_rect.position(x + m_rect.left, y + m_rect.top);
 }
 
 void GraphicalUI::scale(const Vector2& factor)

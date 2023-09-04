@@ -4,28 +4,18 @@
 
 _R2D_NAMESPACE_START_
 
-Error Engine::Init()
+ErrorCode Engine::Init()
 {
-	for (int i = 0; i < Keyboard_t::KeyCount; i++)
-	{
-		s_keyboardInput[(Keyboard_t::Key)i];
-	}
-
-	for (int i = 0; i < Mouse_t::ButtonCount; i++)
-	{
-		s_mouseInput[(Mouse_t::Button)i];
-	}
-
 	atexit(Engine::Final);
-	return Error::Ok;
+	return ErrorCode::Ok;
 }
 
-Error Engine::Fire()
+ErrorCode Engine::Fire()
 {
 	VisualServer::Start();
 	Engine::Main();
 
-	return Error::Ok;
+	return ErrorCode::Ok;
 }
 
 void Engine::RegisterObject(Object2D* object)
@@ -40,6 +30,11 @@ void Engine::PopObject(Object2D* object)
 {
 	assert_msg(object->getObjectID() != 0, "can't pop an orphan object");
 	s_objsRegistery.erase(object->getObjectID());
+}
+
+uint32_t Engine::GetCurrentFrame()
+{
+	return s_currentFrame;
 }
 
 void Engine::SetProcessAction(ProcessFunction_t action)
@@ -90,25 +85,25 @@ void Engine::pollEvents()
 		switch (window_event.type)
 		{
 			case sf::Event::MouseMoved:
-				s_lastMousePosition = s_mousePosition;
-				s_mousePosition.x = (float)window_event.mouseMove.x;
-				s_mousePosition.y = (float)window_event.mouseMove.y;
-				s_worldMousePosition = s_mousePosition + VisualServer::GetScreenOrigin();
+				Input::s_lastMousePosition = Input::s_mousePosition;
+				Input::s_mousePosition.x = (float)window_event.mouseMove.x;
+				Input::s_mousePosition.y = (float)window_event.mouseMove.y;
+				Input::s_worldMousePosition = Input::s_mousePosition + VisualServer::GetScreenOrigin();
 				break;
 			case sf::Event::KeyPressed:
-				registerInput(window_event.key, true);
+				Input::registerInput(window_event.key, true);
 				break;
 			case sf::Event::KeyReleased:
-				registerInput(window_event.key, false);
+				Input::registerInput(window_event.key, false);
 				break;
 			case sf::Event::MouseButtonPressed:
-				registerInput(window_event.mouseButton, true);
+				Input::registerInput(window_event.mouseButton, true);
 				break;
 			case sf::Event::MouseButtonReleased:
-				registerInput(window_event.mouseButton, false);
+				Input::registerInput(window_event.mouseButton, false);
 				break;
 			case sf::Event::MouseWheelScrolled:
-				registerInput(window_event.mouseWheelScroll);
+				Input::registerInput(window_event.mouseWheelScroll);
 				break;
 			case sf::Event::Closed:
 				exit(EXIT_SUCCESS);
@@ -154,87 +149,5 @@ void Engine::Main()
 }
 
 
-bool Engine::IsMouseButtonPressed(sf::Mouse::Button button)
-{
-	return s_mouseInput.at(button).pressed;
-}
-
-bool Engine::IsMouseButtonJustPressed(sf::Mouse::Button button)
-{
-	return s_mouseInput.at(button).pressed && s_mouseInput.at(button).frame == s_currentFrame;
-}
-
-bool Engine::IsMouseButtonJustReleased(sf::Mouse::Button button)
-{
-	return !s_mouseInput.at(button).pressed && s_mouseInput.at(button).frame == s_currentFrame;
-}
-
-bool Engine::IsScrollingUp()
-{
-	return s_mouseWheelV > 0;
-}
-
-bool Engine::IsScrollingDown()
-{
-	return s_mouseWheelV < 0;
-}
-
-bool Engine::IsScrollingLeft()
-{
-	return s_mouseWheelV > 0;
-}
-
-bool Engine::IsScrollingRight()
-{
-	return s_mouseWheelV < 0;
-}
-
-bool Engine::IsKeyPressed(sf::Keyboard::Key key)
-{
-	return s_keyboardInput.at(key).pressed;
-}
-
-bool Engine::IsKeyJustPressed(sf::Keyboard::Key key)
-{
-	return s_keyboardInput.at(key).pressed && s_keyboardInput.at(key).frame == s_currentFrame;
-}
-
-bool Engine::IsKeyJustReleased(sf::Keyboard::Key key)
-{
-	return !s_keyboardInput.at(key).pressed && s_keyboardInput.at(key).frame == s_currentFrame;
-}
-
-Vector2 Engine::GetMousePosition()
-{
-	return s_worldMousePosition;
-}
-
-Vector2 Engine::GetMouseScreenPosition()
-{
-	return s_mousePosition;
-}
-
-
-void Engine::registerInput(const sf::Event::MouseButtonEvent& button_event, bool pressed)
-{
-	InputEvent& input_event = s_mouseInput[button_event.button];
-	input_event.pressed = pressed;
-	input_event.frame = s_currentFrame;
-}
-
-void Engine::registerInput(const sf::Event::MouseWheelScrollEvent& scroll_event)
-{
-	if (scroll_event.wheel == sf::Mouse::VerticalWheel)
-		s_mouseWheelV = scroll_event.delta;
-	else
-		s_mouseWheelH = scroll_event.delta;
-}
-
-void Engine::registerInput(const sf::Event::KeyEvent& key_event, bool pressed)
-{
-	InputEvent& input_event = s_keyboardInput.at(key_event.code);
-	input_event.pressed = pressed;
-	input_event.frame = s_currentFrame;
-}
 
 _R2D_NAMESPACE_END_

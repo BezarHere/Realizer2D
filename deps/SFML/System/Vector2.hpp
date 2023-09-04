@@ -74,6 +74,7 @@ public:
 		/// Next section is made by bezar
 		////////////////////////////////////////////////////////////
 
+#define inline __forceinline
 		inline float length() const
 		{
 			return std::sqrt((x * x) + (y * y));
@@ -226,6 +227,7 @@ public:
 			y *= (T)other.y;
 			return *this;
 		}
+#undef inline
 		////////////////////////////////////////////////////////////
 		/// end of the modified section
 		////////////////////////////////////////////////////////////

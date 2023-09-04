@@ -1,0 +1,13 @@
+--proj
+"F:\Assets\visual studio\Realizer2D"
+
+--src
+"__proj__\Realizer2D\src"
+
+--define:lib
+"F:\Assets\CppLibs\Realizer2D"
+
+--inc
+"__lib__\include"
+
+--move

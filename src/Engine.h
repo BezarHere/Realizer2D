@@ -3,6 +3,7 @@
 #include "components/Graphical.h"
 #include "servers/VisualServer.h"
 #include "servers/PhysicsServer.h"
+#include "servers/Input.h"
 #include "utils/Random.h"
 #include "scene/SceneTree.h"
 #include "R2DInit.h"
@@ -19,9 +20,7 @@
 #endif // !R2D_CLEAR_CLR
 
 _R2D_NAMESPACE_START_
-typedef sf::Keyboard Keyboard_t;
-typedef sf::Mouse Mouse_t;
-typedef sf::Vector2i CellIndex_t;
+
 
 class _R2D_Init;
 
@@ -29,19 +28,6 @@ class Engine final
 {
 	friend class R2DInit;
 public:
-	enum InputModifierFlags : uint8_t
-	{
-		None,
-		LShift = 0x01,
-		RShift = 0x02,
-		Shift = LShift | RShift,
-		LAlt = 0x04,
-		RAlt = 0x08,
-		Alt = LAlt | RAlt,
-		LControl = 0x10,
-		RControl = 0x20,
-		Control = LControl | RControl,
-	};
 
 public:
 	friend class VisualServer;
@@ -49,7 +35,7 @@ public:
 	friend class Object2D;
 
 	// call to start the Realizer 2D's processes
-	[[nodiscard]] static Error Fire();
+	[[nodiscard]] static ErrorCode Fire();
 
 	static void SetProcessAction(ProcessFunction_t action);
 	static void SetPhysicsProcessAction(PhysicsFunction_t action);
@@ -62,40 +48,13 @@ public:
 	static void RegisterObject(Object2D* object);
 	static void PopObject(Object2D* object);
 
-	static bool IsMouseButtonPressed(sf::Mouse::Button);
-	static bool IsMouseButtonJustPressed(sf::Mouse::Button);
-	static bool IsMouseButtonJustReleased(sf::Mouse::Button);
+	static uint32_t GetCurrentFrame();
 
-	static bool IsScrollingUp();
-	static bool IsScrollingDown();
-	static bool IsScrollingLeft();
-	static bool IsScrollingRight();
-
-	static bool IsKeyPressed(Keyboard_t::Key key);
-	static bool IsKeyJustPressed(Keyboard_t::Key key);
-	static bool IsKeyJustReleased(Keyboard_t::Key key);
-
-	// the mouse position in global coords
-	static Vector2 GetMousePosition();
-
-	// the mouse in screen space:
-	// (0, 0) is the mouse at the topleft of the screen,
-	// (screen_size.x, screen_size.y) is the mouse at the bottom right.
-	static Vector2 GetMouseScreenPosition();
 private:
 	Engine() = delete;
 	Engine(const Engine& other) = delete;
 	//inline Engine* operator new() = delete;
-	static Error Init();
-
-	struct InputEvent
-	{
-		bool pressed = false;
-		uint32_t frame = 0;
-		uint8_t flags = 0;
-	};
-
-	typedef float MouseWheelDelta_t;
+	static ErrorCode Init();
 
 	static inline void Main();
 	static void Final();
@@ -105,10 +64,6 @@ private:
 	static inline void draw();
 
 	static inline void pollEvents();
-
-	static inline void registerInput(const sf::Event::MouseButtonEvent& button_event, bool pressed);
-	static inline void registerInput(const sf::Event::MouseWheelScrollEvent& scroll_event);
-	static inline void registerInput(const sf::Event::KeyEvent& key_event, bool pressed);
 
 private:
 	// TODO: remove this
@@ -122,15 +77,6 @@ private:
 	static inline uint32_t s_currentFrame{ 0U };
 
 	static inline bool s_mainLoopLocked{ false };
-
-	static inline sf::Vector2f s_mousePosition{ 0.0f, 0.0f };
-	static inline sf::Vector2f s_worldMousePosition{ 0.0f, 0.0f };
-	static inline sf::Vector2f s_lastMousePosition{ 0.0f, 0.0f };
-
-	static inline std::unordered_map<Keyboard_t::Key, InputEvent> s_keyboardInput{};
-	static inline std::unordered_map<sf::Mouse::Button, InputEvent> s_mouseInput{};
-	static inline MouseWheelDelta_t s_mouseWheelV{ 0.0f };
-	static inline MouseWheelDelta_t s_mouseWheelH{ 0.0f };
 
 	static inline std::chrono::steady_clock::time_point s_lastFrameTime{ std::chrono::high_resolution_clock::now() };
 	static inline real_t s_physicsDeltaTime{ 1.0f / 60.0f };

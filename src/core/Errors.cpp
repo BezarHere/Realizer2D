@@ -3,7 +3,7 @@
 
 _R2D_NAMESPACE_START_
 
-constexpr size_t MaxError = (size_t)Error::Max;
+constexpr size_t MaxError = (size_t)ErrorCode::Max;
 
 // no good
 const std::string ErrorName[MaxError]
@@ -15,7 +15,7 @@ const std::string ErrorName[MaxError]
   "could not load"
 };
 
-const std::string& GetErrorName(Error error)
+const std::string& GetErrorName(ErrorCode error)
 {
   return ErrorName[(size_t)error];
 }

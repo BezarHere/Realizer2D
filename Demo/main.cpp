@@ -8,6 +8,9 @@
 #include "../include/Realizer2D.h"
 
 using r2d::real_t;
+using r2d::Points_t;
+using r2d::Vector2;
+using r2d::Input;
 
 void start_spaceships();
 void start_circles();
@@ -93,15 +96,15 @@ public:
 			velocity.length(), 0.0f, 100.0f
 		) + 0.25f);
 		r2d::Vector2 v;
-		if (r2d::Engine::IsKeyPressed(r2d::Keyboard_t::W))
+		if (Input::IsKeyPressed(r2d::Keyboard_t::W))
 			v.y -= 1.0f;
-		if (r2d::Engine::IsKeyPressed(r2d::Keyboard_t::S))
+		if (Input::IsKeyPressed(r2d::Keyboard_t::S))
 			v.y += 1.0f;
-		if (r2d::Engine::IsKeyPressed(r2d::Keyboard_t::A))
+		if (Input::IsKeyPressed(r2d::Keyboard_t::A))
 			v.x -= 1.0f;
-		if (r2d::Engine::IsKeyPressed(r2d::Keyboard_t::D))
+		if (Input::IsKeyPressed(r2d::Keyboard_t::D))
 			v.x += 1.0f;
-		if (r2d::Engine::IsKeyJustPressed(r2d::Keyboard_t::Space))
+		if (Input::IsKeyJustPressed(r2d::Keyboard_t::Space))
 		{
 			shoot();
 		}
@@ -237,7 +240,7 @@ void start_collision_test()
 
 void physics_collision_test(real_t delta)
 {
-	traingles[1]->setPosition(r2d::Engine::GetMousePosition());
+	traingles[1]->setPosition(Input::GetMousePosition());
 	/*r2d::Points_t p1 = tri_points[0];
 	r2d::Points_t p2 = tri_points[1];
 	for (r2d::Vector2& p : p1)
@@ -280,14 +283,32 @@ void create_cam()
 	//x ((r2d::components::Camera*)cam->getComponent(0))->setCentered(false);
 }
 
+__forceinline void dotime(uint64_t &value)
+{
+	uint64_t count{ (uint64_t)std::chrono::steady_clock::now().time_since_epoch().count() };
+	std::cout << "completed in: " << ((double)(count - value) / 1000.0) << "us\n";
+	value = count;
+}
+
 int main(int argc, const char** argv)
 {
+	//constexpr size_t curnch_size = (1024 << 14);
+	//Points_t p{};
+	//p.reserve(curnch_size);
+	//for (int i{}; i < curnch_size; i++)
+	//{
+	//	p.emplace_back(r2d::Random::RandfRange(-1000.0f, 1000.0f), r2d::Random::RandfRange(-1000.0f, 1000.0f));
+	//}
+
+	//PEEK(r2d::ContainerMemSpace(p));
+	//PEEK(r2d::ContainerMemUsage(p));
+
 	create_cam();
 	r2d::Engine::SetOnInitAction(demos.at(demotype).init);
 	r2d::Engine::SetProcessAction(demos.at(demotype).process);
 	r2d::Engine::SetPhysicsProcessAction(demos.at(demotype).physics);
 	r2d::VisualServer::SetDrawingAction(demos.at(demotype).drawer);
-	if (r2d::Engine::Fire() != r2d::Error::Ok)
+	if (r2d::Engine::Fire() != r2d::ErrorCode::Ok)
 	{
 		std::cerr << "FAILED TO RUN REALIZER 2D" << std::endl;
 	}

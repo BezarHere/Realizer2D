@@ -5,10 +5,10 @@ _R2D_NAMESPACE_START_
 
 CollidorShape::CollidorShape()
 {
-	updateState();
+	//updateState();
 }
 
-inline sf::Vector2f CollidorShape::getOffset() const
+sf::Vector2f CollidorShape::getOffset() const
 {
 	return sf::Vector2f();
 }
@@ -34,18 +34,33 @@ const AABB& CollidorShape::getAABB() const
 	return m_aabb;
 }
 
+CircleCollidor::CircleCollidor()
+{
+}
+
 real_t CircleCollidor::getRadius() const
 {
 	return m_radius;
 }
 
+const Points_t &CircleCollidor::getPoints() const
+{
+	return {};
+}
+
+const Points_t &CircleCollidor::getNormals() const
+{
+	return {};
+}
+
+const AABB &CircleCollidor::getAABB() const
+{
+	return { -m_radius, -m_radius, m_radius, m_radius };
+}
+
 void CircleCollidor::setRadius(real_t radius)
 {
 	m_radius = radius;
-}
-
-CircleCollidor::CircleCollidor()
-{
 }
 
 ConvexCollidor::ConvexCollidor()
@@ -64,7 +79,6 @@ sf::Vector2f RectangleCollidor::getSize() const
 void RectangleCollidor::setSize(sf::Vector2f size)
 {
 	m_size = size;
-	updateState();
 }
 
 void RectangleCollidor::updateState()

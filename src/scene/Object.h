@@ -37,6 +37,7 @@ inline std::ostream& operator<<(std::ostream& stream, const ObjectPath& obj)
 	return stream;
 }
 
+// best to keep inhertance layers fewer then 24
 class Object2D : public sf::Transformable
 {
 	friend class SceneTree;
@@ -71,8 +72,8 @@ public:
 	inline const std::unordered_map<std::string, Object2D*>& getChildren() const { return m_children; }
 
 	inline const std::string& getName() const { return m_name; }
-	Error setName(const std::string& name);
-	inline Error rename(const std::string& name) { setName(name); }
+	ErrorCode setName(const std::string& name);
+	inline ErrorCode rename(const std::string& name) { setName(name); }
 
 	inline ObjID_t getObjectID() const { return m_objId; }
 	inline void setObjectID(ObjID_t new_oid) { assert(m_objId == 0); m_objId = new_oid; }
@@ -91,7 +92,7 @@ public:
 	ZIndex_t getZIndex() const;
 	ZIndex_t getAbsoluteZIndex() const;
 
-	virtual Error addComponent(ObjectComponent* component);
+	virtual ErrorCode addComponent(ObjectComponent* component);
 	virtual void removeComponent(ObjectComponent* component);
 	virtual std::vector<ObjectComponent*>::const_iterator findComponent(ObjectComponent* component) const;
 	// -- to check if a component is owned by this; check the getOwner() == this_obj
@@ -100,13 +101,30 @@ public:
 
 	Transform2D getGlobalTransform() const;
 	Vector2 getGlobalPosition() const;
-	real_t getGlobalRotation() const;
+	real_t getGlobalRotation() const; // in degrees
 	Vector2 getGlobalScale() const;
+
+	// [use on fixed draw] canvas size
+	const Vector2& getCanvasSize() const;
+	void setCanvasSize(const Vector2 &size);
+	// [use on fixed draw] canvas rect
+	const Rectf& getCanvasRect() const;
+	void setCanvasRect(const Rectf &rect);
+
+	// if this or A PARENT has baked physics on
+	bool hasBakedPhysics() const;
+	// if owen baked physics is on, use hasBakedPhysics() to check the entier inhertance
+	bool getBakedPhysics() const;
+	void setBakedPhysics(bool value);
+
+	bool physicsRebakeNeeded() const;
+	void invalidatePhysicsBaking();
+
 
 	Vector2 toGlobal(const Vector2 &position) const;
 	Vector2 toLocal(const Vector2 &position) const;
 
-	Error addToSceneTree();
+	ErrorCode addToSceneTree();
 
 	inline Object2D* getParent() const { return m_parent; }
 
@@ -149,6 +167,12 @@ public:
 	void regenerateComponentsSingletonTable();
 
 private:
+	const Rectf &getParentCanvasRect() const;
+	const Rectf &getCanvasAnchorsRect() const;
+	void updateCanvasRect(const Rectf &updated_parent_canvas_rect);
+	// should be called before the canvas rect is set to the updated rect
+	void updateChildrenCanvasRects(const Rectf &updated_rect);
+
 	void removeComponent(ObjectComponent* component, bool update_singleton);
 
 	void updateBranchVisiblty();
@@ -159,7 +183,6 @@ private:
 	virtual void _onRemovedFromScene();
 	virtual void _onAddedToScene();
 
-private:
 	// called before renaming, check for name collisions before calling
 	void childRenamed(const std::string& og_name, const std::string& new_name);
 private:
@@ -171,22 +194,31 @@ private:
 	std::unordered_map<std::string, Object2D*> m_children;
 	Object2D* m_parent{ nullptr };
 	ZIndex_t m_zIndex{ 0 };
-	// position (precentage) on screen where this will be anchored, only used if the object is fixed-drawn
-	real_t m_screenAnchors[4]{ 0.0f, 0.0f, 1.0, 1.0f };
 
-	Vector2 m_screenAnchorOffset{ 0.0f, 0.0f };
-	Vector2 m_screenAnchorScale{ 1.0f, 1.0f };
+	/// integrated graphics stuff inside the object class instad of creating
+	/// a new class (UIObject) becuse of... idk, kinda lazy tbh
+#pragma region(Fixed draw fields)
+	// position (precentage) on screen where this will be anchored, only used if the object is fixed-drawn
+	real_t m_canvasAnchors[4]{ 0.0f, 0.0f, 1.0, 1.0f };
+
+	Vector2 m_canvasAnchorPositionOffset{ 0.0f, 0.0f };
+	Vector2 m_canvasAnchorSizeFactor{ 1.0f, 1.0f };
+	Vector2 m_canvasSize{ 1.0f, 1.0f };
+#pragma endregion
 
 	// if false, it will be drawn in world, dynamicly affected by camera
 	// if true, it will be drawn like a user interface one the screen directly
 	// only works on root objects, lower objects have their set by their parents
+	// NOT inherited
 	bool m_fixedDraw{ false };
 
-	bool m_visible{ true };
+	bool m_visible{ true }; // inherited
 	bool m_branchVisible{ true };
 	bool m_insideScene{ false };
 	bool m_queuedForDeletion{ false };
 	bool m_relativeZIndex{ true };
+	bool m_bakedPhysics{ false }; // inherited if true
+	bool m_physicsRebakeNeeded{ false };
 };
 
 _R2D_NAMESPACE_END_

@@ -3,11 +3,13 @@
 
 _R2D_NAMESPACE_START_
 
-class ResourcesServer;
-
 class Resource
 {
 	friend class ResourcesServer;
+	friend class ResourceHandle;
+public:
+
+
 };
 
 _R2D_NAMESPACE_END_

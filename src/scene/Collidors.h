@@ -3,18 +3,7 @@
 
 _R2D_NAMESPACE_START_
 
-/*
-for any one wondring why this is so bad lookin', without it breaking
-its just programer magic and maybe in the future may only god know
-how this works.
-
-- Static collidors vs Dynamic collidors:
-		there should NOT be and diffrence in behavior only in implmentation!
-		any process that works with static col's SHOULD work with dynamic col's or the implmentation is flawd.
-
-- Adding any custom collidors isn't technicly possible coz all collidors are hardcoded in the physics engine
-
-*/
+// nothing was here ;)
 
 enum class PhysicsBodyType : uint8_t
 {
@@ -39,7 +28,7 @@ class CollidorShape
 public:
 	CollidorShape();
 
-	inline sf::Vector2f getOffset() const;
+	sf::Vector2f getOffset() const;
 	virtual void setOffset(sf::Vector2f offset);
 
 	virtual const Points_t& getPoints() const;
@@ -48,7 +37,11 @@ public:
 
 	virtual CollidorShapeType getType() const = 0;
 
-	inline virtual void updateState() {};
+
+protected:
+
+	virtual void updateState() = 0;
+
 protected:
 	Vector2 m_offset;
 	// no need for those? ignore them ;)
@@ -69,8 +62,8 @@ public:
 
 	inline CollidorShapeType getType() const override { return CollidorShapeType::Rectangle; }
 
+protected:
 	void updateState() override;
-
 
 protected:
 	sf::Vector2f m_size{ 16.0f, 16.0f };
@@ -82,6 +75,11 @@ class CircleCollidor : public CollidorShape
 public:
 
 	real_t getRadius() const;
+
+	const Points_t& getPoints() const override;
+	const Points_t& getNormals() const override;
+	const AABB& getAABB() const override;
+
 	virtual void setRadius(real_t radius);
 
 	inline CollidorShapeType getType() const override { return CollidorShapeType::Circle; }
@@ -97,11 +95,11 @@ protected:
 class ConvexCollidor : public CollidorShape
 {
 public:
+	ConvexCollidor();
 
 	inline CollidorShapeType getType() const override { return CollidorShapeType::Convex; }
 
 protected:
-	ConvexCollidor();
 };
 
 // last to be implemented

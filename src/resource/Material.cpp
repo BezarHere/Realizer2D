@@ -10,7 +10,7 @@ Material::Material()
 // TODO: Fix shader coping
 Material::Material(const Material& copy)
 {
-	shader->CurrentTexture = copy.shader->CurrentTexture;
+	//shader->CurrentTexture = copy.shader->CurrentTexture;
 }
 
 _R2D_NAMESPACE_END_

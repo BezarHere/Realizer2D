@@ -24,7 +24,7 @@ public:
 	
 	static void Start();
 
-	static Error Init();
+	static ErrorCode Init();
 	
 	// automaticlty updated
 	// ** only call if you know what you're doing **

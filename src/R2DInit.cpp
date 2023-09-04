@@ -4,10 +4,11 @@
 #include "servers/ResourcesServer.h"
 #include "servers/PhysicsServer.h"
 #include "servers/VisualServer.h"
+#include "servers/Input.h"
 
 _R2D_NAMESPACE_START_
-#define DoInit(class_name) Error class_name## _error = class_name::Init(); \
-if (class_name## _error != Error::Ok) { throw std::runtime_error(("Failed to initialize " #class_name \
+#define DoInit(class_name) ErrorCode class_name## _error = class_name::Init(); \
+if (class_name## _error != ErrorCode::Ok) { throw std::runtime_error(("Failed to initialize " #class_name \
 " with error: ") + GetErrorName(class_name## _error)); } \
 else { std::cout << "initializing " << #class_name << ':' << (std::string(#class_name).size() < 8 ? "\t\t" : "\t") << "completed!" << std::endl; }
 
@@ -24,6 +25,7 @@ public:
 		DoInit(ResourcesServer);
 		DoInit(VisualServer);
 		DoInit(PhysicsServer);
+		DoInit(Input);
 	}
 private:
 	static inline bool called{ false };

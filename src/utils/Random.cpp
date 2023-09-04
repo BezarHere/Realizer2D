@@ -70,21 +70,21 @@ int64_t Random::Rand64()
 float Random::RandfRange(float from, float to)
 {
 	if (from > to)
-		doswap(from, to);
+		swapval(from, to);
 	return from + (RandFloat() * (to - from));
 }
 
 double Random::RanddRange(double from, double to)
 {
 	if (from > to)
-		doswap(from, to);
+		swapval(from, to);
 	return from + (RandDouble() * (to - from));
 }
 
 int32_t Random::RandiRange(int32_t from, int32_t to)
 {
 	if (from > to)
-		doswap(from, to);
+		swapval(from, to);
 	return from + (Rand32() % (to - from));
 }
 

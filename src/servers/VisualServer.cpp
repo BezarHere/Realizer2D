@@ -20,7 +20,7 @@ void VisualServer::DoDraw()
 
 	for (Object2D* p : objs)
 	{
-		obj_z_order.push_back(_ZHeightElement(p));
+		obj_z_order.emplace_back(p);
 	}
 	
 	// TODO: add a more efficent sort
@@ -147,9 +147,9 @@ void VisualServer::MakeCameraCurrent(components::Camera* camera)
 	s_currentCamera = camera;
 }
 
-Error VisualServer::Init()
+ErrorCode VisualServer::Init()
 {
-	return Error::Ok;
+	return ErrorCode::Ok;
 }
 
 components::Camera* VisualServer::GetCamera()
@@ -193,8 +193,8 @@ void VisualServer::Start()
 		_r2d_warning(
 			"Can't set the window start size in the application settings to be larger then (" + std::to_string(MasStartScreenSize.first) + ", " + std::to_string(MasStartScreenSize.second) + ")");
 		ApplicationConfig::MasterConfig().setStartWidowSize({
-			min(MasStartScreenSize.first, ApplicationConfig::MasterConfig().getStartWidowSize().x),
-			min(MasStartScreenSize.second, ApplicationConfig::MasterConfig().getStartWidowSize().y),
+			MIN(MasStartScreenSize.first, ApplicationConfig::MasterConfig().getStartWidowSize().x),
+			MIN(MasStartScreenSize.second, ApplicationConfig::MasterConfig().getStartWidowSize().y),
 		});
 	}
 

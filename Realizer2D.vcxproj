@@ -71,26 +71,27 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)src;E:\Assets\visual studio\Realizer2D\deps;E:\Assets\visual studio\Realizer2D\src;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\Assets\visual studio\Realizer2D\deps\SFML\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)deps;$(ProjectDir)deps\Bite\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)deps\SFML\lib;$(ProjectDir)deps\Bite\lib;$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)src;E:\Assets\visual studio\Realizer2D\deps;E:\Assets\visual studio\Realizer2D\src;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\Assets\visual studio\Realizer2D\deps\SFML\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)deps;$(ProjectDir)deps\Bite\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)deps\SFML\lib;$(ProjectDir)deps\Bite\lib;$(LibraryPath)</LibraryPath>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)src;E:\Assets\visual studio\Realizer2D\deps;E:\Assets\visual studio\Realizer2D\src;$(VC_IncludePath)</IncludePath>
-    <LibraryPath>E:\Assets\visual studio\Realizer2D\deps\SFML\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)deps;$(ProjectDir)deps\Bite\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)deps\SFML\lib;$(ProjectDir)deps\Bite\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <IncludePath>$(ProjectDir)src;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)deps;$(ProjectDir)deps\Bite\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)deps\SFML\lib;$(ProjectDir)deps\Bite\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -103,6 +104,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>global.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +130,7 @@ py "$(ProjectDir)src/statics.py"</Command>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,11 +160,12 @@ py "$(ProjectDir)src/statics.py"</Command>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>flac.lib;freetype.lib;ogg.lib;openal32.lib;sfml-main.lib;sfml-main-d.lib;sfml-audio-d.lib;sfml-audio.lib;sfml-graphics-d.lib;sfml-graphics.lib;sfml-network-d.lib;sfml-network.lib;sfml-system-d.lib;sfml-system.lib;sfml-window-d.lib;sfml-window.lib;vorbis.lib;vorbisenc.lib;vorbisfile.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>flac.lib;freetype.lib;ogg.lib;openal32.lib;sfml-main.lib;sfml-main-d.lib;sfml-audio-d.lib;sfml-audio.lib;sfml-graphics-d.lib;sfml-graphics.lib;sfml-network-d.lib;sfml-network.lib;sfml-system-d.lib;sfml-system.lib;sfml-window-d.lib;sfml-window.lib;vorbis.lib;vorbisenc.lib;vorbisfile.lib;Bite64-d.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -183,13 +187,14 @@ py "$(ProjectDir)src/statics.py"</Command>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ForcedIncludeFiles>global.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>flac.lib;freetype.lib;ogg.lib;openal32.lib;sfml-main.lib;sfml-audio.lib;sfml-graphics.lib;sfml-network.lib;sfml-system.lib;sfml-window.lib;vorbis.lib;vorbisenc.lib;vorbisfile.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>flac.lib;freetype.lib;ogg.lib;openal32.lib;sfml-main.lib;sfml-audio.lib;sfml-graphics.lib;sfml-network.lib;sfml-system.lib;sfml-window.lib;vorbis.lib;vorbisenc.lib;vorbisfile.lib;Bite64.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -201,7 +206,6 @@ py "$(ProjectDir)src/statics.py"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="build.py" />
     <None Include="cpp.hint" />
     <None Include="deps\SFML\Audio\SoundFileFactory.inl" />
     <None Include="deps\SFML\Graphics\Glsl.inl" />
@@ -227,6 +231,12 @@ py "$(ProjectDir)src/statics.py"</Command>
     <None Include="res\shaders\postprocessing.frag" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="deps\Bite\include\Bite.h" />
+    <ClInclude Include="deps\Bite\include\_bite_dye.h" />
+    <ClInclude Include="deps\Bite\include\_bite_FileSystem.h" />
+    <ClInclude Include="deps\Bite\include\_bite_StreamFrame.h" />
+    <ClInclude Include="deps\Bite\include\_bite_Tree.h" />
+    <ClInclude Include="deps\Bite\include\_bite_utility.h" />
     <ClInclude Include="deps\SFML\Audio.hpp" />
     <ClInclude Include="deps\SFML\Audio\AlResource.hpp" />
     <ClInclude Include="deps\SFML\Audio\Export.hpp" />
@@ -329,6 +339,8 @@ py "$(ProjectDir)src/statics.py"</Command>
     <ClInclude Include="include\Realizer2D.h" />
     <ClInclude Include="src\components\Gui.h" />
     <ClInclude Include="src\R2DInit.h" />
+    <ClInclude Include="src\resource\ResourceHandle.h" />
+    <ClInclude Include="src\servers\Input.h" />
     <ClInclude Include="src\utils\algorithms.h" />
     <ClInclude Include="src\components\Camera.h" />
     <ClInclude Include="src\components\TileMap.h" />
@@ -342,7 +354,6 @@ py "$(ProjectDir)src/statics.py"</Command>
     <ClInclude Include="src\core\Errors.h" />
     <ClInclude Include="src\core\StretchMode.h" />
     <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\scene\Input.h" />
     <ClInclude Include="src\servers\ResourcesServer.h" />
     <ClInclude Include="src\resource\File.h" />
     <ClInclude Include="src\global.h" />
@@ -368,6 +379,7 @@ py "$(ProjectDir)src/statics.py"</Command>
     </ClCompile>
     <ClCompile Include="src\components\Gui.cpp" />
     <ClCompile Include="src\R2DInit.cpp" />
+    <ClCompile Include="src\servers\Input.cpp" />
     <ClCompile Include="src\servers\ResourcesServer.cpp" />
     <ClCompile Include="src\utils\algorithms.cpp" />
     <ClCompile Include="src\core\ApplicationConfig.cpp" />
@@ -388,13 +400,17 @@ py "$(ProjectDir)src/statics.py"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">global.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="src\scene\Input.cpp" />
     <ClCompile Include="src\scene\Object.cpp" />
     <ClCompile Include="src\scene\ObjectComponent.cpp" />
     <ClCompile Include="src\servers\PhysicsServer.cpp" />
     <ClCompile Include="src\resource\Material.cpp" />
     <ClCompile Include="src\scene\SceneTree.cpp" />
-    <ClCompile Include="src\servers\Solver.cpp" />
+    <ClCompile Include="src\servers\Solver.cpp">
+      <LanguageStandard_C Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdc17</LanguageStandard_C>
+      <LanguageStandard_C Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdc17</LanguageStandard_C>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Speed</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Speed</FavorSizeOrSpeed>
+    </ClCompile>
     <ClCompile Include="src\utils\VertexBufferWraper.cpp" />
     <ClCompile Include="src\servers\VisualServer.cpp" />
   </ItemGroup>
